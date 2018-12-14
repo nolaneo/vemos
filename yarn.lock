@@ -2584,6 +2584,13 @@ core-object@2.0.6:
   dependencies:
     chalk "^1.1.3"
 
+core-object@^2.0.0:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/core-object/-/core-object-2.1.1.tgz#4b7a5f1edefcb1e6d0dcb58eab1b9f90bfc666a8"
+  integrity sha1-S3pfHt78sebQ3LWOqxufkL/GZqg=
+  dependencies:
+    chalk "^1.1.3"
+
 core-object@^3.1.3:
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/core-object/-/core-object-3.1.5.tgz#fa627b87502adc98045e44678e9a8ec3b9c0d2a9"
@@ -2688,7 +2695,7 @@ d@1:
   dependencies:
     es5-ext "^0.10.9"
 
-dag-map@^2.0.2:
+dag-map@^2.0.1, dag-map@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/dag-map/-/dag-map-2.0.2.tgz#9714b472de82a1843de2fba9b6876938cab44c68"
   integrity sha1-lxS0ct6CoYQ94vuptodpOMq0TGg=
@@ -2896,6 +2903,11 @@ dot-prop@^4.1.0:
   dependencies:
     is-obj "^1.0.0"
 
+dotenv@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-1.2.0.tgz#7cd73e16e07f057c8072147a5bc3a8677f0ab5c6"
+  integrity sha1-fNc+FuB/BXyAchR6W8OoZ38KtcY=
+
 duplexify@^3.4.2, duplexify@^3.6.0:
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/duplexify/-/duplexify-3.6.1.tgz#b1a7a29c4abfd639585efaecce80d666b1e34125"
@@ -3060,6 +3072,25 @@ ember-cli-deploy-plugin@^0.2.5:
     chalk "^1.0.0"
     core-object "2.0.6"
     lodash.clonedeep "^4.5.0"
+
+ember-cli-deploy-progress@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/ember-cli-deploy-progress/-/ember-cli-deploy-progress-1.3.0.tgz#18663deed25b4d5397476332f25eed3c3fdf225a"
+  integrity sha1-GGY97tJbTVOXR2My8l7tPD/fIlo=
+
+ember-cli-deploy@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/ember-cli-deploy/-/ember-cli-deploy-1.0.2.tgz#9ab39188c882b57937418db5b3da6fc65b16b916"
+  integrity sha1-mrORiMiCtXk3QY21s9pvxlsWuRY=
+  dependencies:
+    chalk "^1.1.3"
+    core-object "^2.0.0"
+    dag-map "^2.0.1"
+    dotenv "^1.2.0"
+    ember-cli-deploy-progress "^1.3.0"
+    lodash "^4.0.0"
+    rsvp "^3.3.3"
+    silent-error "^1.0.0"
 
 ember-cli-eslint@^4.2.1:
   version "4.2.3"
@@ -5683,7 +5714,7 @@ lodash@^3.10.0, lodash@^3.9.3:
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
   integrity sha1-W/Rejkm6QYnhfUgnid/RW9FAt7Y=
 
-lodash@^4.17.10, lodash@^4.17.4, lodash@^4.3.0:
+lodash@^4.0.0, lodash@^4.17.10, lodash@^4.17.4, lodash@^4.3.0:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
   integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
