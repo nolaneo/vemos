@@ -1,3 +1,6 @@
+@import 'coolsquare';
+@import 'waiting';
+
 html, body, body > .ember-view {
   margin: 0;
   padding: 0;
@@ -102,4 +105,12 @@ body > .ember-view {
 
 .t__centered {
   text-align: center;
+}
+
+.z__10 {
+  z-index: 10;
+}
+
+.white {
+  color: white;
 }
