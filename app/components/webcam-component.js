@@ -32,7 +32,12 @@ export default Component.extend({
       video: {width: {exact: 640}, height: {exact: 480}},
       audio: true,
     };
-    return navigator.mediaDevices.getUserMedia(settings);
+    return navigator.mediaDevices.getUserMedia(settings)
+    .catch(error => {
+      console.error(error);
+      console.error('Returning blank stream');
+      return new MediaStream();
+    });
   }),
 
   setupPeerVideo(call) {
