@@ -45,6 +45,7 @@ module.exports = function(environment) {
 
   if (environment === 'production') {
     ENV.rootURL = '/vemos/'
+    ENV.locationType = 'hash'
   }
 
   return ENV;

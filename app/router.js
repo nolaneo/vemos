@@ -7,6 +7,14 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
+  this.route('connections', function() {
+    this.route('connected');
+
+    this.route('connect', function() {
+      this.route('peer', { path: ':id' });
+    });
+    this.route('waiting');
+  });
 });
 
 export default Router;
