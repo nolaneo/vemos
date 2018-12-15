@@ -4,11 +4,11 @@ import { computed } from '@ember/object';
 import ENV from 'vemos/config/environment';
 
 const COLORS = [
-  { from: '#fa3152', to: '#c82742' },
-  { from: '#b71a92', to: '#921575' },
-  { from: '#007ec9', to: '#0065a1' },
-  { from: '#00b087', to: '#008d6b' },
-  { from: '#dfe300', to: '#b1b600' }
+  { from: '#fa3152', to: '#ff2c91' },
+  { from: '#b71a92', to: '#b60cc6' },
+  { from: '#007ec9', to: '#00beca' },
+  { from: '#00b087', to: '#00b050' },
+  { from: '#dfe300', to: '#e39e00' }
 ];
 
 //Taken from https://gomakethings.com/how-to-shuffle-an-array-with-vanilla-js/
@@ -44,7 +44,7 @@ export default Controller.extend({
       squares: colors
     }
   }),
-  fullsize: window.innerWidth * 1.5,
+  fullsize: Math.max(window.innerWidth, window.innerWidth) * 1.5,
 
   actions: {
     copied() {

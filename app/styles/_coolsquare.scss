@@ -1,4 +1,10 @@
-.coolsquare {
-
+.coolsquares {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  transform-origin: center;
+  left: 0;
+  right: 0;
+  animation: spin 20s linear;
 }
 @keyframes spin { 100% { transform:rotateZ(360deg); } }

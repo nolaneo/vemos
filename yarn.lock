@@ -3025,7 +3025,7 @@ ember-cli-app-version@^3.0.0:
     ember-cli-babel "^6.12.0"
     git-repo-version "^1.0.2"
 
-ember-cli-babel@^5.1.5:
+ember-cli-babel@^5.1.5, ember-cli-babel@^5.1.6:
   version "5.2.8"
   resolved "https://registry.yarnpkg.com/ember-cli-babel/-/ember-cli-babel-5.2.8.tgz#0356b03cc3fdff5d0f2ecaa46a0e1cfaebffd876"
   integrity sha512-Mt9OOB5RaZwjde+LYef8EgwNVCAzsYDv4ktshblaXxr4m/Xm5/7/rxEu42RNrYkoy/qWpT9uhaD+JKK4riMf+w==
@@ -3489,6 +3489,13 @@ ember-qunit@^3.5.0:
     ember-cli-babel "^6.8.2"
     ember-cli-test-loader "^2.2.0"
     qunit "~2.6.0"
+
+ember-random-seed@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/ember-random-seed/-/ember-random-seed-0.0.2.tgz#fab6f3588358d7bde774feec43f306a186e83570"
+  integrity sha1-+rbzWINY173ndP7sQ/MGoYboNXA=
+  dependencies:
+    ember-cli-babel "^5.1.6"
 
 ember-resolver@^4.0.0:
   version "4.5.6"

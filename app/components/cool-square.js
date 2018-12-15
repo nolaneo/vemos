@@ -35,7 +35,7 @@ export default Component.extend({
     let jitter = size / this.randomInRange(2, 4);
     jitter = Math.random() < 0.5 ? jitter : -jitter;
     return jitter;
-  }),
+  }).volatile(),
 
   size: computed(function() {
     return this.randomInRange(window.innerWidth * 0.33, window.innerWidth * 0.75);
