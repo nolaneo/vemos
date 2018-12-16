@@ -1,0 +1,10 @@
+<div class="main-video__loader">
+  <div class="main-video__picker layout__box o__has-rows o__centers-all">
+    {{yield}}
+  </div>
+
+  {{cool-square size=fullsize color=colors.background index=0 jitter=0}}
+  {{#each colors.squares as |color index|}}
+    {{cool-square color=color index=index}}
+  {{/each}}
+</div>

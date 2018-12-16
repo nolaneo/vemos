@@ -12,7 +12,6 @@
   position: fixed;
   width: 400px;
   height: 200px;
-  padding: 30px;
   top: calc(50% - 100px);
   left: calc(50% - 200px);
   z-index: 2;
@@ -30,4 +29,5 @@
   text-align: center;
   margin: auto;
   opacity: 0.8;
+  padding: 20px;
 }

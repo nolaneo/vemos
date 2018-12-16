@@ -5,7 +5,7 @@ export default Route.extend({
   connectionService: service(),
   beforeModel() {
     if (this.get('connectionService.isNotConnected')) {
-      // this.transitionTo('connections.waiting');
+      this.transitionTo('connections.waiting');
     }
   }
 
