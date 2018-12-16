@@ -6,5 +6,6 @@
   left: 0;
   right: 0;
   animation: spin 20s linear;
+  pointer-events: none;
 }
 @keyframes spin { 100% { transform:rotateZ(360deg); } }

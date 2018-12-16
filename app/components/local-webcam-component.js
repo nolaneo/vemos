@@ -15,7 +15,7 @@ export default Component.extend({
 
   mediaStream: computed(function() {
     let settings = {
-      video: {width: {exact: 160}, height: {exact: 120}}
+      video: {width: {exact: 100}, height: {exact: 66}}
     };
     return navigator.mediaDevices.getUserMedia(settings)
     .catch(error => {

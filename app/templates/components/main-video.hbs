@@ -1,2 +1,18 @@
-<input type="file" accept="*" onchange={{action 'setVideo'}}/>
-<video controls autoplay></video>
+<div class="main-video__loader">
+  <div class="main-video__picker layout__box o__has-rows o__centers-all">
+    <div>
+      <h2 class="white">Nice! You're connected!</h2>
+      <p class="white">Start by choosing the video you want to watch together.</p>
+      <p class="white">Make sure you both choose the same video!</p>
+      <label for="main-video__file-picker" class="ui inverted button">Choose a video</label>
+    </div>
+
+    <input id="main-video__file-picker" type="file" accept="*" onchange={{action 'setVideo'}} style="display: none"/>
+  </div>
+
+  {{cool-square size=fullsize color=colors.background index=0 jitter=0}}
+  {{#each colors.squares as |color index|}}
+    {{cool-square color=color index=index}}
+  {{/each}}
+</div>
+<video class="main-video" controls autoplay></video>

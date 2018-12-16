@@ -1,10 +1,13 @@
 @import 'coolsquare';
+@import 'main-video';
 @import 'waiting';
+@import 'webcam';
 
 html, body, body > .ember-view {
   margin: 0;
   padding: 0;
   height: 100%;
+  background: linear-gradient(#222, #111);
 }
 
 body > .ember-view {
@@ -113,4 +116,8 @@ body > .ember-view {
 
 .white {
   color: white;
+}
+
+.u__position-absolute {
+  position: absolute !important;
 }

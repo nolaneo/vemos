@@ -29,7 +29,7 @@ export default Component.extend({
 
   mediaStream: computed(function() {
     let settings = {
-      video: {width: {exact: 320}, height: {exact: 240}},
+      video: {width: {exact: 240}, height: {exact: 160}},
       audio: true,
     };
     return navigator.mediaDevices.getUserMedia(settings)
