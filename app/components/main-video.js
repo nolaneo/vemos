@@ -31,10 +31,19 @@ export default Component.extend({
     this.$('video.main-video')[0].controls = false;
   }).restartable(),
 
+    
+  lastSentEvent: null,
+  lastEvent: null,
+
   videoSync(data) {
     if (this.get('ignorePeerEvents')) {
       return console.log(`Ignoring received event: ${data.videoEvent}`);
     }
+    let currentPeerEvent = JSON.stringify(data);
+    if (currentPeerEvent === this.get('lastSentEvent')) {
+      return console.log(`Ignoring rereceived event: ${data.videoEvent}`);
+    }
+    this.set('lastEvent', data);
     console.log(`Handling received event: ${data.videoEvent}`);
     switch(data.videoEvent) {
       case 'onpause': return this.handleOnPause(data);
@@ -65,7 +74,14 @@ export default Component.extend({
     this.get('showControls').perform();
     this.$('video')[0].currentTime = data.timestamp;
   },
-  
+
+  sendEvent(event) {
+    this.set('ignorePeerEvents', true);
+    this.set('lastSentEvent', JSON.stringify(event));
+    this.get('connectionService.connection').send(event);
+    later(this, () => this.set('ignorePeerEvents', false), 250);
+  },
+
   actions: {
     setVideo(event) {
       let file = event.currentTarget.files[0];
@@ -79,31 +95,27 @@ export default Component.extend({
     },
 
     onPlay() {
-      this.set('ignorePeerEvents', true);
-      this.get('connectionService.connection').send({
+      this.sendEvent({
         videoEvent: 'onplay',
         timestamp: this.$('video')[0].currentTime
       });
-      later(this, () => this.set('ignorePeerEvents', false), 100);
     },
 
     onPause() {
-      this.set('ignorePeerEvents', true);
-      this.get('connectionService.connection').send({
+      this.sendEvent({
         videoEvent: 'onpause',
         timestamp: this.$('video')[0].currentTime
       });
-      later(this, () => this.set('ignorePeerEvents', false), 100);
-
     },
 
     onSeeked() {
-      this.set('ignorePeerEvents', true);
-      this.get('connectionService.connection').send({
+      if (this.get('lastEvent.timestamp') === this.$('video')[0].currentTime) {
+        return console.log('ignoring seeked event');
+      }
+      this.sendEvent({
         videoEvent: 'onseeked',
         timestamp: this.$('video')[0].currentTime
       });
-      later(this, () => this.set('ignorePeerEvents', false), 100);
-    }
+    },
   }
 });
