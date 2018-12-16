@@ -18,11 +18,11 @@ export default Component.extend({
   didInsertElement() {
     this._super(...arguments);
     this.get('connectionService').on('received', (data) => this.videoSync(data));
-    this.$('video.main-video').on('mousemove', () => this.get('showControls').perform());
+    this.$(document).on('mousemove', () => this.get('showControls').perform());
   },
 
   willDestroyElement() {
-    this.$('video.main-video').off('mousemove');
+    this.$(document).off('mousemove');
   },
 
   showControls: task(function * () {
@@ -37,8 +37,8 @@ export default Component.extend({
     }
     console.log(`Handling received event: ${data.videoEvent}`);
     switch(data.videoEvent) {
-      case 'onpause': return this.handleOnPause();
-      case 'onplay': return this.handleOnPlay();
+      case 'onpause': return this.handleOnPause(data);
+      case 'onplay': return this.handleOnPlay(data);
       case 'onseeked': return this.handleOnSeeked(data);
       case 'onselected': return this.handleOnSelected(data);
     }
@@ -49,15 +49,20 @@ export default Component.extend({
     this.set('peerFileName', data.name);
   },
 
-  handleOnPlay() {
+  handleOnPlay(data) {
+    this.get('showControls').perform();
     this.$('video')[0].play();
+    this.$('video')[0].currentTime = data.timestamp;
   },
 
-  handleOnPause() {
+  handleOnPause(data) {
+    this.get('showControls').perform();
     this.$('video')[0].pause();
+    this.$('video')[0].currentTime = data.timestamp;
   },
 
   handleOnSeeked(data) {
+    this.get('showControls').perform();
     this.$('video')[0].currentTime = data.timestamp;
   },
   
@@ -76,7 +81,8 @@ export default Component.extend({
     onPlay() {
       this.set('ignorePeerEvents', true);
       this.get('connectionService.connection').send({
-        videoEvent: 'onplay'
+        videoEvent: 'onplay',
+        timestamp: this.$('video')[0].currentTime
       });
       later(this, () => this.set('ignorePeerEvents', false), 100);
     },
@@ -84,7 +90,8 @@ export default Component.extend({
     onPause() {
       this.set('ignorePeerEvents', true);
       this.get('connectionService.connection').send({
-        videoEvent: 'onpause'
+        videoEvent: 'onpause',
+        timestamp: this.$('video')[0].currentTime
       });
       later(this, () => this.set('ignorePeerEvents', false), 100);
 
