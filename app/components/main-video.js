@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import { not } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 import { later } from '@ember/runloop';
+import { task, timeout } from 'ember-concurrency';
 
 export default Component.extend({
   connectionService: service(),
@@ -13,15 +14,26 @@ export default Component.extend({
   peerHasNotSelectedVideo: not('peerHasSelectedVideo'),
   peerFileName: null,
 
+
   didInsertElement() {
     this._super(...arguments);
     this.get('connectionService').on('received', (data) => this.videoSync(data));
+    this.$('video.main-video').on('mousemove', () => this.get('showControls').perform());
   },
+
+  willDestroyElement() {
+    this.$('video.main-video').off('mousemove');
+  },
+
+  showControls: task(function * () {
+    this.$('video.main-video')[0].controls = true;
+    yield timeout(2000);
+    this.$('video.main-video')[0].controls = false;
+  }).restartable(),
 
   videoSync(data) {
     if (this.get('ignorePeerEvents')) {
-      return;
-      console.log(`Ignoring received event: ${data.videoEvent}`);
+      return console.log(`Ignoring received event: ${data.videoEvent}`);
     }
     console.log(`Handling received event: ${data.videoEvent}`);
     switch(data.videoEvent) {
