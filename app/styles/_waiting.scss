@@ -2,6 +2,7 @@
   font-size: 100px;
   color: white;
   opacity: 0.7;
+  margin-bottom: 0px;
 }
 
 .waiting__for-pam {
@@ -24,4 +25,12 @@
   color: white;
   opacity: 0.9;
   font-size: 11px;
+}
+
+.waiting__sub-header {
+  opacity: 0.7;
+  font-weight: 200;
+  margin: 0px 0px 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid white;
 }

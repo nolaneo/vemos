@@ -2,6 +2,7 @@
 @import 'main-video';
 @import 'waiting';
 @import 'webcam';
+@import 'card';
 
 html, body, body > .ember-view {
   margin: 0;
@@ -108,6 +109,10 @@ body > .ember-view {
 
 .t__centered {
   text-align: center;
+}
+
+.t__left {
+  text-align: left;
 }
 
 .z__10 {
