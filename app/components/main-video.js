@@ -14,6 +14,7 @@ export default Component.extend({
   peerHasNotSelectedVideo: not('peerHasSelectedVideo'),
   peerFileName: null,
 
+  classNameBindings: ['webcamIsMainView:main-video-minimized'],
 
   didInsertElement() {
     this._super(...arguments);

@@ -1,9 +1,14 @@
+<div class="video-switcher">
+  <button class="ui inverted button" onclick={{action 'swapView'}}>
+    <i class="exchange alternate icon u__mr__0"></i>
+  </button>
+</div>
 <div class="layout__box o__flexes-to-1 o__has-columns">
   <div class="layout__box o__has-rows webcam-container">
     {{local-webcam-component}}
-    {{webcam-component}}
+    {{webcam-component webcamIsMainView=webcamIsMainView}}
   </div>
   <div class="layout__box o__flexes-to-1">
-    {{main-video}}
+    {{main-video webcamIsMainView=webcamIsMainView}}
   </div>
 </div>

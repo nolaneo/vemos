@@ -6,6 +6,8 @@ import { next } from '@ember/runloop';
 export default Component.extend({
   connectionService: service(),
 
+  classNameBindings: ['webcamIsMainView:webcam-main-view'],
+
   didInsertElement() {
     this._super(...arguments);
     next(this, this.setupStream);
