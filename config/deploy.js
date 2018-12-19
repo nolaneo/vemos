@@ -4,7 +4,7 @@
 module.exports = function() {
   let ENV = {
     build: {},
-    rootURL: '/vemos/',
+    rootURL: '/',
     locationType: 'hash',
     ghpages: {
       gitRemoteUrl: 'git@github.com:/nolaneo/vemos',
