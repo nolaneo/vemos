@@ -8,6 +8,7 @@ module.exports = function() {
     locationType: 'hash',
     ghpages: {
       gitRemoteUrl: 'git@github.com:/nolaneo/vemos',
+      domain: 'vemos.org'
     }
   };
   return ENV;
