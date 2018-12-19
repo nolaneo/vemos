@@ -1,13 +1,13 @@
 .card {
-  background: #00000033;
+  background: rgba(0,0,0,0.1);;
   border-radius: 5px;
   padding: 10px;
-  color: #ffffffaa;
+  color:rgba(255,255,255,0.8);
   font-size: 12px;
 }
 
 .card__spacer {
-  border-top: 1px solid #ffffffaa;
+  border-top: 1px solid rgba(255,255,255,0.8);
   padding-top: 20px;
   margin-top: 20px;
 }
