@@ -22,7 +22,7 @@ export default Controller.extend({
       squares: colors
     }
   }),
-  fullsize: Math.max(window.innerWidth, window.innerWidth) * 1.5,
+  fullsize: Math.max(window.innerWidth, window.innerWidth) * 2,
 
   actions: {
     copied() {

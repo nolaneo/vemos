@@ -16,6 +16,11 @@ export default Service.extend(Evented, {
     this.set('peer', peer);
   },
 
+  initializeStreamingPeer() {
+    let peer = new Peer({key: PEER_SERVER_KEY});
+    this.set('streamingPeer', peer);
+  },
+
   isNotConnected: none('connection'),
 
   _setupConnection(connection, isMaster) {

@@ -18,6 +18,7 @@ export default Component.extend({
 
   didInsertElement() {
     this._super(...arguments);
+    this.get('connectionService').initializeStreamingPeer();
     this.get('connectionService').on('received', (data) => this.videoSync(data));
     this.$(document).on('mousemove', () => this.get('showControls').perform());
   },
@@ -51,12 +52,18 @@ export default Component.extend({
       case 'onplay': return this.handleOnPlay(data);
       case 'onseeked': return this.handleOnSeeked(data);
       case 'onselected': return this.handleOnSelected(data);
+      case 'streamingRequested': return this.handleStreamingRequested(data);
+      case 'streamingAccepted': return this.handleStreamingAccepted(data);
     }
   },
 
   handleOnSelected(data) {
     this.set('peerHasSelectedVideo', true);
     this.set('peerFileName', data.name);
+    // let call = this.get('connectionService.peer').call(
+    //   this.get('connectionService.connection.peer'),
+    //   mediaStream
+    // );
   },
 
   handleOnPlay(data) {
@@ -76,8 +83,36 @@ export default Component.extend({
     this.$('video')[0].currentTime = data.timestamp;
   },
 
+  handleStreamingRequested(data) {
+    this.set('connectionService.destinationStreamingPeer', data.streamingPeerId);
+    this.sendEvent({
+      videoEvent: 'streamingAccepted',
+      streamingPeerId: this.get('connectionService.streamingPeer.id'),
+    });
+    this.get('connectionService.streamingPeer').on('call', (call) => {
+      call.answer();
+      call.on('stream', mediaStream => {
+        this.$('video.main-video')[0].srcObject = mediaStream;
+        this.set('hasSelectedVideo', true);
+        this.set('peerHasSelectedVideo', true);
+      })
+    });
+  },
+
+  handleStreamingAccepted(data) {
+    this.set('connectionService.destinationStreamingPeer', data.streamingPeerId);
+    let mediaStream = this.$('video.main-video')[0].captureStream()
+    this.get('connectionService.streamingPeer').call(
+      this.get('connectionService.destinationStreamingPeer'),
+      mediaStream
+    );
+    this.set('peerHasSelectedVideo', true);
+  },
+
   sendEvent(event) {
-    this.set('ignorePeerEvents', true);
+    if (!event.videoEvent.startsWith('streaming')) {
+      this.set('ignorePeerEvents', true);
+    }
     this.set('lastSentEvent', JSON.stringify(event));
     this.get('connectionService.connection').send(event);
     later(this, () => this.set('ignorePeerEvents', false), 250);
@@ -116,6 +151,13 @@ export default Component.extend({
       this.sendEvent({
         videoEvent: 'onseeked',
         timestamp: this.$('video')[0].currentTime
+      });
+    },
+
+    requestStreamingPeerDetails() {
+      this.sendEvent({
+        videoEvent: 'streamingRequested',
+        streamingPeerId: this.get('connectionService.streamingPeer.id'),
       });
     },
   }
