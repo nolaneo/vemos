@@ -21,12 +21,13 @@
     </div>
   {{/cool-square-modal}}
 {{/if}}
-
 <video
   class="main-video"
   onplay={{action 'onPlay'}}
   onpause={{action 'onPause'}}
   onseeked={{action 'onSeeked'}}
-></video>
+>
+
+</video>
 
 <button style="z-index: 100; position: fixed; top: 0; right: 0;" {{action 'requestStreamingPeerDetails'}}>RQ</button>

@@ -1,9 +1,56 @@
-.webcam-container {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+.local-camera {
+  mix-blend-mode: overlay;
+}
+
+.local-camera-brightness {
+  background-color: white;
+  opacity: 0.2;
+  width: 100px;
+  height: 66px;
+}
+
+.local-camera-brightness,
+.local-camera {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  transform: rotateY(180deg);
+  -webkit-mask-image: url(images/small-webcam-mask.png);
+  -webkit-mask-position: top right;
   pointer-events: none;
-  z-index: 10;
-  opacity: 0.7;
+}
+
+.destination-camera-brightness {
+  position: absolute;
+  width: 320px;
+  height: 240px;
+  background-color: white;
+  opacity: 0.2;
+}
+
+.destination-camera-brightness,
+.destination-camera {
+  bottom: 0px;
+  position: absolute;
+  -webkit-mask-image: url(images/webcam-mask.png);
+  -webkit-mask-position: top right;
+  pointer-events: none;
+  transition: all 400ms ease;
+  width: 320px;
+  height: 240px;
+  top: calc(100% - 240px);
+}
+
+.destination-camera {
+  mix-blend-mode: overlay;
+}
+
+.webcam-main-view.destination-camera {
+  mix-blend-mode: unset;
+  top: 0px;
+  right: 0px;
+  left: 0px;
+  -webkit-mask-image: unset;
+  width: 100%;
+  height: 100%;
 }

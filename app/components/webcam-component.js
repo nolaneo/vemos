@@ -4,6 +4,10 @@ import { computed } from '@ember/object';
 import { next } from '@ember/runloop';
 
 export default Component.extend({
+  tagName: 'video',
+  attributeBindings: ['autoplay'],
+  autoplay: true,
+
   connectionService: service(),
 
   classNameBindings: ['webcamIsMainView:webcam-main-view'],
@@ -31,7 +35,7 @@ export default Component.extend({
 
   mediaStream: computed(function() {
     let settings = {
-      video: {width: {exact: 240}, height: {exact: 160}},
+      video: {width: {exact: 320}, height: {exact: 240}},
       audio: true,
     };
     return navigator.mediaDevices.getUserMedia(settings)
@@ -44,7 +48,7 @@ export default Component.extend({
 
   setupPeerVideo(call) {
     call.on('stream', stream => {
-      this.$('video')[0].srcObject = stream;
+      this.$()[0].srcObject = stream;
     });
   }
 });

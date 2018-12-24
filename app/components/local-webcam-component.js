@@ -3,6 +3,11 @@ import { next } from '@ember/runloop';
 import { computed } from '@ember/object';
 
 export default Component.extend({
+  tagName: 'video',
+  attributeBindings: ['autoplay'],
+  autoplay: true,
+
+
   didInsertElement() {
     this._super(...arguments);
     next(this, this.setupStream);
@@ -10,7 +15,7 @@ export default Component.extend({
 
   async setupStream() {
     let mediaStream = await this.get('mediaStream');
-    this.$('video')[0].srcObject = mediaStream;
+    this.$()[0].srcObject = mediaStream;
   },
 
   mediaStream: computed(function() {

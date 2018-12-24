@@ -6,6 +6,7 @@ import { task, timeout } from 'ember-concurrency';
 
 export default Component.extend({
   connectionService: service(),
+  videoService: service(),
 
   hasSelectedVideo: false,
   peerHasSelectedVideo: false,
@@ -60,10 +61,6 @@ export default Component.extend({
   handleOnSelected(data) {
     this.set('peerHasSelectedVideo', true);
     this.set('peerFileName', data.name);
-    // let call = this.get('connectionService.peer').call(
-    //   this.get('connectionService.connection.peer'),
-    //   mediaStream
-    // );
   },
 
   handleOnPlay(data) {
@@ -93,6 +90,7 @@ export default Component.extend({
       call.answer();
       call.on('stream', mediaStream => {
         this.$('video.main-video')[0].srcObject = mediaStream;
+        this.get('videoService').setMainStream(mediaStream);
         this.set('hasSelectedVideo', true);
         this.set('peerHasSelectedVideo', true);
       })
@@ -121,8 +119,9 @@ export default Component.extend({
   actions: {
     setVideo(event) {
       let file = event.currentTarget.files[0];
-      let videoNode = this.$('video')[0];
+      let videoNode = this.$('video.main-video')[0];
       videoNode.src = URL.createObjectURL(file);
+      this.get('videoService').setMainStream(this.$('video.main-video')[0].captureStream());
       this.set('hasSelectedVideo', true);
       this.get('connectionService.connection').send({
         videoEvent: 'onselected',

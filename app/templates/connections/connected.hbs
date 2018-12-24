@@ -4,11 +4,9 @@
   </button>
 </div>
 <div class="layout__box o__flexes-to-1 o__has-columns">
-  <div class="layout__box o__has-rows webcam-container">
-    {{local-webcam-component}}
-    {{webcam-component webcamIsMainView=webcamIsMainView}}
-  </div>
-  <div class="layout__box o__flexes-to-1">
-    {{main-video webcamIsMainView=webcamIsMainView}}
-  </div>
+  {{main-video webcamIsMainView=webcamIsMainView}}
+  <div class="local-camera-brightness"></div>
+  {{local-webcam-component class="local-camera"}}
+  <div class="destination-camera-brightness"></div>
+  {{webcam-component class="destination-camera" webcamIsMainView=webcamIsMainView}}
 </div>
