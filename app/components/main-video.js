@@ -7,6 +7,7 @@ import { task, timeout } from 'ember-concurrency';
 export default Component.extend({
   connectionService: service(),
   videoService: service(),
+  settingsService: service(),
 
   hasSelectedVideo: false,
   peerHasSelectedVideo: false,
@@ -15,12 +16,13 @@ export default Component.extend({
   peerHasNotSelectedVideo: not('peerHasSelectedVideo'),
   peerFileName: null,
 
-  classNameBindings: ['webcamIsMainView:main-video-minimized'],
+  classNameBindings: ['settingsService.webcamIsMainView:main-video-minimized'],
 
   didInsertElement() {
     this._super(...arguments);
     this.get('connectionService').initializeStreamingPeer();
     this.get('connectionService').on('received', (data) => this.videoSync(data));
+    this.get('connectionService').on('closed', () => this.handleConnectionClosed());
     this.$(document).on('mousemove', () => this.get('showControls').perform());
   },
 
@@ -105,6 +107,10 @@ export default Component.extend({
       mediaStream
     );
     this.set('peerHasSelectedVideo', true);
+  },
+
+  handleConnectionClosed() {
+    this.$('video.main-video')[0].pause();
   },
 
   sendEvent(event) {

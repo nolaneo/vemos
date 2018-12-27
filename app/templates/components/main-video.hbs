@@ -1,4 +1,6 @@
-{{#if hasNotSelectedVideo}}
+{{#if connectionService.connectionClosed}}
+  {{!-- modal on the route will handle this --}}
+{{else if hasNotSelectedVideo}}
   {{#cool-square-modal}}
     <div>
       <h2 class="white">Nice! You're connected!</h2>
@@ -21,6 +23,7 @@
     </div>
   {{/cool-square-modal}}
 {{/if}}
+
 <video
   class="main-video"
   onplay={{action 'onPlay'}}

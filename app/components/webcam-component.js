@@ -9,8 +9,9 @@ export default Component.extend({
   autoplay: true,
 
   connectionService: service(),
+  settingsService: service(),
 
-  classNameBindings: ['webcamIsMainView:webcam-main-view'],
+  classNameBindings: ['settingsService.webcamIsMainView:webcam-main-view'],
 
   didInsertElement() {
     this._super(...arguments);

@@ -24,9 +24,14 @@ export default Service.extend(Evented, {
   isNotConnected: none('connection'),
 
   _setupConnection(connection, isMaster) {
+    this.set('connectionClosed', false);
     this.set('isMaster', isMaster);
     this.set('connection', connection);
     connection.on('data', data => this.trigger('received', data));
+    connection.on('close', () => {
+      this.set('connectionClosed', true);
+      this.trigger('closed')
+    });
     this.trigger('connected');
   },
 
@@ -34,6 +39,4 @@ export default Service.extend(Evented, {
     let connection = this.get('peer').connect(peerId);
     this._setupConnection(connection, false);
   },
-
-  
 });

@@ -39,16 +39,3 @@
   opacity: 0.8;
   padding: 20px;
 }
-
-.video-switcher {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  z-index: 30;
-  opacity: 0.2;
-  transition: opacity 200ms ease;
-}
-
-.video-switcher:hover {
-  opacity: 1;
-}
