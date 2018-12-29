@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { computed } from '@ember/object';
-import { next } from '@ember/runloop';
+import { next, later } from '@ember/runloop';
 
 export default Component.extend({
   tagName: 'video',
@@ -16,6 +16,11 @@ export default Component.extend({
   didInsertElement() {
     this._super(...arguments);
     next(this, this.setupStream);
+    this.get('connectionService').on('reconnected', () => {
+      this.get('call').close();
+      console.log('reinstating webcam stream');
+      this.setupStream();
+    });
   },
 
   async setupStream() {
@@ -48,6 +53,7 @@ export default Component.extend({
   }),
 
   setupPeerVideo(call) {
+    this.set('call', call);
     call.on('stream', stream => {
       this.$()[0].srcObject = stream;
     });
