@@ -5,7 +5,8 @@ import { next, later } from '@ember/runloop';
 
 export default Component.extend({
   tagName: 'video',
-  attributeBindings: ['autoplay'],
+  style: 'width: 320px; height: 240px',
+  attributeBindings: ['autoplay', 'style'],
   autoplay: true,
 
   connectionService: service(),
@@ -41,7 +42,10 @@ export default Component.extend({
 
   mediaStream: computed(function() {
     let settings = {
-      video: {width: {exact: 320}, height: {exact: 240}},
+      video: {
+        width: { min: 160, ideal: 320, max: 640 },
+        height: { min: 120, ideal: 240, max: 480 },
+      },
       audio: true,
     };
     return navigator.mediaDevices.getUserMedia(settings)

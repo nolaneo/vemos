@@ -4,7 +4,8 @@ import { computed } from '@ember/object';
 
 export default Component.extend({
   tagName: 'video',
-  attributeBindings: ['autoplay'],
+  style: 'width: 100px; height: 66px;',
+  attributeBindings: ['autoplay', 'style'],
   autoplay: true,
 
 
@@ -20,7 +21,10 @@ export default Component.extend({
 
   mediaStream: computed(function() {
     let settings = {
-      video: {width: {exact: 100}, height: {exact: 66}}
+      video: {
+        width: { min: 50, ideal: 100, max: 320 },
+        height: { min: 33, ideal: 66, max: 240 }
+      }
     };
     return navigator.mediaDevices.getUserMedia(settings)
     .catch(error => {
