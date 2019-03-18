@@ -127,7 +127,13 @@ export default Component.extend({
       let file = event.currentTarget.files[0];
       let videoNode = this.$('video.main-video')[0];
       videoNode.src = URL.createObjectURL(file);
-      this.get('videoService').setMainStream(this.$('video.main-video')[0].captureStream());
+      if (navigator.userAgent.indexOf('Firefox') > -1) {
+        console.log('Firefox');
+        this.get('videoService').setMainStream(this.$('video.main-video')[0].mozCaptureStream());
+      } else {
+        console.log('Other');
+        this.get('videoService').setMainStream(this.$('video.main-video')[0].captureStream());
+      }
       this.set('hasSelectedVideo', true);
       this.get('connectionService.connection').send({
         videoEvent: 'onselected',
