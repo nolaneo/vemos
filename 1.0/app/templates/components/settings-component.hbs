@@ -1,0 +1,19 @@
+<button class="ui inverted button settings-button" onclick={{action 'swapVideos'}}>
+  {{#if settingsService.webcamIsMainView}}
+    Maximize movie
+  {{else}}
+    Maximize friend
+  {{/if}}
+</button>
+
+<button class="ui inverted button settings-button" onclick={{action 'brighten'}}>
+  Brighten
+</button>
+
+<button class="ui inverted button settings-button" onclick={{action 'darken'}}>
+  Darken
+</button>
+
+<button class="ui inverted button settings-button" onclick={{action 'forceReconnect'}}>
+  Force reconnect
+</button>
