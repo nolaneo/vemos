@@ -2,7 +2,7 @@ import Service from "@ember/service";
 
 const CONTAINER_ID = `vemos-container`;
 
-export default class ParentDomServiceService extends Service {
+export default class ParentDomService extends Service {
   container = undefined;
   window = undefined;
 
