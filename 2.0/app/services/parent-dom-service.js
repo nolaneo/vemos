@@ -9,6 +9,6 @@ export default class ParentDomServiceService extends Service {
   initialize() {
     console.log(`Initializing Parent DOM Service`);
     this.window = window.parent;
-    this.container = window.parent.getElementById(CONTAINER_ID);
+    this.container = window.parent.document.getElementById(CONTAINER_ID);
   }
 }

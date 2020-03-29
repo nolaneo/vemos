@@ -93827,36 +93827,36 @@ var __ember_auto_import__ =
 /************************************************************************/
 /******/ ({
 
-/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-79206XX8z8cRN9xDB/cache-251-bundler/staging/app.js":
+/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-82314JQbYVeEKkSln/cache-251-bundler/staging/app.js":
 /*!****************************************************************************************************************************!*\
-  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-79206XX8z8cRN9xDB/cache-251-bundler/staging/app.js ***!
+  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-82314JQbYVeEKkSln/cache-251-bundler/staging/app.js ***!
   \****************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("\nif (typeof document !== 'undefined') {\n  __webpack_require__.p = (function(){\n    var scripts = document.querySelectorAll('script');\n    return scripts[scripts.length - 1].src.replace(/\\/[^/]*$/, '/');\n  })();\n}\n\nmodule.exports = (function(){\n  var d = _eai_d;\n  var r = _eai_r;\n  window.emberAutoImportDynamic = function(specifier) {\n    return r('_eai_dyn_' + specifier);\n  };\n})();\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-79206XX8z8cRN9xDB/cache-251-bundler/staging/app.js?");
+eval("\nif (typeof document !== 'undefined') {\n  __webpack_require__.p = (function(){\n    var scripts = document.querySelectorAll('script');\n    return scripts[scripts.length - 1].src.replace(/\\/[^/]*$/, '/');\n  })();\n}\n\nmodule.exports = (function(){\n  var d = _eai_d;\n  var r = _eai_r;\n  window.emberAutoImportDynamic = function(specifier) {\n    return r('_eai_dyn_' + specifier);\n  };\n})();\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-82314JQbYVeEKkSln/cache-251-bundler/staging/app.js?");
 
 /***/ }),
 
-/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-79206XX8z8cRN9xDB/cache-251-bundler/staging/l.js":
+/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-82314JQbYVeEKkSln/cache-251-bundler/staging/l.js":
 /*!**************************************************************************************************************************!*\
-  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-79206XX8z8cRN9xDB/cache-251-bundler/staging/l.js ***!
+  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-82314JQbYVeEKkSln/cache-251-bundler/staging/l.js ***!
   \**************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("\nwindow._eai_r = require;\nwindow._eai_d = define;\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-79206XX8z8cRN9xDB/cache-251-bundler/staging/l.js?");
+eval("\nwindow._eai_r = require;\nwindow._eai_d = define;\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-82314JQbYVeEKkSln/cache-251-bundler/staging/l.js?");
 
 /***/ }),
 
 /***/ 0:
 /*!*****************************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-79206XX8z8cRN9xDB/cache-251-bundler/staging/l.js /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-79206XX8z8cRN9xDB/cache-251-bundler/staging/app.js ***!
+  !*** multi /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-82314JQbYVeEKkSln/cache-251-bundler/staging/l.js /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-82314JQbYVeEKkSln/cache-251-bundler/staging/app.js ***!
   \*****************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-79206XX8z8cRN9xDB/cache-251-bundler/staging/l.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-79206XX8z8cRN9xDB/cache-251-bundler/staging/l.js\");\nmodule.exports = __webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-79206XX8z8cRN9xDB/cache-251-bundler/staging/app.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-79206XX8z8cRN9xDB/cache-251-bundler/staging/app.js\");\n\n\n//# sourceURL=webpack://__ember_auto_import__/multi_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-79206XX8z8cRN9xDB/cache-251-bundler/staging/l.js_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-79206XX8z8cRN9xDB/cache-251-bundler/staging/app.js?");
+eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-82314JQbYVeEKkSln/cache-251-bundler/staging/l.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-82314JQbYVeEKkSln/cache-251-bundler/staging/l.js\");\nmodule.exports = __webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-82314JQbYVeEKkSln/cache-251-bundler/staging/app.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-82314JQbYVeEKkSln/cache-251-bundler/staging/app.js\");\n\n\n//# sourceURL=webpack://__ember_auto_import__/multi_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-82314JQbYVeEKkSln/cache-251-bundler/staging/l.js_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-82314JQbYVeEKkSln/cache-251-bundler/staging/app.js?");
 
 /***/ })
 
@@ -93930,59 +93930,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     }
   });
 });
-;define("vemos-plugin/components/frame-styles", ["exports"], function (_exports) {
-  "use strict";
-
-  Object.defineProperty(_exports, "__esModule", {
-    value: true
-  });
-  _exports.default = void 0;
-
-  const __COLOCATED_TEMPLATE__ = Ember.HTMLBars.template(
-  /*
-    <style>
-    body {
-      transform: translate(0, 0);
-      width: 90vw;
-      height: 100vh;
-    }
-  
-    #vemos-container {
-      position: fixed;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      width: 10vw;
-      background-color: rebeccapurple;
-    }
-  </style>
-  */
-  {
-    id: "c3/t+ncz",
-    block: "{\"symbols\":[],\"statements\":[[9,\"style\",true],[10],[1,1,0,0,\"\\n  body {\\n    transform: translate(0, 0);\\n    width: 90vw;\\n    height: 100vh;\\n  }\\n\\n  #vemos-container {\\n    position: fixed;\\n    right: 0;\\n    top: 0;\\n    bottom: 0;\\n    width: 10vw;\\n    background-color: rebeccapurple;\\n  }\\n\"],[11]],\"hasEval\":false,\"upvars\":[]}",
-    meta: {
-      moduleName: "vemos-plugin/components/frame-styles.hbs"
-    }
-  });
-
-  var _default = Ember._setComponentTemplate(__COLOCATED_TEMPLATE__, Ember._templateOnlyComponent());
-
-  _exports.default = _default;
-});
-;define("vemos-plugin/components/welcome-page", ["exports", "ember-welcome-page/components/welcome-page"], function (_exports, _welcomePage) {
-  "use strict";
-
-  Object.defineProperty(_exports, "__esModule", {
-    value: true
-  });
-  Object.defineProperty(_exports, "default", {
-    enumerable: true,
-    get: function () {
-      return _welcomePage.default;
-    }
-  });
-});
-;define("vemos-plugin/controllers/application", ["exports"], function (_exports) {
+;define("vemos-plugin/components/frame-styles", ["exports", "@glimmer/component"], function (_exports, _component) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
@@ -94000,19 +93948,41 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
   function _initializerWarningHelper(descriptor, context) { throw new Error('Decorating class property failed. Please ensure that ' + 'proposal-class-properties is enabled and runs after the decorators transform.'); }
 
-  let ApplicationController = (_class = (_temp = class ApplicationController extends Ember.Controller {
+  const __COLOCATED_TEMPLATE__ = Ember.HTMLBars.template(
+  /*
+    <EmberWormhole @destinationElement={{this.parentDomService.container}}>
+  <style>
+    body {
+      transform: translate(0, 0);
+      width: 90vw;
+      height: 100vh;
+    }
+  
+    #vemos-container {
+      position: fixed;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 10vw;
+      background-color: rebeccapurple;
+    }
+  </style>
+  </EmberWormhole>
+  
+  */
+  {
+    id: "BKgG9e37",
+    block: "{\"symbols\":[],\"statements\":[[7,\"ember-wormhole\",[],[[\"@destinationElement\"],[[27,[24,0],[\"parentDomService\",\"container\"]]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n\"],[9,\"style\",true],[10],[1,1,0,0,\"\\n  body {\\n    transform: translate(0, 0);\\n    width: 90vw;\\n    height: 100vh;\\n  }\\n\\n  #vemos-container {\\n    position: fixed;\\n    right: 0;\\n    top: 0;\\n    bottom: 0;\\n    width: 10vw;\\n    background-color: rebeccapurple;\\n  }\\n\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[]}",
+    meta: {
+      moduleName: "vemos-plugin/components/frame-styles.hbs"
+    }
+  });
+
+  let FrameStylesComponent = (_class = (_temp = class FrameStylesComponent extends _component.default {
     constructor(...args) {
       super(...args);
 
       _initializerDefineProperty(this, "parentDomService", _descriptor, this);
-    }
-
-    initializeParentDomService() {
-      this.parentDomService.initialize();
-    }
-
-    testMethod() {
-      console.log("hello world");
     }
 
   }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "parentDomService", [Ember.inject.service], {
@@ -94020,8 +93990,61 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     enumerable: true,
     writable: true,
     initializer: null
-  }), _applyDecoratedDescriptor(_class.prototype, "initializeParentDomService", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "initializeParentDomService"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "testMethod", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "testMethod"), _class.prototype)), _class);
-  _exports.default = ApplicationController;
+  })), _class);
+  _exports.default = FrameStylesComponent;
+
+  Ember._setComponentTemplate(__COLOCATED_TEMPLATE__, FrameStylesComponent);
+});
+;define("vemos-plugin/components/sidebar", ["exports", "@glimmer/component"], function (_exports, _component) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _class;
+
+  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) { var desc = {}; Object.keys(descriptor).forEach(function (key) { desc[key] = descriptor[key]; }); desc.enumerable = !!desc.enumerable; desc.configurable = !!desc.configurable; if ('value' in desc || desc.initializer) { desc.writable = true; } desc = decorators.slice().reverse().reduce(function (desc, decorator) { return decorator(target, property, desc) || desc; }, desc); if (context && desc.initializer !== void 0) { desc.value = desc.initializer ? desc.initializer.call(context) : void 0; desc.initializer = undefined; } if (desc.initializer === void 0) { Object.defineProperty(target, property, desc); desc = null; } return desc; }
+
+  const __COLOCATED_TEMPLATE__ = Ember.HTMLBars.template(
+  /*
+    <div>
+    <FrameStyles/>
+    <button {{on 'click' this.testMethod}}>Hello world</button>
+    {{outlet}}
+  </div>
+  */
+  {
+    id: "xYFDqNYN",
+    block: "{\"symbols\":[],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n  \"],[7,\"frame-styles\",[],[[],[]],null],[1,1,0,0,\"\\n  \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"testMethod\"]]],null],[10],[1,1,0,0,\"Hello world\"],[11],[1,1,0,0,\"\\n  \"],[1,0,0,0,[31,0,0,[27,[26,2,\"CallHead\"],[]],[[31,0,0,[27,[26,1,\"CallHead\"],[]],null,null]],null]],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"on\",\"-outlet\",\"component\"]}",
+    meta: {
+      moduleName: "vemos-plugin/components/sidebar.hbs"
+    }
+  });
+
+  let SidebarComponent = (_class = class SidebarComponent extends _component.default {
+    testMethod() {
+      console.log("hello world");
+    }
+
+  }, (_applyDecoratedDescriptor(_class.prototype, "testMethod", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "testMethod"), _class.prototype)), _class);
+  _exports.default = SidebarComponent;
+
+  Ember._setComponentTemplate(__COLOCATED_TEMPLATE__, SidebarComponent);
+});
+;define("vemos-plugin/components/welcome-page", ["exports", "ember-welcome-page/components/welcome-page"], function (_exports, _welcomePage) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _welcomePage.default;
+    }
+  });
 });
 ;define("vemos-plugin/data-adapter", ["exports", "@ember-data/debug"], function (_exports, _debug) {
   "use strict";
@@ -94334,7 +94357,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     initialize() {
       console.log(`Initializing Parent DOM Service`);
       this.window = window.parent;
-      this.container = window.parent.getElementById(CONTAINER_ID);
+      this.container = window.parent.document.getElementById(CONTAINER_ID);
     }
 
   }
@@ -94363,8 +94386,8 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "MBD5Q0Do",
-    "block": "{\"symbols\":[],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n  \"],[7,\"frame-styles\",[],[[],[]],null],[1,1,0,0,\"\\n  \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"testMethod\"]]],null],[10],[1,1,0,0,\"Hello world\"],[11],[1,1,0,0,\"\\n  \"],[1,0,0,0,[31,0,0,[27,[26,2,\"CallHead\"],[]],[[31,0,0,[27,[26,1,\"CallHead\"],[]],null,null]],null]],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"on\",\"-outlet\",\"component\"]}",
+    "id": "tgaMBGsx",
+    "block": "{\"symbols\":[],\"statements\":[[7,\"sidebar\",[],[[],[]],null]],\"hasEval\":false,\"upvars\":[]}",
     "meta": {
       "moduleName": "vemos-plugin/templates/application.hbs"
     }
@@ -94429,7 +94452,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 ;define('vemos-plugin/config/environment', [], function() {
   
           var exports = {
-            'default': {"modulePrefix":"vemos-plugin","environment":"development","rootURL":"/","locationType":"none","EmberENV":{"FEATURES":{},"EXTEND_PROTOTYPES":{"Date":false},"_APPLICATION_TEMPLATE_WRAPPER":false,"_DEFAULT_ASYNC_OBSERVERS":true,"_JQUERY_INTEGRATION":false,"_TEMPLATE_ONLY_GLIMMER_COMPONENTS":true},"APP":{"name":"vemos-plugin","version":"0.0.0+a95221df"},"ember-cli-post-build-copy":{"replace":true,"development":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]],"production":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]]},"exportApplicationGlobal":true}
+            'default': {"modulePrefix":"vemos-plugin","environment":"development","rootURL":"/","locationType":"none","EmberENV":{"FEATURES":{},"EXTEND_PROTOTYPES":{"Date":false},"_APPLICATION_TEMPLATE_WRAPPER":false,"_DEFAULT_ASYNC_OBSERVERS":true,"_JQUERY_INTEGRATION":false,"_TEMPLATE_ONLY_GLIMMER_COMPONENTS":true},"APP":{"autoboot":false,"name":"vemos-plugin","version":"0.0.0+b40fa7e0"},"ember-cli-post-build-copy":{"replace":true,"development":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]],"production":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]]},"exportApplicationGlobal":true}
           };
           Object.defineProperty(exports, '__esModule', {value: true});
           return exports;
@@ -94438,7 +94461,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
 ;
           if (!runningTests) {
-            require("vemos-plugin/app")["default"].create({"name":"vemos-plugin","version":"0.0.0+a95221df"});
+            require("vemos-plugin/app")["default"].create({"autoboot":false,"name":"vemos-plugin","version":"0.0.0+b40fa7e0"});
           }
         
 //# sourceMappingURL=app.map
