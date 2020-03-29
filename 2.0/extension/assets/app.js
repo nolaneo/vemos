@@ -90456,6 +90456,245 @@ require('ember');
 
   exports.default = OrderedSet;
 });
+;define("@ember/render-modifiers/modifiers/did-insert", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  /**
+    The `{{did-insert}}` element modifier is activated when an element is
+    inserted into the DOM.
+  
+    In this example, the `fadeIn` function receives the `div` DOM element as its
+    first argument and is executed after the element is inserted into the DOM.
+  
+    ```handlebars
+    <div {{did-insert this.fadeIn}} class="alert">
+      {{yield}}
+    </div>
+    ```
+  
+    ```js
+    export default Component.extend({
+      fadeIn(element) {
+        element.classList.add('fade-in');
+      }
+    });
+    ```
+  
+    By default, the executed function will be unbound. If you would like to access
+    the component context in your function, use the `action` decorator as follows:
+  
+    ```handlebars
+    <div {{did-insert this.incrementCount}}>first</div>
+    <div {{did-insert this.incrementCount}}>second</div>
+  
+    <p>{{this.count}} elements were rendered</p>
+    ```
+  
+    ```js
+    export default Component.extend({
+      count: tracked({ value: 0 }),
+  
+      incrementCount: action(function() {
+        this.count++;
+      })
+    });
+    ```
+  
+    @method did-insert
+    @public
+  */
+  var _default = Ember._setModifierManager(() => ({
+    capabilities: Ember._modifierManagerCapabilities('3.13', {
+      disableAutoTracking: true
+    }),
+
+    createModifier() {},
+
+    installModifier(_state, element, args) {
+      let [fn, ...positional] = args.positional;
+      fn(element, positional, args.named);
+    },
+
+    updateModifier() {},
+
+    destroyModifier() {}
+
+  }), class DidInsertModifier {});
+
+  _exports.default = _default;
+});
+;define("@ember/render-modifiers/modifiers/did-update", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  /**
+    The `{{did-update}}` element modifier is activated when any of its arguments
+    are updated. It does not run on initial render.
+  
+    In this example, the `resize` function receives the `textarea` DOM element as its
+    first argument and is executed anytime the `@text` argument changes.
+  
+    ```handlebars
+    <textarea {{did-update this.resize @text}} readonly style="padding: 0px;">
+      {{@text}}
+    </textarea>
+    ```
+  
+    ```js
+    export default Component.extend({
+      resize(element) {
+        element.style.height = `${element.scrollHeight}px`;
+      }
+    });
+    ```
+  
+    In addition to the `element`, both named and positional arguments are passed to the
+    executed function:
+  
+    ```handlebars
+    <div {{did-update this.logArguments @first @second third=@third}} />
+    ```
+  
+    ```js
+    export default Component.extend({
+      logArguments(element, [first, second], { third }) {
+        console.log('element', element);
+        console.log('positional args', first, second);
+        console.log('names args', third);
+      }
+    });
+    ```
+  
+    By default, the executed function will be unbound. If you would like to access
+    the component context in your function, use the `action` decorator as follows:
+  
+    ```handlebars
+    <div {{did-update this.someFunction @someArg} />
+    ```
+  
+    ```js
+    export default Component.extend({
+      someFunction: action(function(element, [someArg]) {
+        // the `this` context will be the component instance
+      })
+    });
+    ```
+  
+    @method did-update
+    @public
+  */
+  var _default = Ember._setModifierManager(() => ({
+    capabilities: Ember._modifierManagerCapabilities('3.13', {
+      disableAutoTracking: true
+    }),
+
+    createModifier() {
+      return {
+        element: null
+      };
+    },
+
+    installModifier(state, element) {
+      // save element into state bucket
+      state.element = element;
+    },
+
+    updateModifier({
+      element
+    }, args) {
+      let [fn, ...positional] = args.positional;
+      fn(element, positional, args.named);
+    },
+
+    destroyModifier() {}
+
+  }), class DidUpdateModifier {});
+
+  _exports.default = _default;
+});
+;define("@ember/render-modifiers/modifiers/will-destroy", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  /**
+    The `{{will-destroy}}` element modifier is activated immediately before the element
+    is removed from the DOM.
+  
+    ```handlebars
+    <div {{will-destroy this.teardownPlugin}}>
+      {{yield}}
+    </div>
+    ```
+  
+    ```js
+    export default Component.extend({
+      teardownPlugin(element) {
+        // teardown logic here
+      }
+    });
+    ```
+  
+    By default, the executed function will be unbound. If you would like to access
+    the component context in your function, use the `action` decorator as follows:
+  
+    ```handlebars
+    <div {{will-destroy this.teardownPlugin}}>
+      {{yield}}
+    </div>
+    ```
+  
+    ```js
+    export default Component.extend({
+      teardownPlugin: action(function(element) {
+        // the `this` context will be the component instance
+      })
+    });
+    ```
+  
+    @method will-destroy
+    @public
+  */
+  var _default = Ember._setModifierManager(() => ({
+    capabilities: Ember._modifierManagerCapabilities('3.13', {
+      disableAutoTracking: true
+    }),
+
+    createModifier() {
+      return {
+        element: null
+      };
+    },
+
+    installModifier(state, element) {
+      state.element = element;
+    },
+
+    updateModifier() {},
+
+    destroyModifier({
+      element
+    }, args) {
+      let [fn, ...positional] = args.positional;
+      fn(element, positional, args.named);
+    }
+
+  }), class WillDestroyModifier {});
+
+  _exports.default = _default;
+});
 ;define("@glimmer/component/-private/base-component-manager", ["exports", "@glimmer/component/-private/component"], function (_exports, _component) {
   "use strict";
 
@@ -94113,25 +94352,25 @@ var __ember_auto_import__ =
 /************************************************************************/
 /******/ ({
 
-/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-87974XCp0wnehNvXs/cache-252-bundler/staging/app.js":
+/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/app.js":
 /*!****************************************************************************************************************************!*\
-  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-87974XCp0wnehNvXs/cache-252-bundler/staging/app.js ***!
+  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/app.js ***!
   \****************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("\nif (typeof document !== 'undefined') {\n  __webpack_require__.p = (function(){\n    var scripts = document.querySelectorAll('script');\n    return scripts[scripts.length - 1].src.replace(/\\/[^/]*$/, '/');\n  })();\n}\n\nmodule.exports = (function(){\n  var d = _eai_d;\n  var r = _eai_r;\n  window.emberAutoImportDynamic = function(specifier) {\n    return r('_eai_dyn_' + specifier);\n  };\n    d('@glimmer/tracking', [], function() { return __webpack_require__(/*! ./node_modules/@glimmer/tracking/dist/modules/es2017/index.js */ \"./node_modules/@glimmer/tracking/dist/modules/es2017/index.js\"); });\n    d('peerjs', [], function() { return __webpack_require__(/*! ./node_modules/peerjs/dist/peerjs.min.js */ \"./node_modules/peerjs/dist/peerjs.min.js\"); });\n    d('uuid', [], function() { return __webpack_require__(/*! ./node_modules/uuid/dist/esm-node/index.js */ \"./node_modules/uuid/dist/esm-browser/index.js\"); });\n})();\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-87974XCp0wnehNvXs/cache-252-bundler/staging/app.js?");
+eval("\nif (typeof document !== 'undefined') {\n  __webpack_require__.p = (function(){\n    var scripts = document.querySelectorAll('script');\n    return scripts[scripts.length - 1].src.replace(/\\/[^/]*$/, '/');\n  })();\n}\n\nmodule.exports = (function(){\n  var d = _eai_d;\n  var r = _eai_r;\n  window.emberAutoImportDynamic = function(specifier) {\n    return r('_eai_dyn_' + specifier);\n  };\n    d('@glimmer/tracking', [], function() { return __webpack_require__(/*! ./node_modules/@glimmer/tracking/dist/modules/es2017/index.js */ \"./node_modules/@glimmer/tracking/dist/modules/es2017/index.js\"); });\n    d('peerjs', [], function() { return __webpack_require__(/*! ./node_modules/peerjs/dist/peerjs.min.js */ \"./node_modules/peerjs/dist/peerjs.min.js\"); });\n    d('uuid', [], function() { return __webpack_require__(/*! ./node_modules/uuid/dist/esm-node/index.js */ \"./node_modules/uuid/dist/esm-browser/index.js\"); });\n})();\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/app.js?");
 
 /***/ }),
 
-/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-87974XCp0wnehNvXs/cache-252-bundler/staging/l.js":
+/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/l.js":
 /*!**************************************************************************************************************************!*\
-  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-87974XCp0wnehNvXs/cache-252-bundler/staging/l.js ***!
+  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/l.js ***!
   \**************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("\nwindow._eai_r = require;\nwindow._eai_d = define;\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-87974XCp0wnehNvXs/cache-252-bundler/staging/l.js?");
+eval("\nwindow._eai_r = require;\nwindow._eai_d = define;\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/l.js?");
 
 /***/ }),
 
@@ -94148,12 +94387,12 @@ eval("function webpackEmptyContext(req) {\n\tvar e = new Error(\"Cannot find mod
 
 /***/ 0:
 /*!*****************************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-87974XCp0wnehNvXs/cache-252-bundler/staging/l.js /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-87974XCp0wnehNvXs/cache-252-bundler/staging/app.js ***!
+  !*** multi /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/l.js /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/app.js ***!
   \*****************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-87974XCp0wnehNvXs/cache-252-bundler/staging/l.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-87974XCp0wnehNvXs/cache-252-bundler/staging/l.js\");\nmodule.exports = __webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-87974XCp0wnehNvXs/cache-252-bundler/staging/app.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-87974XCp0wnehNvXs/cache-252-bundler/staging/app.js\");\n\n\n//# sourceURL=webpack://__ember_auto_import__/multi_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-87974XCp0wnehNvXs/cache-252-bundler/staging/l.js_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-87974XCp0wnehNvXs/cache-252-bundler/staging/app.js?");
+eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/l.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/l.js\");\nmodule.exports = __webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/app.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/app.js\");\n\n\n//# sourceURL=webpack://__ember_auto_import__/multi_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/l.js_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/app.js?");
 
 /***/ })
 
@@ -94263,13 +94502,17 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
       width: 10vw;
       background-color: rebeccapurple;
     }
+  
+    #vemos-frame {
+      height: 100%;
+    }
   </style>
   </EmberWormhole>
   
   */
   {
-    id: "BKgG9e37",
-    block: "{\"symbols\":[],\"statements\":[[7,\"ember-wormhole\",[],[[\"@destinationElement\"],[[27,[24,0],[\"parentDomService\",\"container\"]]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n\"],[9,\"style\",true],[10],[1,1,0,0,\"\\n  body {\\n    transform: translate(0, 0);\\n    width: 90vw;\\n    height: 100vh;\\n  }\\n\\n  #vemos-container {\\n    position: fixed;\\n    right: 0;\\n    top: 0;\\n    bottom: 0;\\n    width: 10vw;\\n    background-color: rebeccapurple;\\n  }\\n\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[]}",
+    id: "0CA15Ghb",
+    block: "{\"symbols\":[],\"statements\":[[7,\"ember-wormhole\",[],[[\"@destinationElement\"],[[27,[24,0],[\"parentDomService\",\"container\"]]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n\"],[9,\"style\",true],[10],[1,1,0,0,\"\\n  body {\\n    transform: translate(0, 0);\\n    width: 90vw;\\n    height: 100vh;\\n  }\\n\\n  #vemos-container {\\n    position: fixed;\\n    right: 0;\\n    top: 0;\\n    bottom: 0;\\n    width: 10vw;\\n    background-color: rebeccapurple;\\n  }\\n\\n  #vemos-frame {\\n    height: 100%;\\n  }\\n\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[]}",
     meta: {
       moduleName: "vemos-plugin/components/frame-styles.hbs"
     }
@@ -94291,6 +94534,40 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
   _exports.default = FrameStylesComponent;
 
   Ember._setComponentTemplate(__COLOCATED_TEMPLATE__, FrameStylesComponent);
+});
+;define("vemos-plugin/components/mediastream-video", ["exports", "@glimmer/component"], function (_exports, _component) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _class;
+
+  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) { var desc = {}; Object.keys(descriptor).forEach(function (key) { desc[key] = descriptor[key]; }); desc.enumerable = !!desc.enumerable; desc.configurable = !!desc.configurable; if ('value' in desc || desc.initializer) { desc.writable = true; } desc = decorators.slice().reverse().reduce(function (desc, decorator) { return decorator(target, property, desc) || desc; }, desc); if (context && desc.initializer !== void 0) { desc.value = desc.initializer ? desc.initializer.call(context) : void 0; desc.initializer = undefined; } if (desc.initializer === void 0) { Object.defineProperty(target, property, desc); desc = null; } return desc; }
+
+  const __COLOCATED_TEMPLATE__ = Ember.HTMLBars.template(
+  /*
+    <video autoplay style="width: 200px" {{did-insert this.setupMediaStream}} {{did-update this.setupMediaStream @mediaStream}}></video>
+  */
+  {
+    id: "yX9KWYQf",
+    block: "{\"symbols\":[\"@mediaStream\"],\"statements\":[[9,\"video\",false],[23,\"autoplay\",\"\",null],[23,\"style\",\"width: 200px\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[\"setupMediaStream\"]]],null],[3,0,0,[27,[26,1,\"ModifierHead\"],[]],[[27,[24,0],[\"setupMediaStream\"]],[27,[24,1],[]]],null],[10],[11]],\"hasEval\":false,\"upvars\":[\"did-insert\",\"did-update\"]}",
+    meta: {
+      moduleName: "vemos-plugin/components/mediastream-video.hbs"
+    }
+  });
+
+  let MediastreamVideoComponent = (_class = class MediastreamVideoComponent extends _component.default {
+    setupMediaStream(video) {
+      video.srcObject = this.args.mediaStream;
+    }
+
+  }, (_applyDecoratedDescriptor(_class.prototype, "setupMediaStream", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "setupMediaStream"), _class.prototype)), _class);
+  _exports.default = MediastreamVideoComponent;
+
+  Ember._setComponentTemplate(__COLOCATED_TEMPLATE__, MediastreamVideoComponent);
 });
 ;define("vemos-plugin/components/start-page", ["exports", "@glimmer/component", "vemos-plugin/services/peer-service"], function (_exports, _component, _peerService) {
   "use strict";
@@ -94332,11 +94609,13 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     <div>
       <button {{on "click" this.sendMessage}}>send</button>
     </div>
+    
+    <VideoList/>
   </div>
   */
   {
-    id: "0+zF+NnK",
-    block: "{\"symbols\":[],\"statements\":[[9,\"div\",true],[12,\"style\",\"layout__box font-size: 10px; color: white; font-family: sans-serif; word-wrap:break-word;\",null],[10],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[12,\"style\",\"word-wrap:break-word\",null],[10],[1,1,0,0,\"\\n    \"],[1,0,0,0,[27,[24,0],[\"peerService\",\"peerId\"]]],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[7,\"input\",[],[[\"@value\"],[[27,[24,0],[\"hostId\"]]]],null],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"testConnection\"]]],null],[10],[1,1,0,0,\"Test\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"hr\",true],[10],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[7,\"input\",[],[[\"@value\"],[[27,[24,0],[\"message\"]]]],null],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"sendMessage\"]]],null],[10],[1,1,0,0,\"send\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"on\"]}",
+    id: "Z0HY97Xc",
+    block: "{\"symbols\":[],\"statements\":[[9,\"div\",true],[12,\"style\",\"layout__box font-size: 10px; color: white; font-family: sans-serif; word-wrap:break-word;\",null],[10],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[12,\"style\",\"word-wrap:break-word\",null],[10],[1,1,0,0,\"\\n    \"],[1,0,0,0,[27,[24,0],[\"peerService\",\"peerId\"]]],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[7,\"input\",[],[[\"@value\"],[[27,[24,0],[\"hostId\"]]]],null],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"testConnection\"]]],null],[10],[1,1,0,0,\"Test\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"hr\",true],[10],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[7,\"input\",[],[[\"@value\"],[[27,[24,0],[\"message\"]]]],null],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"sendMessage\"]]],null],[10],[1,1,0,0,\"send\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \\n  \"],[7,\"video-list\",[],[[],[]],null],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"on\"]}",
     meta: {
       moduleName: "vemos-plugin/components/start-page.hbs"
     }
@@ -94386,6 +94665,127 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
   _exports.default = StartPageComponent;
 
   Ember._setComponentTemplate(__COLOCATED_TEMPLATE__, StartPageComponent);
+});
+;define("vemos-plugin/components/video-list", ["exports", "@glimmer/component"], function (_exports, _component) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _class, _descriptor, _descriptor2, _descriptor3, _temp;
+
+  function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) { var desc = {}; Object.keys(descriptor).forEach(function (key) { desc[key] = descriptor[key]; }); desc.enumerable = !!desc.enumerable; desc.configurable = !!desc.configurable; if ('value' in desc || desc.initializer) { desc.writable = true; } desc = decorators.slice().reverse().reduce(function (desc, decorator) { return decorator(target, property, desc) || desc; }, desc); if (context && desc.initializer !== void 0) { desc.value = desc.initializer ? desc.initializer.call(context) : void 0; desc.initializer = undefined; } if (desc.initializer === void 0) { Object.defineProperty(target, property, desc); desc = null; } return desc; }
+
+  function _initializerWarningHelper(descriptor, context) { throw new Error('Decorating class property failed. Please ensure that ' + 'proposal-class-properties is enabled and runs after the decorators transform.'); }
+
+  const __COLOCATED_TEMPLATE__ = Ember.HTMLBars.template(
+  /*
+    <div class="layout__box o__has-rows o__flexes-to-1 o__scrolls">
+    <MediastreamVideo @mediaStream={{this.ownMediaStream}} />
+  
+    <hr>
+  
+    {{#each this.peerMediaStreams as |mediaStream|}}
+      <MediastreamVideo @mediaStream={{mediaStream}} />
+    {{/each}}
+  </div>
+  */
+  {
+    id: "V+Fwi2fJ",
+    block: "{\"symbols\":[\"mediaStream\"],\"statements\":[[9,\"div\",true],[12,\"class\",\"layout__box o__has-rows o__flexes-to-1 o__scrolls\",null],[10],[1,1,0,0,\"\\n  \"],[7,\"mediastream-video\",[],[[\"@mediaStream\"],[[27,[24,0],[\"ownMediaStream\"]]]],null],[1,1,0,0,\"\\n\\n  \"],[9,\"hr\",true],[10],[11],[1,1,0,0,\"\\n\\n\"],[5,[27,[26,1,\"BlockHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[27,[24,0],[\"peerMediaStreams\"]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"    \"],[7,\"mediastream-video\",[],[[\"@mediaStream\"],[[27,[24,1],[]]]],null],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[11]],\"hasEval\":false,\"upvars\":[\"-track-array\",\"each\"]}",
+    meta: {
+      moduleName: "vemos-plugin/components/video-list.hbs"
+    }
+  });
+
+  let VideoListComponent = (_class = (_temp = class VideoListComponent extends _component.default {
+    constructor() {
+      super(...arguments);
+
+      _initializerDefineProperty(this, "peerService", _descriptor, this);
+
+      _initializerDefineProperty(this, "ownMediaStream", _descriptor2, this);
+
+      _initializerDefineProperty(this, "peerMediaStreams", _descriptor3, this);
+
+      this.setupMediaStream();
+      this.peerService.addEventHandler("peer-call", this.answerPeerCall.bind(this));
+      this.peerService.addEventHandler("on-stream", this.connectPeerStream.bind(this));
+      this.peerService.addEventHandler("connection-opened", this.callPeer.bind(this));
+    }
+
+    answerPeerCall(call) {
+      console.log("answerPeerCall");
+      call.answer(this.mediaStream);
+    }
+
+    connectPeerStream(mediaStream) {
+      console.log("connectPeerStream", mediaStream);
+
+      if (this.peerMediaStreams.mapBy("id").includes(mediaStream.id)) {
+        return console.log(`Skipping adding media stream. Stream exists already`);
+      }
+
+      this.peerMediaStreams.pushObject(mediaStream);
+    }
+
+    callPeer(connection) {
+      console.log("callPeer");
+      this.peerService.callPeer(connection.peer, this.ownMediaStream);
+    }
+
+    async setupMediaStream() {
+      let settings = {
+        video: {
+          width: {
+            min: 160,
+            ideal: 320,
+            max: 640
+          },
+          height: {
+            min: 120,
+            ideal: 240,
+            max: 480
+          }
+        },
+        audio: true
+      };
+      this.ownMediaStream = await navigator.mediaDevices.getUserMedia(settings).catch(error => {
+        console.error(error);
+        console.error("Returning blank stream");
+        return new MediaStream();
+      });
+    }
+
+  }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "peerService", [Ember.inject.service], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "ownMediaStream", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: function () {
+      return new MediaStream();
+    }
+  }), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "peerMediaStreams", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: function () {
+      return Ember.A();
+    }
+  })), _class);
+  _exports.default = VideoListComponent;
+
+  Ember._setComponentTemplate(__COLOCATED_TEMPLATE__, VideoListComponent);
 });
 ;define("vemos-plugin/components/welcome-page", ["exports", "ember-welcome-page/components/welcome-page"], function (_exports, _welcomePage) {
   "use strict";
@@ -94637,6 +95037,45 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     peerService.initialize();
   }
 });
+;define("vemos-plugin/modifiers/did-insert", ["exports", "@ember/render-modifiers/modifiers/did-insert"], function (_exports, _didInsert) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _didInsert.default;
+    }
+  });
+});
+;define("vemos-plugin/modifiers/did-update", ["exports", "@ember/render-modifiers/modifiers/did-update"], function (_exports, _didUpdate) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _didUpdate.default;
+    }
+  });
+});
+;define("vemos-plugin/modifiers/will-destroy", ["exports", "@ember/render-modifiers/modifiers/will-destroy"], function (_exports, _willDestroy) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _willDestroy.default;
+    }
+  });
+});
 ;define("vemos-plugin/router", ["exports", "vemos-plugin/config/environment"], function (_exports, _environment) {
   "use strict";
 
@@ -94774,7 +95213,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
   });
   _exports.default = _exports.RTCMessage = void 0;
 
-  var _class, _descriptor, _descriptor2, _descriptor3, _temp;
+  var _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _temp;
 
   function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
 
@@ -94794,6 +95233,8 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
       _defineProperty(this, "data", undefined);
 
+      _defineProperty(this, "senderId", undefined);
+
       let {
         event,
         data
@@ -94807,12 +95248,14 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
       let {
         uuid,
         event,
-        data
+        data,
+        senderId
       } = this;
       return {
         uuid,
         event,
-        data
+        data,
+        senderId
       };
     }
 
@@ -94828,6 +95271,8 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
       _initializerDefineProperty(this, "peerId", _descriptor2, this);
 
       _initializerDefineProperty(this, "connections", _descriptor3, this);
+
+      _initializerDefineProperty(this, "currentMediaStream", _descriptor4, this);
 
       _defineProperty(this, "eventHandlers", {});
 
@@ -94848,7 +95293,11 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     }
 
     addEventHandler(eventName, handler) {
-      this.eventHandlers[eventName] = handler;
+      if (Ember.isNone(this.eventHandlers[eventName])) {
+        this.eventHandlers[eventName] = Ember.A();
+      }
+
+      this.eventHandlers[eventName].pushObject(handler);
     }
 
     connectToPeer(peerId) {
@@ -94856,8 +95305,13 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
       this.onPeerConnection(connection);
     }
 
+    callPeer(peerId, mediaStream) {
+      this.peer.call(peerId, mediaStream);
+    }
+
     sendRTCMessage(message) {
       console.log(`Sending message [event ${message.event} | uuid ${message.uuid}]`);
+      message.senderId = this.peerId;
       this.connections.forEach(connection => connection.send(message.serialize()));
     }
 
@@ -94889,12 +95343,30 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
     onPeerCall(call) {
       console.log("onPeerCall", call);
+
+      if (this.eventHandlers["peer-call"]) {
+        this.eventHandlers["peer-call"].forEach(handler => handler(call));
+      }
+
+      call.on("stream", this.onStream.bind(this));
+    }
+
+    onStream(mediaStream) {
+      if (this.eventHandlers["on-stream"]) {
+        this.eventHandlers["on-stream"].forEach(handler => handler(mediaStream));
+      } else {
+        console.log(`No event handlers for 'on-stream'`);
+      }
     }
 
     onConnectionOpen(connection) {
       console.log("onConnectionOpen");
       connection.on("data", this.onConnectionData.bind(this, connection));
       connection.on("close", this.onConnectionClose.bind(this, connection));
+
+      if (this.eventHandlers["connection-opened"]) {
+        this.eventHandlers["connection-opened"].forEach(handler => handler(connection));
+      }
     }
 
     onConnectionData(connection, message) {
@@ -94909,9 +95381,9 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
       if (this.eventHandlers[message.event]) {
         console.log(`Received message [event ${message.event} | uuid ${message.uuid}]`);
-        this.eventHandlers[message.event](message);
+        this.eventHandlers[message.event].forEach(handler => handler(message));
       } else {
-        console.log(`No event handler for ${message.event}`);
+        console.log(`No event handlers for ${message.event}`);
       }
     }
 
@@ -94952,6 +95424,11 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     initializer: function () {
       return Ember.A();
     }
+  }), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, "currentMediaStream", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
   })), _class);
   _exports.default = PeerService;
 });
@@ -95061,7 +95538,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 ;define('vemos-plugin/config/environment', [], function() {
   
           var exports = {
-            'default': {"modulePrefix":"vemos-plugin","environment":"development","rootURL":"/","locationType":"none","EmberENV":{"FEATURES":{},"EXTEND_PROTOTYPES":{"Date":false},"_APPLICATION_TEMPLATE_WRAPPER":false,"_DEFAULT_ASYNC_OBSERVERS":true,"_JQUERY_INTEGRATION":false,"_TEMPLATE_ONLY_GLIMMER_COMPONENTS":true},"APP":{"autoboot":false,"name":"vemos-plugin","version":"0.0.0+7a5e80ca"},"ember-cli-post-build-copy":{"replace":true,"development":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]],"production":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]]},"exportApplicationGlobal":true}
+            'default': {"modulePrefix":"vemos-plugin","environment":"development","rootURL":"/","locationType":"none","EmberENV":{"FEATURES":{},"EXTEND_PROTOTYPES":{"Date":false},"_APPLICATION_TEMPLATE_WRAPPER":false,"_DEFAULT_ASYNC_OBSERVERS":true,"_JQUERY_INTEGRATION":false,"_TEMPLATE_ONLY_GLIMMER_COMPONENTS":true},"APP":{"autoboot":false,"name":"vemos-plugin","version":"0.0.0+9b2da3ee"},"ember-cli-post-build-copy":{"replace":true,"development":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]],"production":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]]},"exportApplicationGlobal":true}
           };
           Object.defineProperty(exports, '__esModule', {value: true});
           return exports;
@@ -95070,7 +95547,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
 ;
           if (!runningTests) {
-            require("vemos-plugin/app")["default"].create({"autoboot":false,"name":"vemos-plugin","version":"0.0.0+7a5e80ca"});
+            require("vemos-plugin/app")["default"].create({"autoboot":false,"name":"vemos-plugin","version":"0.0.0+9b2da3ee"});
           }
         
 //# sourceMappingURL=app.map

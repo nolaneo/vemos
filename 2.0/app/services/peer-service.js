@@ -3,6 +3,7 @@ import Peer from "peerjs";
 import { tracked } from "@glimmer/tracking";
 import { v4 as uuidv4 } from "uuid";
 import { A } from "@ember/array";
+import { isNone } from "@ember/utils";
 
 const HOST = "vemos.herokuapp.com";
 
@@ -10,6 +11,7 @@ class RTCMessage {
   uuid = undefined;
   event = undefined;
   data = undefined;
+  senderId = undefined;
 
   constructor(inputs) {
     let { event, data } = inputs;
@@ -19,11 +21,12 @@ class RTCMessage {
   }
 
   serialize() {
-    let { uuid, event, data } = this;
+    let { uuid, event, data, senderId } = this;
     return {
       uuid,
       event,
-      data
+      data,
+      senderId
     };
   }
 }
@@ -34,6 +37,7 @@ export default class PeerService extends Service {
   @tracked peer = undefined;
   @tracked peerId = undefined;
   @tracked connections = A();
+  @tracked currentMediaStream;
 
   eventHandlers = {};
   knownEvents = A();
@@ -55,7 +59,10 @@ export default class PeerService extends Service {
   }
 
   addEventHandler(eventName, handler) {
-    this.eventHandlers[eventName] = handler;
+    if (isNone(this.eventHandlers[eventName])) {
+      this.eventHandlers[eventName] = A();
+    }
+    this.eventHandlers[eventName].pushObject(handler);
   }
 
   connectToPeer(peerId) {
@@ -63,10 +70,15 @@ export default class PeerService extends Service {
     this.onPeerConnection(connection);
   }
 
+  callPeer(peerId, mediaStream) {
+    this.peer.call(peerId, mediaStream);
+  }
+
   sendRTCMessage(message) {
     console.log(
       `Sending message [event ${message.event} | uuid ${message.uuid}]`
     );
+    message.senderId = this.peerId;
     this.connections.forEach(connection =>
       connection.send(message.serialize())
     );
@@ -100,12 +112,30 @@ export default class PeerService extends Service {
 
   onPeerCall(call) {
     console.log("onPeerCall", call);
+    if (this.eventHandlers["peer-call"]) {
+      this.eventHandlers["peer-call"].forEach(handler => handler(call));
+    }
+    call.on("stream", this.onStream.bind(this));
+  }
+
+  onStream(mediaStream) {
+    if (this.eventHandlers["on-stream"]) {
+      this.eventHandlers["on-stream"].forEach(handler => handler(mediaStream));
+    } else {
+      console.log(`No event handlers for 'on-stream'`);
+    }
   }
 
   onConnectionOpen(connection) {
     console.log("onConnectionOpen");
     connection.on("data", this.onConnectionData.bind(this, connection));
     connection.on("close", this.onConnectionClose.bind(this, connection));
+
+    if (this.eventHandlers["connection-opened"]) {
+      this.eventHandlers["connection-opened"].forEach(handler =>
+        handler(connection)
+      );
+    }
   }
 
   onConnectionData(connection, message) {
@@ -119,9 +149,9 @@ export default class PeerService extends Service {
       console.log(
         `Received message [event ${message.event} | uuid ${message.uuid}]`
       );
-      this.eventHandlers[message.event](message);
+      this.eventHandlers[message.event].forEach(handler => handler(message));
     } else {
-      console.log(`No event handler for ${message.event}`);
+      console.log(`No event handlers for ${message.event}`);
     }
   }
 
