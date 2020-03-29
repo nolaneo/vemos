@@ -94352,25 +94352,25 @@ var __ember_auto_import__ =
 /************************************************************************/
 /******/ ({
 
-/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/app.js":
+/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-56134OVdcLfyhbcuR/cache-256-bundler/staging/app.js":
 /*!****************************************************************************************************************************!*\
-  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/app.js ***!
+  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-56134OVdcLfyhbcuR/cache-256-bundler/staging/app.js ***!
   \****************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("\nif (typeof document !== 'undefined') {\n  __webpack_require__.p = (function(){\n    var scripts = document.querySelectorAll('script');\n    return scripts[scripts.length - 1].src.replace(/\\/[^/]*$/, '/');\n  })();\n}\n\nmodule.exports = (function(){\n  var d = _eai_d;\n  var r = _eai_r;\n  window.emberAutoImportDynamic = function(specifier) {\n    return r('_eai_dyn_' + specifier);\n  };\n    d('@glimmer/tracking', [], function() { return __webpack_require__(/*! ./node_modules/@glimmer/tracking/dist/modules/es2017/index.js */ \"./node_modules/@glimmer/tracking/dist/modules/es2017/index.js\"); });\n    d('peerjs', [], function() { return __webpack_require__(/*! ./node_modules/peerjs/dist/peerjs.min.js */ \"./node_modules/peerjs/dist/peerjs.min.js\"); });\n    d('uuid', [], function() { return __webpack_require__(/*! ./node_modules/uuid/dist/esm-node/index.js */ \"./node_modules/uuid/dist/esm-browser/index.js\"); });\n})();\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/app.js?");
+eval("\nif (typeof document !== 'undefined') {\n  __webpack_require__.p = (function(){\n    var scripts = document.querySelectorAll('script');\n    return scripts[scripts.length - 1].src.replace(/\\/[^/]*$/, '/');\n  })();\n}\n\nmodule.exports = (function(){\n  var d = _eai_d;\n  var r = _eai_r;\n  window.emberAutoImportDynamic = function(specifier) {\n    return r('_eai_dyn_' + specifier);\n  };\n    d('@glimmer/tracking', [], function() { return __webpack_require__(/*! ./node_modules/@glimmer/tracking/dist/modules/es2017/index.js */ \"./node_modules/@glimmer/tracking/dist/modules/es2017/index.js\"); });\n    d('peerjs', [], function() { return __webpack_require__(/*! ./node_modules/peerjs/dist/peerjs.min.js */ \"./node_modules/peerjs/dist/peerjs.min.js\"); });\n    d('uuid', [], function() { return __webpack_require__(/*! ./node_modules/uuid/dist/esm-node/index.js */ \"./node_modules/uuid/dist/esm-browser/index.js\"); });\n})();\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-56134OVdcLfyhbcuR/cache-256-bundler/staging/app.js?");
 
 /***/ }),
 
-/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/l.js":
+/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-56134OVdcLfyhbcuR/cache-256-bundler/staging/l.js":
 /*!**************************************************************************************************************************!*\
-  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/l.js ***!
+  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-56134OVdcLfyhbcuR/cache-256-bundler/staging/l.js ***!
   \**************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("\nwindow._eai_r = require;\nwindow._eai_d = define;\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/l.js?");
+eval("\nwindow._eai_r = require;\nwindow._eai_d = define;\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-56134OVdcLfyhbcuR/cache-256-bundler/staging/l.js?");
 
 /***/ }),
 
@@ -94387,12 +94387,12 @@ eval("function webpackEmptyContext(req) {\n\tvar e = new Error(\"Cannot find mod
 
 /***/ 0:
 /*!*****************************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/l.js /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/app.js ***!
+  !*** multi /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-56134OVdcLfyhbcuR/cache-256-bundler/staging/l.js /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-56134OVdcLfyhbcuR/cache-256-bundler/staging/app.js ***!
   \*****************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/l.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/l.js\");\nmodule.exports = __webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/app.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/app.js\");\n\n\n//# sourceURL=webpack://__ember_auto_import__/multi_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/l.js_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-52591nB055WUdpPBO/cache-256-bundler/staging/app.js?");
+eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-56134OVdcLfyhbcuR/cache-256-bundler/staging/l.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-56134OVdcLfyhbcuR/cache-256-bundler/staging/l.js\");\nmodule.exports = __webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-56134OVdcLfyhbcuR/cache-256-bundler/staging/app.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-56134OVdcLfyhbcuR/cache-256-bundler/staging/app.js\");\n\n\n//# sourceURL=webpack://__ember_auto_import__/multi_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-56134OVdcLfyhbcuR/cache-256-bundler/staging/l.js_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-56134OVdcLfyhbcuR/cache-256-bundler/staging/app.js?");
 
 /***/ })
 
@@ -95550,7 +95550,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 ;define('vemos-plugin/config/environment', [], function() {
   
           var exports = {
-            'default': {"modulePrefix":"vemos-plugin","environment":"development","rootURL":"/","locationType":"none","EmberENV":{"FEATURES":{},"EXTEND_PROTOTYPES":{"Date":false},"_APPLICATION_TEMPLATE_WRAPPER":false,"_DEFAULT_ASYNC_OBSERVERS":true,"_JQUERY_INTEGRATION":false,"_TEMPLATE_ONLY_GLIMMER_COMPONENTS":true},"APP":{"autoboot":false,"name":"vemos-plugin","version":"0.0.0+9b2da3ee"},"ember-cli-post-build-copy":{"replace":true,"development":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]],"production":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]]},"exportApplicationGlobal":true}
+            'default': {"modulePrefix":"vemos-plugin","environment":"development","rootURL":"/","locationType":"none","EmberENV":{"FEATURES":{},"EXTEND_PROTOTYPES":{"Date":false},"_APPLICATION_TEMPLATE_WRAPPER":false,"_DEFAULT_ASYNC_OBSERVERS":true,"_JQUERY_INTEGRATION":false,"_TEMPLATE_ONLY_GLIMMER_COMPONENTS":true},"APP":{"autoboot":false,"name":"vemos-plugin","version":"0.0.0+10f37976"},"ember-cli-post-build-copy":{"replace":true,"development":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]],"production":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]]},"exportApplicationGlobal":true}
           };
           Object.defineProperty(exports, '__esModule', {value: true});
           return exports;
@@ -95559,7 +95559,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
 ;
           if (!runningTests) {
-            require("vemos-plugin/app")["default"].create({"autoboot":false,"name":"vemos-plugin","version":"0.0.0+9b2da3ee"});
+            require("vemos-plugin/app")["default"].create({"autoboot":false,"name":"vemos-plugin","version":"0.0.0+10f37976"});
           }
         
 //# sourceMappingURL=app.map
