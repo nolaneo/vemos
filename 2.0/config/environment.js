@@ -5,7 +5,7 @@ module.exports = function(environment) {
     modulePrefix: "vemos-plugin",
     environment,
     rootURL: "/",
-    locationType: "auto",
+    locationType: "none",
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
@@ -50,8 +50,8 @@ module.exports = function(environment) {
   ENV["ember-cli-post-build-copy"] = {
     replace: true,
     development: [
-      ["/assets/app.js", "extension/assets/intersection/app.js"],
-      ["/assets/app.css", "extension/assets/intersection/app.css"]
+      ["/assets/app.js", "extension/assets/app.js"],
+      ["/assets/app.css", "extension/assets/app.css"]
     ],
     production: [
       ["/assets/app.js", "extension/assets/app.js"],
