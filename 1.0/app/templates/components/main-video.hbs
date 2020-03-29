@@ -1,0 +1,36 @@
+{{#if connectionService.connectionClosed}}
+  {{!-- modal on the route will handle this --}}
+{{else if hasNotSelectedVideo}}
+  {{#cool-square-modal}}
+    <div>
+      <h2 class="white">Nice! You're connected!</h2>
+      {{#if peerFileName}}
+        <p class="white">Your friend has chosen a video called</p>
+        <p class="white">{{peerFileName}}</p>
+      {{else}}
+        <p class="white">Start by choosing the video you want to watch together.</p>
+      {{/if}}
+      <p class="white">Make sure you both choose the same video!</p>
+      <label for="main-video__file-picker" class="ui inverted button">Choose a video</label>
+    </div>
+    <input id="main-video__file-picker" type="file" accept="*" onchange={{action 'setVideo'}} style="display: none"/>
+  {{/cool-square-modal}}
+{{else if peerHasNotSelectedVideo}}
+ {{#cool-square-modal}}
+    <div>
+      <h2 class="white">Good choice!</h2>
+      <p class="white">Now we're just waiting for your friend to pick the same video on their side.</p>
+    </div>
+  {{/cool-square-modal}}
+{{/if}}
+
+<video
+  class="main-video"
+  onplay={{action 'onPlay'}}
+  onpause={{action 'onPause'}}
+  onseeked={{action 'onSeeked'}}
+>
+
+</video>
+
+<button style="z-index: 100; position: fixed; top: 0; right: 0;" {{action 'requestStreamingPeerDetails'}}>RQ</button>

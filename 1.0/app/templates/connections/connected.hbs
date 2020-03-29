@@ -1,0 +1,21 @@
+{{settings-component}}
+
+<div class="connected__main-container">
+  <div class="layout__box o__flexes-to-1 o__has-columns">
+    {{main-video}}
+    <div class="local-camera-brightness"></div>
+    {{local-webcam-component class="local-camera"}}
+    <div class="destination-camera-brightness o__{{settingsService.webcamBrightness}}"></div>
+    {{webcam-component class="destination-camera"}}
+    {{quick-chat}}
+  </div>
+
+  {{#if connectionService.connectionClosed}}
+  {{#cool-square-modal}}
+      <div>
+        <h2 class="white">Oh no!</h2>
+        <p class="white">It looks like the other person disconnected.</p>
+      </div>
+    {{/cool-square-modal}}
+  {{/if}}
+</div>
