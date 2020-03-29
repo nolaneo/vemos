@@ -94674,7 +94674,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
   });
   _exports.default = void 0;
 
-  var _class, _descriptor, _descriptor2, _descriptor3, _temp;
+  var _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _temp;
 
   function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
 
@@ -94710,9 +94710,11 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
       _initializerDefineProperty(this, "peerService", _descriptor, this);
 
-      _initializerDefineProperty(this, "ownMediaStream", _descriptor2, this);
+      _initializerDefineProperty(this, "parentDomService", _descriptor2, this);
 
-      _initializerDefineProperty(this, "peerMediaStreams", _descriptor3, this);
+      _initializerDefineProperty(this, "ownMediaStream", _descriptor3, this);
+
+      _initializerDefineProperty(this, "peerMediaStreams", _descriptor4, this);
 
       this.setupMediaStream();
       this.peerService.addEventHandler("peer-call", this.answerPeerCall.bind(this));
@@ -94756,7 +94758,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
         },
         audio: true
       };
-      this.ownMediaStream = await navigator.mediaDevices.getUserMedia(settings).catch(error => {
+      this.ownMediaStream = await this.parentDomService.window.navigator.mediaDevices.getUserMedia(settings).catch(error => {
         console.error(error);
         console.error("Returning blank stream");
         return new MediaStream();
@@ -94768,14 +94770,19 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     enumerable: true,
     writable: true,
     initializer: null
-  }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "ownMediaStream", [Ember._tracked], {
+  }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "parentDomService", [Ember.inject.service], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  }), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "ownMediaStream", [Ember._tracked], {
     configurable: true,
     enumerable: true,
     writable: true,
     initializer: function () {
       return new MediaStream();
     }
-  }), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "peerMediaStreams", [Ember._tracked], {
+  }), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, "peerMediaStreams", [Ember._tracked], {
     configurable: true,
     enumerable: true,
     writable: true,

@@ -5,6 +5,7 @@ import { A } from "@ember/array";
 
 export default class VideoListComponent extends Component {
   @service peerService;
+  @service parentDomService;
 
   @tracked ownMediaStream = new MediaStream();
   @tracked peerMediaStreams = A();
@@ -53,7 +54,7 @@ export default class VideoListComponent extends Component {
       },
       audio: true
     };
-    this.ownMediaStream = await navigator.mediaDevices
+    this.ownMediaStream = await this.parentDomService.window.navigator.mediaDevices
       .getUserMedia(settings)
       .catch(error => {
         console.error(error);
