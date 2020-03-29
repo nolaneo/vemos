@@ -94596,8 +94596,8 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
   const __COLOCATED_TEMPLATE__ = Ember.HTMLBars.template(
   /*
-    <div class="layout__box" style="font-size: 10px; color: white; font-family: sans-serif; word-wrap:break-word;">
-    <div style="word-wrap:break-word">
+    <div class="layout__box o__has-rows" style="font-size: 10px; color: white; font-family: sans-serif; word-wrap:break-word;">
+    <div style="word-wrap:break-word; margin-top: 30px; margin-bottom: 40px;">
       {{this.peerService.peerId}}
     </div>
     
@@ -94621,8 +94621,8 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
   </div>
   */
   {
-    id: "Qg8TAZJq",
-    block: "{\"symbols\":[],\"statements\":[[9,\"div\",true],[12,\"class\",\"layout__box\",null],[12,\"style\",\"font-size: 10px; color: white; font-family: sans-serif; word-wrap:break-word;\",null],[10],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[12,\"style\",\"word-wrap:break-word\",null],[10],[1,1,0,0,\"\\n    \"],[1,0,0,0,[27,[24,0],[\"peerService\",\"peerId\"]]],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[7,\"input\",[],[[\"@value\"],[[27,[24,0],[\"hostId\"]]]],null],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"testConnection\"]]],null],[10],[1,1,0,0,\"Test\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"hr\",true],[10],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[7,\"input\",[],[[\"@value\"],[[27,[24,0],[\"message\"]]]],null],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"sendMessage\"]]],null],[10],[1,1,0,0,\"send\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \\n  \"],[7,\"video-list\",[],[[],[]],null],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"on\"]}",
+    id: "/l1np2pF",
+    block: "{\"symbols\":[],\"statements\":[[9,\"div\",true],[12,\"class\",\"layout__box o__has-rows\",null],[12,\"style\",\"font-size: 10px; color: white; font-family: sans-serif; word-wrap:break-word;\",null],[10],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[12,\"style\",\"word-wrap:break-word; margin-top: 30px; margin-bottom: 40px;\",null],[10],[1,1,0,0,\"\\n    \"],[1,0,0,0,[27,[24,0],[\"peerService\",\"peerId\"]]],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[7,\"input\",[],[[\"@value\"],[[27,[24,0],[\"hostId\"]]]],null],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"testConnection\"]]],null],[10],[1,1,0,0,\"Test\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"hr\",true],[10],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[7,\"input\",[],[[\"@value\"],[[27,[24,0],[\"message\"]]]],null],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"sendMessage\"]]],null],[10],[1,1,0,0,\"send\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \\n  \"],[7,\"video-list\",[],[[],[]],null],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"on\"]}",
     meta: {
       moduleName: "vemos-plugin/components/start-page.hbs"
     }
