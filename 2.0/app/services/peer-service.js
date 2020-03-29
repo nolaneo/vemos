@@ -35,7 +35,8 @@ export default class PeerService extends Service {
   @tracked peerId = undefined;
   @tracked connections = A();
 
-  receivedEvents = A();
+  eventHandlers = {};
+  knownEvents = A();
 
   initialize() {
     console.log(`Initializing Peer Service`);
@@ -47,19 +48,27 @@ export default class PeerService extends Service {
     this.peer.on("disconnected", this.onPeerDisconnected.bind(this));
     this.peer.on("error", this.onPeerError.bind(this));
     this.peer.on("call", this.onPeerCall.bind(this));
+    this.addEventHandler(
+      "new-peer-joined",
+      this.handleNewConnection.bind(this)
+    );
   }
 
-  connectToHost(hostId) {
-    let connection = this.peer.connect(hostId);
+  addEventHandler(eventName, handler) {
+    this.eventHandlers[eventName] = handler;
+  }
+
+  connectToPeer(peerId) {
+    let connection = this.peer.connect(peerId);
     this.onPeerConnection(connection);
   }
 
-  sendRTCMessage(rtcMessage) {
+  sendRTCMessage(message) {
     console.log(
-      `Sending message [event ${rtcMessage.event} | uuid ${rtcMessage.uuid}]`
+      `Sending message [event ${message.event} | uuid ${message.uuid}]`
     );
     this.connections.forEach(connection =>
-      connection.send(rtcMessage.serialize())
+      connection.send(message.serialize())
     );
   }
 
@@ -70,6 +79,13 @@ export default class PeerService extends Service {
 
   onPeerConnection(connection) {
     console.log("onPeerConnection", connection);
+    let message = new RTCMessage({
+      event: "new-peer-joined",
+      data: {
+        peerId: connection.peer
+      }
+    });
+    this.sendRTCMessage(message);
     this.connections.pushObject(connection);
     connection.on("open", this.onConnectionOpen.bind(this, connection));
   }
@@ -92,12 +108,36 @@ export default class PeerService extends Service {
     connection.on("close", this.onConnectionClose.bind(this, connection));
   }
 
-  onConnectionData(connection, data) {
-    console.log("onConnectionData", connection, data);
+  onConnectionData(connection, message) {
+    console.log("onConnectionData", connection, message);
+    if (this.knownEvents.includes(message.uuid)) {
+      console.log(`Ignoring known event`, event.uuid);
+      return;
+    }
+    this.knownEvents.pushObject(message.uuid);
+    if (this.eventHandlers[message.event]) {
+      console.log(
+        `Received message [event ${message.event} | uuid ${message.uuid}]`
+      );
+      this.eventHandlers[message.event](message);
+    } else {
+      console.log(`No event handler for ${message.event}`);
+    }
   }
 
   onConnectionClose(connection) {
     this.connections.removeObject(connection);
     console.log("onConnectionClose");
+  }
+
+  handleNewConnection(message) {
+    let peerId = message.data.peerId;
+    if (this.connections.mapBy("peer").includes(peerId)) {
+      console.log(
+        `Ignoring new peer join as we're already connected [${peerId}]`
+      );
+      return;
+    }
+    this.connectToPeer(peerId);
   }
 }

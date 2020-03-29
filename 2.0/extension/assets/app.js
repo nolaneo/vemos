@@ -94292,45 +94292,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
   Ember._setComponentTemplate(__COLOCATED_TEMPLATE__, FrameStylesComponent);
 });
-;define("vemos-plugin/components/sidebar", ["exports", "@glimmer/component"], function (_exports, _component) {
-  "use strict";
-
-  Object.defineProperty(_exports, "__esModule", {
-    value: true
-  });
-  _exports.default = void 0;
-
-  var _class;
-
-  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) { var desc = {}; Object.keys(descriptor).forEach(function (key) { desc[key] = descriptor[key]; }); desc.enumerable = !!desc.enumerable; desc.configurable = !!desc.configurable; if ('value' in desc || desc.initializer) { desc.writable = true; } desc = decorators.slice().reverse().reduce(function (desc, decorator) { return decorator(target, property, desc) || desc; }, desc); if (context && desc.initializer !== void 0) { desc.value = desc.initializer ? desc.initializer.call(context) : void 0; desc.initializer = undefined; } if (desc.initializer === void 0) { Object.defineProperty(target, property, desc); desc = null; } return desc; }
-
-  const __COLOCATED_TEMPLATE__ = Ember.HTMLBars.template(
-  /*
-    <div>
-    <FrameStyles/>
-    <button {{on 'click' this.testMethod}}>Hello world</button>
-    {{outlet}}
-  </div>
-  */
-  {
-    id: "xYFDqNYN",
-    block: "{\"symbols\":[],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n  \"],[7,\"frame-styles\",[],[[],[]],null],[1,1,0,0,\"\\n  \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"testMethod\"]]],null],[10],[1,1,0,0,\"Hello world\"],[11],[1,1,0,0,\"\\n  \"],[1,0,0,0,[31,0,0,[27,[26,2,\"CallHead\"],[]],[[31,0,0,[27,[26,1,\"CallHead\"],[]],null,null]],null]],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"on\",\"-outlet\",\"component\"]}",
-    meta: {
-      moduleName: "vemos-plugin/components/sidebar.hbs"
-    }
-  });
-
-  let SidebarComponent = (_class = class SidebarComponent extends _component.default {
-    testMethod() {
-      console.log("hello world");
-    }
-
-  }, (_applyDecoratedDescriptor(_class.prototype, "testMethod", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "testMethod"), _class.prototype)), _class);
-  _exports.default = SidebarComponent;
-
-  Ember._setComponentTemplate(__COLOCATED_TEMPLATE__, SidebarComponent);
-});
-;define("vemos-plugin/components/start-page", ["exports", "@glimmer/component"], function (_exports, _component) {
+;define("vemos-plugin/components/start-page", ["exports", "@glimmer/component", "vemos-plugin/services/peer-service"], function (_exports, _component, _peerService) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
@@ -94350,13 +94312,9 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
   const __COLOCATED_TEMPLATE__ = Ember.HTMLBars.template(
   /*
-    <div style="font-size: 10px; color: white; font-family: sans-serif; word-wrap:break-word;">
-    <div>
-      Peer is [{{this.peerService.peer}}]
-    </div>
-    
+    <div style="layout__box font-size: 10px; color: white; font-family: sans-serif; word-wrap:break-word;">
     <div style="word-wrap:break-word">
-      Your ID is [{{this.peerService.peerId}}]
+      {{this.peerService.peerId}}
     </div>
     
     <div>
@@ -94365,23 +94323,38 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     <div>
       <button {{on "click" this.testConnection}}>Test</button>
     </div>
+  
+    <hr>
+  
+    <div>
+      <Input @value={{this.message}} />
+    </div>
+    <div>
+      <button {{on "click" this.sendMessage}}>send</button>
+    </div>
   </div>
   */
   {
-    id: "5JFbhgua",
-    block: "{\"symbols\":[],\"statements\":[[9,\"div\",true],[12,\"style\",\"font-size: 10px; color: white; font-family: sans-serif; word-wrap:break-word;\",null],[10],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    Peer is [\"],[1,0,0,0,[27,[24,0],[\"peerService\",\"peer\"]]],[1,1,0,0,\"]\\n  \"],[11],[1,1,0,0,\"\\n  \\n  \"],[9,\"div\",true],[12,\"style\",\"word-wrap:break-word\",null],[10],[1,1,0,0,\"\\n    Your ID is [\"],[1,0,0,0,[27,[24,0],[\"peerService\",\"peerId\"]]],[1,1,0,0,\"]\\n  \"],[11],[1,1,0,0,\"\\n  \\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[7,\"input\",[],[[\"@value\"],[[27,[24,0],[\"hostId\"]]]],null],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"testConnection\"]]],null],[10],[1,1,0,0,\"Test\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"on\"]}",
+    id: "0+zF+NnK",
+    block: "{\"symbols\":[],\"statements\":[[9,\"div\",true],[12,\"style\",\"layout__box font-size: 10px; color: white; font-family: sans-serif; word-wrap:break-word;\",null],[10],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[12,\"style\",\"word-wrap:break-word\",null],[10],[1,1,0,0,\"\\n    \"],[1,0,0,0,[27,[24,0],[\"peerService\",\"peerId\"]]],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[7,\"input\",[],[[\"@value\"],[[27,[24,0],[\"hostId\"]]]],null],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"testConnection\"]]],null],[10],[1,1,0,0,\"Test\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"hr\",true],[10],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[7,\"input\",[],[[\"@value\"],[[27,[24,0],[\"message\"]]]],null],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"sendMessage\"]]],null],[10],[1,1,0,0,\"send\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"on\"]}",
     meta: {
       moduleName: "vemos-plugin/components/start-page.hbs"
     }
   });
 
   let StartPageComponent = (_class = (_temp = class StartPageComponent extends _component.default {
-    constructor(...args) {
-      super(...args);
+    constructor() {
+      super(...arguments);
 
       _initializerDefineProperty(this, "peerService", _descriptor, this);
 
       _defineProperty(this, "hostId", "");
+
+      _defineProperty(this, "message", "");
+
+      this.peerService.addEventHandler("chat", message => {
+        console.log("received:", message.data.text);
+      });
     }
 
     hmm() {
@@ -94390,7 +94363,18 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
     testConnection() {
       console.log(`testConnection`, this.hostId);
-      this.peerService.connectToHost(this.hostId);
+      this.peerService.connectToPeer(this.hostId);
+    }
+
+    sendMessage() {
+      console.log(`sendMessage`);
+      let message = new _peerService.RTCMessage({
+        event: "chat",
+        data: {
+          text: this.message
+        }
+      });
+      this.peerService.sendRTCMessage(message);
     }
 
   }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "peerService", [Ember.inject.service], {
@@ -94398,7 +94382,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     enumerable: true,
     writable: true,
     initializer: null
-  }), _applyDecoratedDescriptor(_class.prototype, "hmm", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "hmm"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "testConnection", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "testConnection"), _class.prototype)), _class);
+  }), _applyDecoratedDescriptor(_class.prototype, "hmm", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "hmm"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "testConnection", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "testConnection"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "sendMessage", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "sendMessage"), _class.prototype)), _class);
   _exports.default = StartPageComponent;
 
   Ember._setComponentTemplate(__COLOCATED_TEMPLATE__, StartPageComponent);
@@ -94845,7 +94829,9 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
       _initializerDefineProperty(this, "connections", _descriptor3, this);
 
-      _defineProperty(this, "receivedEvents", Ember.A());
+      _defineProperty(this, "eventHandlers", {});
+
+      _defineProperty(this, "knownEvents", Ember.A());
     }
 
     initialize() {
@@ -94858,16 +94844,21 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
       this.peer.on("disconnected", this.onPeerDisconnected.bind(this));
       this.peer.on("error", this.onPeerError.bind(this));
       this.peer.on("call", this.onPeerCall.bind(this));
+      this.addEventHandler("new-peer-joined", this.handleNewConnection.bind(this));
     }
 
-    connectToHost(hostId) {
-      let connection = this.peer.connect(hostId);
+    addEventHandler(eventName, handler) {
+      this.eventHandlers[eventName] = handler;
+    }
+
+    connectToPeer(peerId) {
+      let connection = this.peer.connect(peerId);
       this.onPeerConnection(connection);
     }
 
-    sendRTCMessage(rtcMessage) {
-      console.log(`Sending message [event ${rtcMessage.event} | uuid ${rtcMessage.uuid}]`);
-      this.connections.forEach(connection => connection.send(rtcMessage.serialize()));
+    sendRTCMessage(message) {
+      console.log(`Sending message [event ${message.event} | uuid ${message.uuid}]`);
+      this.connections.forEach(connection => connection.send(message.serialize()));
     }
 
     onPeerOpen(id) {
@@ -94877,6 +94868,13 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
     onPeerConnection(connection) {
       console.log("onPeerConnection", connection);
+      let message = new RTCMessage({
+        event: "new-peer-joined",
+        data: {
+          peerId: connection.peer
+        }
+      });
+      this.sendRTCMessage(message);
       this.connections.pushObject(connection);
       connection.on("open", this.onConnectionOpen.bind(this, connection));
     }
@@ -94899,13 +94897,38 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
       connection.on("close", this.onConnectionClose.bind(this, connection));
     }
 
-    onConnectionData(connection, data) {
-      console.log("onConnectionData", connection, data);
+    onConnectionData(connection, message) {
+      console.log("onConnectionData", connection, message);
+
+      if (this.knownEvents.includes(message.uuid)) {
+        console.log(`Ignoring known event`, event.uuid);
+        return;
+      }
+
+      this.knownEvents.pushObject(message.uuid);
+
+      if (this.eventHandlers[message.event]) {
+        console.log(`Received message [event ${message.event} | uuid ${message.uuid}]`);
+        this.eventHandlers[message.event](message);
+      } else {
+        console.log(`No event handler for ${message.event}`);
+      }
     }
 
     onConnectionClose(connection) {
       this.connections.removeObject(connection);
       console.log("onConnectionClose");
+    }
+
+    handleNewConnection(message) {
+      let peerId = message.data.peerId;
+
+      if (this.connections.mapBy("peer").includes(peerId)) {
+        console.log(`Ignoring new peer join as we're already connected [${peerId}]`);
+        return;
+      }
+
+      this.connectToPeer(peerId);
     }
 
   }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "peer", [Ember._tracked], {
@@ -94954,8 +94977,8 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "tgaMBGsx",
-    "block": "{\"symbols\":[],\"statements\":[[7,\"sidebar\",[],[[],[]],null]],\"hasEval\":false,\"upvars\":[]}",
+    "id": "x0AxYhLJ",
+    "block": "{\"symbols\":[],\"statements\":[[9,\"div\",true],[12,\"class\",\"layout__box o__flexes-to-1\",null],[10],[1,1,0,0,\"\\n  \"],[7,\"frame-styles\",[],[[],[]],null],[1,1,0,0,\"\\n  \"],[1,0,0,0,[31,0,0,[27,[26,1,\"CallHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],null,null]],null]],[1,1,0,0,\"\\n\"],[11],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"-outlet\",\"component\"]}",
     "meta": {
       "moduleName": "vemos-plugin/templates/application.hbs"
     }

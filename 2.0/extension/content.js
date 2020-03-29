@@ -41,6 +41,9 @@ class ContentScript {
       <html id="vemos-html">
         <head>
           <title>Vemos</title>
+          <link rel="stylesheet" type="text/css" href="${this.browser.runtime.getURL(
+            "assets/app.css"
+          )}" />
         </head>
         <body id="vemos-body"></body>
       </html>

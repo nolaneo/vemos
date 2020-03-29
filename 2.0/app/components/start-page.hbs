@@ -1,10 +1,6 @@
-<div style="font-size: 10px; color: white; font-family: sans-serif; word-wrap:break-word;">
-  <div>
-    Peer is [{{this.peerService.peer}}]
-  </div>
-  
+<div style="layout__box font-size: 10px; color: white; font-family: sans-serif; word-wrap:break-word;">
   <div style="word-wrap:break-word">
-    Your ID is [{{this.peerService.peerId}}]
+    {{this.peerService.peerId}}
   </div>
   
   <div>
@@ -12,5 +8,14 @@
   </div>
   <div>
     <button {{on "click" this.testConnection}}>Test</button>
+  </div>
+
+  <hr>
+
+  <div>
+    <Input @value={{this.message}} />
+  </div>
+  <div>
+    <button {{on "click" this.sendMessage}}>send</button>
   </div>
 </div>

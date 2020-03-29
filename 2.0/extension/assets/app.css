@@ -97,8 +97,60 @@
   }
 }
 
-#vemos-body.body {
-  max-width: 10vw;
+html#vemos-html,
+body#vemos-body,
+body > .ember-view {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body#vemos-body > .ember-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+#vemos-body .layout__box {
+  flex: 0 0 auto;
+  min-width: 0;
+  min-height: 0;
+}
+#vemos-body .layout__box.o__has-columns {
+  display: flex;
+  flex-direction: row;
+}
+#vemos-body .layout__box.o__has-rows {
+  display: flex;
+  flex-direction: column;
+}
+#vemos-body .layout__box.o__scrolls {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+#vemos-body .layout__box.o__flexes-to-1 {
+  flex: 1 1 auto;
+}
+#vemos-body .layout__box.o__flexes-to-5 {
+  flex: 5 1 auto;
+}
+#vemos-body .layout__box.o__centers-horizontally {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+}
+#vemos-body .layout__box.o__centers-vertically {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+#vemos-body .layout__box.o__centers-all {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
 /*# sourceMappingURL=vemos-plugin.css.map */
