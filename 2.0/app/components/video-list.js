@@ -7,7 +7,7 @@ export default class VideoListComponent extends Component {
   @service peerService;
   @service parentDomService;
 
-  @tracked ownMediaStream = new MediaStream();
+  @tracked ownMediaStream;
   @tracked peerMediaStreams = A();
 
   constructor() {

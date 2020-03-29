@@ -94549,11 +94549,14 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
   const __COLOCATED_TEMPLATE__ = Ember.HTMLBars.template(
   /*
-    <video autoplay style="width: 200px" {{did-insert this.setupMediaStream}} {{did-update this.setupMediaStream @mediaStream}}></video>
+    <video autoplay style="width: 200px"
+    {{did-insert this.setupMediaStream}}
+    {{did-update this.setupMediaStream @mediaStream}}>
+  </video>
   */
   {
-    id: "yX9KWYQf",
-    block: "{\"symbols\":[\"@mediaStream\"],\"statements\":[[9,\"video\",false],[23,\"autoplay\",\"\",null],[23,\"style\",\"width: 200px\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[\"setupMediaStream\"]]],null],[3,0,0,[27,[26,1,\"ModifierHead\"],[]],[[27,[24,0],[\"setupMediaStream\"]],[27,[24,1],[]]],null],[10],[11]],\"hasEval\":false,\"upvars\":[\"did-insert\",\"did-update\"]}",
+    id: "+5LE55aq",
+    block: "{\"symbols\":[\"@mediaStream\"],\"statements\":[[9,\"video\",false],[23,\"autoplay\",\"\",null],[23,\"style\",\"width: 200px\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[\"setupMediaStream\"]]],null],[3,0,0,[27,[26,1,\"ModifierHead\"],[]],[[27,[24,0],[\"setupMediaStream\"]],[27,[24,1],[]]],null],[10],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"did-insert\",\"did-update\"]}",
     meta: {
       moduleName: "vemos-plugin/components/mediastream-video.hbs"
     }
@@ -94561,7 +94564,11 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
   let MediastreamVideoComponent = (_class = class MediastreamVideoComponent extends _component.default {
     setupMediaStream(video) {
-      video.srcObject = this.args.mediaStream;
+      if (this.args.mediaStream) {
+        video.srcObject = this.args.mediaStream;
+      } else {
+        console.log(`Media stream was not provided`);
+      }
     }
 
   }, (_applyDecoratedDescriptor(_class.prototype, "setupMediaStream", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "setupMediaStream"), _class.prototype)), _class);
@@ -94589,7 +94596,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
   const __COLOCATED_TEMPLATE__ = Ember.HTMLBars.template(
   /*
-    <div style="layout__box font-size: 10px; color: white; font-family: sans-serif; word-wrap:break-word;">
+    <div class="layout__box" style="font-size: 10px; color: white; font-family: sans-serif; word-wrap:break-word;">
     <div style="word-wrap:break-word">
       {{this.peerService.peerId}}
     </div>
@@ -94614,8 +94621,8 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
   </div>
   */
   {
-    id: "Z0HY97Xc",
-    block: "{\"symbols\":[],\"statements\":[[9,\"div\",true],[12,\"style\",\"layout__box font-size: 10px; color: white; font-family: sans-serif; word-wrap:break-word;\",null],[10],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[12,\"style\",\"word-wrap:break-word\",null],[10],[1,1,0,0,\"\\n    \"],[1,0,0,0,[27,[24,0],[\"peerService\",\"peerId\"]]],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[7,\"input\",[],[[\"@value\"],[[27,[24,0],[\"hostId\"]]]],null],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"testConnection\"]]],null],[10],[1,1,0,0,\"Test\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"hr\",true],[10],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[7,\"input\",[],[[\"@value\"],[[27,[24,0],[\"message\"]]]],null],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"sendMessage\"]]],null],[10],[1,1,0,0,\"send\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \\n  \"],[7,\"video-list\",[],[[],[]],null],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"on\"]}",
+    id: "Qg8TAZJq",
+    block: "{\"symbols\":[],\"statements\":[[9,\"div\",true],[12,\"class\",\"layout__box\",null],[12,\"style\",\"font-size: 10px; color: white; font-family: sans-serif; word-wrap:break-word;\",null],[10],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[12,\"style\",\"word-wrap:break-word\",null],[10],[1,1,0,0,\"\\n    \"],[1,0,0,0,[27,[24,0],[\"peerService\",\"peerId\"]]],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[7,\"input\",[],[[\"@value\"],[[27,[24,0],[\"hostId\"]]]],null],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"testConnection\"]]],null],[10],[1,1,0,0,\"Test\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"hr\",true],[10],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[7,\"input\",[],[[\"@value\"],[[27,[24,0],[\"message\"]]]],null],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"sendMessage\"]]],null],[10],[1,1,0,0,\"send\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \\n  \"],[7,\"video-list\",[],[[],[]],null],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"on\"]}",
     meta: {
       moduleName: "vemos-plugin/components/start-page.hbs"
     }
@@ -94779,9 +94786,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     configurable: true,
     enumerable: true,
     writable: true,
-    initializer: function () {
-      return new MediaStream();
-    }
+    initializer: null
   }), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, "peerMediaStreams", [Ember._tracked], {
     configurable: true,
     enumerable: true,
