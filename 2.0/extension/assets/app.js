@@ -97474,7 +97474,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
       top: 0;
       bottom: 0;
       width: 10vw;
-      background-color: rebeccapurple;
+      background-color: black;
     }
   
     #vemos-frame {
@@ -97486,8 +97486,8 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
   
   */
   {
-    id: "39sGBVum",
-    block: "{\"symbols\":[],\"statements\":[[7,\"ember-wormhole\",[],[[\"@destinationElement\"],[[27,[24,0],[\"parentDomService\",\"container\"]]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n\"],[9,\"style\",true],[10],[1,1,0,0,\"\\n  body {\\n    transform: translate(0, 0);\\n    width: 90vw;\\n    height: 100vh;\\n  }\\n\\n  #vemos-container {\\n    position: fixed;\\n    right: 0;\\n    top: 0;\\n    bottom: 0;\\n    width: 10vw;\\n    background-color: rebeccapurple;\\n  }\\n\\n  #vemos-frame {\\n    height: 100%;\\n    width: 100%;\\n  }\\n\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[]}",
+    id: "vlJSeK5J",
+    block: "{\"symbols\":[],\"statements\":[[7,\"ember-wormhole\",[],[[\"@destinationElement\"],[[27,[24,0],[\"parentDomService\",\"container\"]]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n\"],[9,\"style\",true],[10],[1,1,0,0,\"\\n  body {\\n    transform: translate(0, 0);\\n    width: 90vw;\\n    height: 100vh;\\n  }\\n\\n  #vemos-container {\\n    position: fixed;\\n    right: 0;\\n    top: 0;\\n    bottom: 0;\\n    width: 10vw;\\n    background-color: black;\\n  }\\n\\n  #vemos-frame {\\n    height: 100%;\\n    width: 100%;\\n  }\\n\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[]}",
     meta: {
       moduleName: "vemos-plugin/components/frame-styles.hbs"
     }
@@ -97587,7 +97587,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
   Ember._setComponentTemplate(__COLOCATED_TEMPLATE__, MediastreamVideoComponent);
 });
-;define("vemos-plugin/components/start-page", ["exports", "@glimmer/component", "vemos-plugin/services/peer-service"], function (_exports, _component, _peerService) {
+;define("vemos-plugin/components/start-page", ["exports", "@glimmer/component", "ember-concurrency"], function (_exports, _component, _emberConcurrency) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
@@ -97595,7 +97595,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
   });
   _exports.default = void 0;
 
-  var _class, _descriptor, _descriptor2, _temp;
+  var _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _temp;
 
   function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
 
@@ -97607,33 +97607,25 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
   const __COLOCATED_TEMPLATE__ = Ember.HTMLBars.template(
   /*
-    <div class="layout__box o__has-rows" style="font-size: 10px; color: white; font-family: sans-serif; word-wrap:break-word;">
-    <div style="word-wrap:break-word; margin-top: 30px; margin-bottom: 40px;">
-      {{this.peerService.peerId}}
+    <div class="sidebar layout__box o__has-rows o__flexes-to-1">
+    <div class="layout__box o__has-columns o__centers-horizontally">
+      <div class="sidebar__logo">
+        <Svg::Logo/>
+      </div>
     </div>
-    
-    <div>
-      <Input @value={{this.hostId}} />
+    <div class="layout__box o__flexes-to-1 o__scrolls">
+      <VideoList/>
     </div>
-    <div>
-      <button {{on "click" this.testConnection}}>Test</button>
+    <div class="layout__box">
+      <div class="sidebar__copy" role="button" {{on "click" this.copyLink}}>
+        {{this.linkText}}
+      </div>
     </div>
-  
-    <hr>
-  
-    <div>
-      <Input @value={{this.message}} />
-    </div>
-    <div>
-      <button {{on "click" this.sendMessage}}>send</button>
-    </div>
-    
-    <VideoList/>
   </div>
   */
   {
-    id: "/l1np2pF",
-    block: "{\"symbols\":[],\"statements\":[[9,\"div\",true],[12,\"class\",\"layout__box o__has-rows\",null],[12,\"style\",\"font-size: 10px; color: white; font-family: sans-serif; word-wrap:break-word;\",null],[10],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[12,\"style\",\"word-wrap:break-word; margin-top: 30px; margin-bottom: 40px;\",null],[10],[1,1,0,0,\"\\n    \"],[1,0,0,0,[27,[24,0],[\"peerService\",\"peerId\"]]],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[7,\"input\",[],[[\"@value\"],[[27,[24,0],[\"hostId\"]]]],null],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"testConnection\"]]],null],[10],[1,1,0,0,\"Test\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"hr\",true],[10],[11],[1,1,0,0,\"\\n\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[7,\"input\",[],[[\"@value\"],[[27,[24,0],[\"message\"]]]],null],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"sendMessage\"]]],null],[10],[1,1,0,0,\"send\"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \\n  \"],[7,\"video-list\",[],[[],[]],null],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"on\"]}",
+    id: "D8NLAurp",
+    block: "{\"symbols\":[],\"statements\":[[9,\"div\",true],[12,\"class\",\"sidebar layout__box o__has-rows o__flexes-to-1\",null],[10],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[12,\"class\",\"layout__box o__has-columns o__centers-horizontally\",null],[10],[1,1,0,0,\"\\n    \"],[9,\"div\",true],[12,\"class\",\"sidebar__logo\",null],[10],[1,1,0,0,\"\\n      \"],[7,\"svg/logo\",[],[[],[]],null],[1,1,0,0,\"\\n    \"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[12,\"class\",\"layout__box o__flexes-to-1 o__scrolls\",null],[10],[1,1,0,0,\"\\n    \"],[7,\"video-list\",[],[[],[]],null],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",true],[12,\"class\",\"layout__box\",null],[10],[1,1,0,0,\"\\n    \"],[9,\"div\",false],[23,\"class\",\"sidebar__copy\",null],[23,\"role\",\"button\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"copyLink\"]]],null],[10],[1,1,0,0,\"\\n      \"],[1,0,0,0,[27,[24,0],[\"linkText\"]]],[1,1,0,0,\"\\n    \"],[11],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"on\"]}",
     meta: {
       moduleName: "vemos-plugin/components/start-page.hbs"
     }
@@ -97647,18 +97639,21 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
       _initializerDefineProperty(this, "videoSyncService", _descriptor2, this);
 
-      _defineProperty(this, "hostId", "");
+      _initializerDefineProperty(this, "parentDomService", _descriptor3, this);
 
-      _defineProperty(this, "message", "");
+      _initializerDefineProperty(this, "linkText", _descriptor4, this);
 
-      this.peerService.addEventHandler("chat", message => {
-        console.log("received:", message.data.text);
-      });
       this.videoSyncService.initialize();
+      this.attemptImmediateConnection();
     }
 
-    hmm() {
-      console.log("hmm");
+    async attemptImmediateConnection() {
+      await (0, _emberConcurrency.timeout)(2000);
+
+      if (this.parentDomService.window.VEMOS_PEER_ID) {
+        console.log("Connecting to peer specified in query param");
+        this.peerService.connectToPeer(this.parentDomService.window.VEMOS_PEER_ID);
+      }
     }
 
     testConnection() {
@@ -97666,15 +97661,17 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
       this.peerService.connectToPeer(this.hostId);
     }
 
-    sendMessage() {
-      console.log(`sendMessage`);
-      let message = new _peerService.RTCMessage({
-        event: "chat",
-        data: {
-          text: this.message
-        }
-      });
-      this.peerService.sendRTCMessage(message);
+    copyLink() {
+      this.generateLink();
+    }
+
+    async generateLink() {
+      let url = new URL(this.parentDomService.window.location.href);
+      url.searchParams.append("vemos-id", this.peerService.peerId);
+      navigator.clipboard.writeText(url.toString());
+      this.linkText = "Copied!";
+      await (0, _emberConcurrency.timeout)(2000);
+      this.linkText = "Copy invite link";
     }
 
   }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "peerService", [Ember.inject.service], {
@@ -97687,10 +97684,46 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     enumerable: true,
     writable: true,
     initializer: null
-  }), _applyDecoratedDescriptor(_class.prototype, "hmm", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "hmm"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "testConnection", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "testConnection"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "sendMessage", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "sendMessage"), _class.prototype)), _class);
+  }), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "parentDomService", [Ember.inject.service], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  }), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, "linkText", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: function () {
+      return "Copy invite link";
+    }
+  }), _applyDecoratedDescriptor(_class.prototype, "testConnection", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "testConnection"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "copyLink", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "copyLink"), _class.prototype)), _class);
   _exports.default = StartPageComponent;
 
   Ember._setComponentTemplate(__COLOCATED_TEMPLATE__, StartPageComponent);
+});
+;define("vemos-plugin/components/svg/logo", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  const __COLOCATED_TEMPLATE__ = Ember.HTMLBars.template(
+  /*
+    <svg version="1.2" baseProfile="tiny" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900"><path fill="#222" d="M900 74H570h30l76 129-151 261L300 74H0l450 766L900 74z"/></svg>
+  */
+  {
+    id: "u09hIrNV",
+    block: "{\"symbols\":[],\"statements\":[[9,\"svg\",true],[12,\"version\",\"1.2\",null],[12,\"baseProfile\",\"tiny\",null],[12,\"xmlns\",\"http://www.w3.org/2000/svg\",\"http://www.w3.org/2000/xmlns/\"],[12,\"viewBox\",\"0 0 900 900\",null],[10],[9,\"path\",true],[12,\"fill\",\"#222\",null],[12,\"d\",\"M900 74H570h30l76 129-151 261L300 74H0l450 766L900 74z\",null],[10],[11],[11]],\"hasEval\":false,\"upvars\":[]}",
+    meta: {
+      moduleName: "vemos-plugin/components/svg/logo.hbs"
+    }
+  });
+
+  var _default = Ember._setComponentTemplate(__COLOCATED_TEMPLATE__, Ember._templateOnlyComponent());
+
+  _exports.default = _default;
 });
 ;define("vemos-plugin/components/svg/mute", ["exports"], function (_exports) {
   "use strict";
@@ -97764,16 +97797,14 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     <div class="layout__box o__has-rows o__flexes-to-1 o__scrolls">
     <MediastreamVideo @mediaStream={{this.ownMediaStreamNoAudio}} @flipped={{true}}/>
   
-    <hr>
-  
     {{#each this.peerStreamList as |mediaStream|}}
       <MediastreamVideo @mediaStream={{mediaStream}} />
     {{/each}}
   </div>
   */
   {
-    id: "wjCk5vKG",
-    block: "{\"symbols\":[\"mediaStream\"],\"statements\":[[9,\"div\",true],[12,\"class\",\"layout__box o__has-rows o__flexes-to-1 o__scrolls\",null],[10],[1,1,0,0,\"\\n  \"],[7,\"mediastream-video\",[],[[\"@mediaStream\",\"@flipped\"],[[27,[24,0],[\"ownMediaStreamNoAudio\"]],true]],null],[1,1,0,0,\"\\n\\n  \"],[9,\"hr\",true],[10],[11],[1,1,0,0,\"\\n\\n\"],[5,[27,[26,1,\"BlockHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[27,[24,0],[\"peerStreamList\"]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"    \"],[7,\"mediastream-video\",[],[[\"@mediaStream\"],[[27,[24,1],[]]]],null],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[11]],\"hasEval\":false,\"upvars\":[\"-track-array\",\"each\"]}",
+    id: "lMKIVbbm",
+    block: "{\"symbols\":[\"mediaStream\"],\"statements\":[[9,\"div\",true],[12,\"class\",\"layout__box o__has-rows o__flexes-to-1 o__scrolls\",null],[10],[1,1,0,0,\"\\n  \"],[7,\"mediastream-video\",[],[[\"@mediaStream\",\"@flipped\"],[[27,[24,0],[\"ownMediaStreamNoAudio\"]],true]],null],[1,1,0,0,\"\\n\\n\"],[5,[27,[26,1,\"BlockHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[27,[24,0],[\"peerStreamList\"]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"    \"],[7,\"mediastream-video\",[],[[\"@mediaStream\"],[[27,[24,1],[]]]],null],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[11]],\"hasEval\":false,\"upvars\":[\"-track-array\",\"each\"]}",
     meta: {
       moduleName: "vemos-plugin/components/video-list.hbs"
     }
@@ -98694,6 +98725,11 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
       console.log("Adding video listeners...");
       await (0, _emberConcurrency.timeout)(3000);
       this.videoElement = this.getElementReference();
+
+      if (Ember.isNone(this.videoElement)) {
+        return console.error("No video found");
+      }
+
       this.videoElement.pause();
       this.videoElement.addEventListener("seeked", this.onSeek.bind(this));
       this.videoElement.addEventListener("play", this.onPlay.bind(this));
@@ -98817,8 +98853,8 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "x0AxYhLJ",
-    "block": "{\"symbols\":[],\"statements\":[[9,\"div\",true],[12,\"class\",\"layout__box o__flexes-to-1\",null],[10],[1,1,0,0,\"\\n  \"],[7,\"frame-styles\",[],[[],[]],null],[1,1,0,0,\"\\n  \"],[1,0,0,0,[31,0,0,[27,[26,1,\"CallHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],null,null]],null]],[1,1,0,0,\"\\n\"],[11],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"-outlet\",\"component\"]}",
+    "id": "lHAiHLvv",
+    "block": "{\"symbols\":[],\"statements\":[[9,\"div\",true],[12,\"class\",\"main-container layout__box o__has-rows o__flexes-to-1\",null],[10],[1,1,0,0,\"\\n  \"],[7,\"frame-styles\",[],[[],[]],null],[1,1,0,0,\"\\n  \"],[1,0,0,0,[31,0,0,[27,[26,1,\"CallHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],null,null]],null]],[1,1,0,0,\"\\n\"],[11],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"-outlet\",\"component\"]}",
     "meta": {
       "moduleName": "vemos-plugin/templates/application.hbs"
     }

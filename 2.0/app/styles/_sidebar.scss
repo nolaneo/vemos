@@ -1,0 +1,33 @@
+.sidebar {
+  background-color: #111;
+  border-left: 1px solid #555;
+}
+
+.sidebar__logo {
+  padding: 5px;
+  svg {
+    height: 24px;
+    width: 24px;
+
+    path {
+      fill: #ccc;
+    }
+  }
+}
+
+.sidebar__copy {
+  border: 1px solid white;
+  border-radius: 2px;
+  color: white;
+  font-family: sans-serif;
+  font-size: 11px;
+  margin: 10px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.sidebar__copy:hover {
+  color: #111;
+  background-color: white;
+}

@@ -2,6 +2,7 @@ import Service from "@ember/service";
 import { inject as service } from "@ember/service";
 import { timeout } from "ember-concurrency";
 import { RTCMessage } from "./peer-service";
+import { isNone } from "@ember/utils";
 
 class VideoHandler {
   ignoredEvents = new Set();
@@ -73,6 +74,10 @@ class VideoHandler {
     console.log("Adding video listeners...");
     await timeout(3000);
     this.videoElement = this.getElementReference();
+
+    if (isNone(this.videoElement)) {
+      return console.error("No video found");
+    }
 
     this.videoElement.pause();
 

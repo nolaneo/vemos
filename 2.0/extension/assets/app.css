@@ -100,11 +100,11 @@
 .mediastream-video {
   width: 100%;
   height: auto;
+  margin-bottom: 5px;
 }
 
 .mediastream-container {
   position: relative;
-  border-bottom: 1px solid white;
 }
 
 .mediastream-container:hover .mediastream-controls,
@@ -136,6 +136,39 @@
   transform: scaleX(-1);
 }
 
+.sidebar {
+  background-color: #111;
+  border-left: 1px solid #555;
+}
+
+.sidebar__logo {
+  padding: 5px;
+}
+.sidebar__logo svg {
+  height: 24px;
+  width: 24px;
+}
+.sidebar__logo svg path {
+  fill: #ccc;
+}
+
+.sidebar__copy {
+  border: 1px solid white;
+  border-radius: 2px;
+  color: white;
+  font-family: sans-serif;
+  font-size: 11px;
+  margin: 10px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.sidebar__copy:hover {
+  color: #111;
+  background-color: white;
+}
+
 html#vemos-html,
 body#vemos-body,
 body > .ember-view {
@@ -149,6 +182,10 @@ body#vemos-body > .ember-view {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
+}
+
+.main-container {
+  height: 100%;
 }
 
 #vemos-body .layout__box {

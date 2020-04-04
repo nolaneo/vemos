@@ -1,25 +1,30 @@
 import Component from "@glimmer/component";
 import { inject as service } from "@ember/service";
 import { action } from "@ember/object";
-import { RTCMessage } from "../services/peer-service";
+import { tracked } from "@glimmer/tracking";
+import { timeout } from "ember-concurrency";
 
 export default class StartPageComponent extends Component {
   @service peerService;
   @service videoSyncService;
+  @service parentDomService;
 
-  hostId = "";
-  message = "";
+  @tracked linkText = "Copy invite link";
 
   constructor() {
     super(...arguments);
-    this.peerService.addEventHandler("chat", (message) => {
-      console.log("received:", message.data.text);
-    });
     this.videoSyncService.initialize();
+    this.attemptImmediateConnection();
   }
 
-  @action hmm() {
-    console.log("hmm");
+  async attemptImmediateConnection() {
+    await timeout(2000);
+    if (this.parentDomService.window.VEMOS_PEER_ID) {
+      console.log("Connecting to peer specified in query param");
+      this.peerService.connectToPeer(
+        this.parentDomService.window.VEMOS_PEER_ID
+      );
+    }
   }
 
   @action testConnection() {
@@ -27,14 +32,16 @@ export default class StartPageComponent extends Component {
     this.peerService.connectToPeer(this.hostId);
   }
 
-  @action sendMessage() {
-    console.log(`sendMessage`);
-    let message = new RTCMessage({
-      event: "chat",
-      data: {
-        text: this.message,
-      },
-    });
-    this.peerService.sendRTCMessage(message);
+  @action copyLink() {
+    this.generateLink();
+  }
+
+  async generateLink() {
+    let url = new URL(this.parentDomService.window.location.href);
+    url.searchParams.append("vemos-id", this.peerService.peerId);
+    navigator.clipboard.writeText(url.toString());
+    this.linkText = "Copied!";
+    await timeout(2000);
+    this.linkText = "Copy invite link";
   }
 }
