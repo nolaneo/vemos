@@ -2,20 +2,20 @@
 
 const EmberApp = require("ember-cli/lib/broccoli/ember-app");
 
-module.exports = function(defaults) {
+module.exports = function (defaults) {
   let app = new EmberApp(defaults, {
     fingerprint: {
-      exclude: ["app"]
+      exclude: ["app"],
     },
     storeConfigInMeta: false,
     emberCliConcat: {
       js: {
-        concat: true
+        concat: true,
       },
       css: {
-        concat: true
-      }
-    }
+        concat: true,
+      },
+    },
   });
 
   return app.toTree();

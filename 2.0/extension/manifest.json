@@ -23,7 +23,7 @@
         "*://*.hulu.com/",
         "*://*.disneyplus.com/*"
       ],
-      "js": ["content.js"],
+      "js": ["assets/app.js", "content.js"],
       "run_at": "document_end"
     }
   ],
