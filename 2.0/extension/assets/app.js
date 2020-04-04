@@ -97572,7 +97572,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     toggleMute() {
       let currentState = this.args.mediaStream.getAudioTracks()[0].enabled;
       this.args.mediaStream.getAudioTracks()[0].enabled = !currentState;
-      this.isMuted = !currentState;
+      this.isMuted = !this.args.mediaStream.getAudioTracks()[0].enabled;
     }
 
   }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "isMuted", [Ember._tracked], {

@@ -16,6 +16,6 @@ export default class MediastreamVideoComponent extends Component {
   @action toggleMute() {
     let currentState = this.args.mediaStream.getAudioTracks()[0].enabled;
     this.args.mediaStream.getAudioTracks()[0].enabled = !currentState;
-    this.isMuted = !currentState;
+    this.isMuted = !this.args.mediaStream.getAudioTracks()[0].enabled;
   }
 }
