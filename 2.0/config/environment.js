@@ -1,6 +1,6 @@
 "use strict";
 
-module.exports = function(environment) {
+module.exports = function (environment) {
   let ENV = {
     modulePrefix: "vemos-plugin",
     environment,
@@ -13,13 +13,13 @@ module.exports = function(environment) {
       },
       EXTEND_PROTOTYPES: {
         // Prevent Ember Data from overriding Date.parse.
-        Date: false
-      }
+        Date: false,
+      },
     },
 
     APP: {
-      autoboot: false
-    }
+      autoboot: false,
+    },
   };
 
   if (environment === "development") {
@@ -50,12 +50,12 @@ module.exports = function(environment) {
     replace: true,
     development: [
       ["/assets/app.js", "extension/assets/app.js"],
-      ["/assets/app.css", "extension/assets/app.css"]
+      ["/assets/app.css", "extension/assets/app.css"],
     ],
     production: [
       ["/assets/app.js", "extension/assets/app.js"],
-      ["/assets/app.css", "extension/assets/app.css"]
-    ]
+      ["/assets/app.css", "extension/assets/app.css"],
+    ],
   };
 
   return ENV;

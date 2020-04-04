@@ -52,8 +52,6 @@ class ContentScript {
   }
 }
 
-console.log("STARTING VEMOS");
-
 let contentScript = new ContentScript();
 
 contentScript.injectVemos();
