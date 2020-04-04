@@ -6,12 +6,24 @@
   "content_scripts": [
     {
       "matches": [
+        "*://*.vemos.org/*",
+        "*://*.youtube.com/*",
         "*://*.netflix.com/*",
         "*://*.hulu.com/",
         "*://*.disneyplus.com/*"
       ],
-      "css": ["assets/app.css"],
-      "js": ["assets/app.js", "content.js"],
+      "js": ["url.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "*://*.vemos.org/*",
+        "*://*.youtube.com/*",
+        "*://*.netflix.com/*",
+        "*://*.hulu.com/",
+        "*://*.disneyplus.com/*"
+      ],
+      "js": ["content.js"],
       "run_at": "document_end"
     }
   ],

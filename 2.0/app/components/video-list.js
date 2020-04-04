@@ -8,6 +8,7 @@ export default class VideoListComponent extends Component {
   @service parentDomService;
 
   @tracked ownMediaStream;
+  @tracked ownMediaStreamNoAudio;
   @tracked peerMediaStreams = A();
 
   constructor() {
@@ -50,16 +51,20 @@ export default class VideoListComponent extends Component {
     let settings = {
       video: {
         width: { min: 160, ideal: 320, max: 640 },
-        height: { min: 120, ideal: 240, max: 480 }
+        height: { min: 120, ideal: 240, max: 480 },
       },
-      audio: true
+      audio: true,
     };
     this.ownMediaStream = await this.parentDomService.window.navigator.mediaDevices
       .getUserMedia(settings)
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
         console.error("Returning blank stream");
         return new MediaStream();
       });
+    this.ownMediaStreamNoAudio = this.ownMediaStream.clone();
+    this.ownMediaStreamNoAudio.getAudioTracks().forEach((track) => {
+      this.ownMediaStreamNoAudio.removeTrack(track);
+    });
   }
 }
