@@ -14,7 +14,7 @@ class ContentScript {
       this.injectEmberApp();
       let iframe = document.getElementById(IFRAME_ID);
       require("vemos-plugin/app")["default"].create({
-        rootElement: iframe.contentDocument.body
+        rootElement: iframe.contentDocument.body,
       });
     }
   }
@@ -51,6 +51,8 @@ class ContentScript {
     iframe.contentDocument.close();
   }
 }
+
+console.log("STARTING VEMOS");
 
 let contentScript = new ContentScript();
 

@@ -98601,7 +98601,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     }
   });
 });
-;define("vemos-plugin/services/video-sync-service", ["exports", "ember-concurrency", "vemos-plugin/peer-service"], function (_exports, _emberConcurrency, _peerService) {
+;define("vemos-plugin/services/video-sync-service", ["exports", "ember-concurrency", "vemos-plugin/services/peer-service"], function (_exports, _emberConcurrency, _peerService) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
@@ -98620,7 +98620,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
   function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
   class VideoHandler {
-    constructor() {
+    constructor(peerService, parentDomService) {
       _defineProperty(this, "handlerName", "Default");
 
       _defineProperty(this, "peerService", undefined);
@@ -98628,22 +98628,33 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
       _defineProperty(this, "parentDomService", undefined);
 
       _defineProperty(this, "videoElement", undefined);
-    }
 
+      this.peerService = peerService;
+      this.parentDomService = parentDomService;
+    }
     /*
      * By default, this function simply finds the largest video in the parent DOM
      */
+
+
     getElementReference() {
       console.log("getElementReference");
-      let videos = this.parentDomService.window.document.querySelectorAll("video");
+      let videos = Array.from(this.parentDomService.window.document.querySelectorAll("video"));
       console.log(`${this.handlerName} Handler – Found ${videos.length} videos`);
-      let videoSizes = Array.from(videos).reduce((sizes, video) => {
+      let largestVideoSize = 0;
+      let video = videos.firstObject;
+
+      for (let i = 0; i < videos.length; ++i) {
         let rect = video.getBoundingClientRect();
-        sizes[video] = rect.height * rect.width;
-        return sizes;
-      }, {});
-      let largestVideoSize = Object.values(videos).sort().reverse().firstObject;
-      return Object.keys(videoSizes).find(video => videoSizes[video] === largestVideoSize);
+        let size = rect.height * rect.width;
+
+        if (size > largestVideoSize) {
+          largestVideoSize = size;
+          video = videos[i];
+        }
+      }
+
+      return video;
     }
 
     seek(time) {
@@ -98659,7 +98670,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     }
 
     async addListeners() {
-      console.log("Add Video Listeners");
+      console.log("Adding video listeners...");
       await (0, _emberConcurrency.timeout)(3000);
       this.videoElement = this.getElementReference();
       this.videoElement.addEventListener("seeked", () => {
@@ -98685,6 +98696,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
         });
         this.peerService.sendRTCMessage(message);
       });
+      console.log("Video listeners added.");
     }
 
     removeListeners() {}
@@ -98699,7 +98711,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
   }
 
-  let VideoSyncServiceService = (_class = (_temp = class VideoSyncServiceService extends Ember.Service {
+  let VideoSyncService = (_class = (_temp = class VideoSyncService extends Ember.Service {
     constructor(...args) {
       super(...args);
 
@@ -98713,6 +98725,9 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     initialize() {
       this.currentHandler = new this.handlerClass(this.peerService, this.parentDomService);
       this.currentHandler.addListeners();
+      this.peerService.addEventHandler("video-seek", this.seek.bind(this));
+      this.peerService.addEventHandler("video-play", this.play.bind(this));
+      this.peerService.addEventHandler("video-pause", this.pause.bind(this));
     }
 
     play() {
@@ -98742,7 +98757,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     writable: true,
     initializer: null
   })), _class);
-  _exports.default = VideoSyncServiceService;
+  _exports.default = VideoSyncService;
 });
 ;define("vemos-plugin/templates/application", ["exports"], function (_exports) {
   "use strict";
