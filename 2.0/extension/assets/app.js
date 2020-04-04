@@ -98621,6 +98621,8 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
   class VideoHandler {
     constructor(peerService, parentDomService) {
+      _defineProperty(this, "ignoredEvents", new Set());
+
       _defineProperty(this, "handlerName", "Default");
 
       _defineProperty(this, "peerService", undefined);
@@ -98658,45 +98660,92 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     }
 
     seek(time) {
-      this.videoElement.currentTime = time;
+      if (time !== this.videoElement.currentTime) {
+        this.withDisabledEventPropagation("seek", () => {
+          this.videoElement.currentTime = time;
+        });
+      }
     }
 
     play() {
-      this.videoElement.play();
+      if (this.videoElement.paused) {
+        this.withDisabledEventPropagation("play", () => {
+          this.videoElement.play();
+        });
+      }
     }
 
     pause() {
-      this.videoElement.pause();
+      if (!this.videoElement.paused) {
+        this.withDisabledEventPropagation("pause", () => {
+          this.videoElement.pause();
+        });
+      }
+    }
+
+    async withDisabledEventPropagation(event, block) {
+      this.ignoredEvents.add(event);
+      block.call();
+      await (0, _emberConcurrency.timeout)(100);
+      this.ignoredEvents.delete(event);
     }
 
     async addListeners() {
       console.log("Adding video listeners...");
       await (0, _emberConcurrency.timeout)(3000);
       this.videoElement = this.getElementReference();
-      this.videoElement.addEventListener("seeked", () => {
-        let message = new _peerService.RTCMessage({
-          event: "video-seek",
-          data: {
-            time: this.videoElement.currentTime
-          }
-        });
-        this.peerService.sendRTCMessage(message);
-      });
-      this.videoElement.addEventListener("play", () => {
-        let message = new _peerService.RTCMessage({
-          event: "video-play",
-          data: {}
-        });
-        this.peerService.sendRTCMessage(message);
-      });
-      this.videoElement.addEventListener("pause", () => {
-        let message = new _peerService.RTCMessage({
-          event: "video-pause",
-          data: {}
-        });
-        this.peerService.sendRTCMessage(message);
-      });
+      this.videoElement.pause();
+      this.videoElement.addEventListener("seeked", this.onSeek.bind(this));
+      this.videoElement.addEventListener("play", this.onPlay.bind(this));
+      this.videoElement.addEventListener("pause", this.onPause.bind(this));
       console.log("Video listeners added.");
+    }
+
+    onSeek() {
+      console.log("onSeek");
+
+      if (this.ignoredEvents.has("seek")) {
+        console.log("Seek event ignored");
+        return;
+      }
+
+      let message = new _peerService.RTCMessage({
+        event: "video-seek",
+        data: {
+          time: this.videoElement.currentTime
+        }
+      });
+      this.peerService.sendRTCMessage(message);
+    }
+
+    onPlay() {
+      console.log("onPlay");
+
+      if (this.ignoredEvents.has("play")) {
+        console.log("Play event ignored");
+        return;
+      }
+
+      let message = new _peerService.RTCMessage({
+        event: "video-play",
+        data: {}
+      });
+      this.peerService.sendRTCMessage(message);
+    }
+
+    onPause() {
+      console.log("onPause");
+
+      if (this.ignoredEvents.has("pause")) {
+        console.log("Pause event ignored");
+        return;
+      }
+
+      let message = new _peerService.RTCMessage({
+        event: "video-pause",
+        data: {}
+      });
+      this.peerService.sendRTCMessage(message);
     }
 
     removeListeners() {}
