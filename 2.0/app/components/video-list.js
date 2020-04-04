@@ -9,7 +9,7 @@ export default class VideoListComponent extends Component {
 
   @tracked ownMediaStream;
   @tracked ownMediaStreamNoAudio;
-  @tracked peerMediaStreams = A();
+  @tracked peerMediaStreams = {};
 
   constructor() {
     super(...arguments);
@@ -27,24 +27,36 @@ export default class VideoListComponent extends Component {
       "connection-opened",
       this.callPeer.bind(this)
     );
+    this.peerService.addEventHandler(
+      "connection-closed",
+      this.removePeerStream.bind(this)
+    );
+  }
+
+  get peerStreamList() {
+    return Object.values(this.peerMediaStreams);
   }
 
   answerPeerCall(call) {
-    console.log("answerPeerCall");
+    console.log("answerPeerCall", call);
     call.answer(this.mediaStream);
   }
 
-  connectPeerStream(mediaStream) {
+  connectPeerStream(call, mediaStream) {
     console.log("connectPeerStream", mediaStream);
-    if (this.peerMediaStreams.mapBy("id").includes(mediaStream.id)) {
-      return console.log(`Skipping adding media stream. Stream exists already`);
-    }
-    this.peerMediaStreams.pushObject(mediaStream);
+    this.peerMediaStreams[call.peer] = mediaStream;
+    this.peerMediaStreams = Object.assign(this.peerMediaStreams);
   }
 
   callPeer(connection) {
     console.log("callPeer");
     this.peerService.callPeer(connection.peer, this.ownMediaStream);
+  }
+
+  removePeerStream(connection) {
+    console.log("removePeerStream", connection);
+    delete this.peerMediaStreams[connection.peer];
+    this.peerMediaStreams = Object.assign(this.peerMediaStreams);
   }
 
   async setupMediaStream() {

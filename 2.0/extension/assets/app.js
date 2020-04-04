@@ -94352,25 +94352,25 @@ var __ember_auto_import__ =
 /************************************************************************/
 /******/ ({
 
-/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-18930Eoq6YE8JQOT4/cache-256-bundler/staging/app.js":
+/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/app.js":
 /*!****************************************************************************************************************************!*\
-  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-18930Eoq6YE8JQOT4/cache-256-bundler/staging/app.js ***!
+  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/app.js ***!
   \****************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("\nif (typeof document !== 'undefined') {\n  __webpack_require__.p = (function(){\n    var scripts = document.querySelectorAll('script');\n    return scripts[scripts.length - 1].src.replace(/\\/[^/]*$/, '/');\n  })();\n}\n\nmodule.exports = (function(){\n  var d = _eai_d;\n  var r = _eai_r;\n  window.emberAutoImportDynamic = function(specifier) {\n    return r('_eai_dyn_' + specifier);\n  };\n    d('@glimmer/tracking', [], function() { return __webpack_require__(/*! ./node_modules/@glimmer/tracking/dist/modules/es2017/index.js */ \"./node_modules/@glimmer/tracking/dist/modules/es2017/index.js\"); });\n    d('peerjs', [], function() { return __webpack_require__(/*! ./node_modules/peerjs/dist/peerjs.min.js */ \"./node_modules/peerjs/dist/peerjs.min.js\"); });\n    d('uuid', [], function() { return __webpack_require__(/*! ./node_modules/uuid/dist/esm-node/index.js */ \"./node_modules/uuid/dist/esm-browser/index.js\"); });\n})();\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-18930Eoq6YE8JQOT4/cache-256-bundler/staging/app.js?");
+eval("\nif (typeof document !== 'undefined') {\n  __webpack_require__.p = (function(){\n    var scripts = document.querySelectorAll('script');\n    return scripts[scripts.length - 1].src.replace(/\\/[^/]*$/, '/');\n  })();\n}\n\nmodule.exports = (function(){\n  var d = _eai_d;\n  var r = _eai_r;\n  window.emberAutoImportDynamic = function(specifier) {\n    return r('_eai_dyn_' + specifier);\n  };\n    d('@glimmer/tracking', [], function() { return __webpack_require__(/*! ./node_modules/@glimmer/tracking/dist/modules/es2017/index.js */ \"./node_modules/@glimmer/tracking/dist/modules/es2017/index.js\"); });\n    d('peerjs', [], function() { return __webpack_require__(/*! ./node_modules/peerjs/dist/peerjs.min.js */ \"./node_modules/peerjs/dist/peerjs.min.js\"); });\n    d('uuid', [], function() { return __webpack_require__(/*! ./node_modules/uuid/dist/esm-node/index.js */ \"./node_modules/uuid/dist/esm-browser/index.js\"); });\n})();\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/app.js?");
 
 /***/ }),
 
-/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-18930Eoq6YE8JQOT4/cache-256-bundler/staging/l.js":
+/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/l.js":
 /*!**************************************************************************************************************************!*\
-  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-18930Eoq6YE8JQOT4/cache-256-bundler/staging/l.js ***!
+  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/l.js ***!
   \**************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("\nwindow._eai_r = require;\nwindow._eai_d = define;\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-18930Eoq6YE8JQOT4/cache-256-bundler/staging/l.js?");
+eval("\nwindow._eai_r = require;\nwindow._eai_d = define;\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/l.js?");
 
 /***/ }),
 
@@ -94387,12 +94387,12 @@ eval("function webpackEmptyContext(req) {\n\tvar e = new Error(\"Cannot find mod
 
 /***/ 0:
 /*!*****************************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-18930Eoq6YE8JQOT4/cache-256-bundler/staging/l.js /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-18930Eoq6YE8JQOT4/cache-256-bundler/staging/app.js ***!
+  !*** multi /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/l.js /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/app.js ***!
   \*****************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-18930Eoq6YE8JQOT4/cache-256-bundler/staging/l.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-18930Eoq6YE8JQOT4/cache-256-bundler/staging/l.js\");\nmodule.exports = __webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-18930Eoq6YE8JQOT4/cache-256-bundler/staging/app.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-18930Eoq6YE8JQOT4/cache-256-bundler/staging/app.js\");\n\n\n//# sourceURL=webpack://__ember_auto_import__/multi_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-18930Eoq6YE8JQOT4/cache-256-bundler/staging/l.js_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-18930Eoq6YE8JQOT4/cache-256-bundler/staging/app.js?");
+eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/l.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/l.js\");\nmodule.exports = __webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/app.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/app.js\");\n\n\n//# sourceURL=webpack://__ember_auto_import__/multi_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/l.js_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/app.js?");
 
 /***/ })
 
@@ -94505,14 +94505,15 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
   
     #vemos-frame {
       height: 100%;
+      width: 100%;
     }
   </style>
   </EmberWormhole>
   
   */
   {
-    id: "0CA15Ghb",
-    block: "{\"symbols\":[],\"statements\":[[7,\"ember-wormhole\",[],[[\"@destinationElement\"],[[27,[24,0],[\"parentDomService\",\"container\"]]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n\"],[9,\"style\",true],[10],[1,1,0,0,\"\\n  body {\\n    transform: translate(0, 0);\\n    width: 90vw;\\n    height: 100vh;\\n  }\\n\\n  #vemos-container {\\n    position: fixed;\\n    right: 0;\\n    top: 0;\\n    bottom: 0;\\n    width: 10vw;\\n    background-color: rebeccapurple;\\n  }\\n\\n  #vemos-frame {\\n    height: 100%;\\n  }\\n\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[]}",
+    id: "39sGBVum",
+    block: "{\"symbols\":[],\"statements\":[[7,\"ember-wormhole\",[],[[\"@destinationElement\"],[[27,[24,0],[\"parentDomService\",\"container\"]]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n\"],[9,\"style\",true],[10],[1,1,0,0,\"\\n  body {\\n    transform: translate(0, 0);\\n    width: 90vw;\\n    height: 100vh;\\n  }\\n\\n  #vemos-container {\\n    position: fixed;\\n    right: 0;\\n    top: 0;\\n    bottom: 0;\\n    width: 10vw;\\n    background-color: rebeccapurple;\\n  }\\n\\n  #vemos-frame {\\n    height: 100%;\\n    width: 100%;\\n  }\\n\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[]}",
     meta: {
       moduleName: "vemos-plugin/components/frame-styles.hbs"
     }
@@ -94543,26 +94544,49 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
   });
   _exports.default = void 0;
 
-  var _class;
+  var _class, _descriptor, _temp;
+
+  function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
   function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) { var desc = {}; Object.keys(descriptor).forEach(function (key) { desc[key] = descriptor[key]; }); desc.enumerable = !!desc.enumerable; desc.configurable = !!desc.configurable; if ('value' in desc || desc.initializer) { desc.writable = true; } desc = decorators.slice().reverse().reduce(function (desc, decorator) { return decorator(target, property, desc) || desc; }, desc); if (context && desc.initializer !== void 0) { desc.value = desc.initializer ? desc.initializer.call(context) : void 0; desc.initializer = undefined; } if (desc.initializer === void 0) { Object.defineProperty(target, property, desc); desc = null; } return desc; }
 
+  function _initializerWarningHelper(descriptor, context) { throw new Error('Decorating class property failed. Please ensure that ' + 'proposal-class-properties is enabled and runs after the decorators transform.'); }
+
   const __COLOCATED_TEMPLATE__ = Ember.HTMLBars.template(
   /*
-    <video autoplay style="width: 200px"
-    {{did-insert this.setupMediaStream}}
-    {{did-update this.setupMediaStream @mediaStream}}>
-  </video>
+    <div class="mediastream-container layout__box">
+    <video autoplay
+      class="mediastream-video {{if @flipped 'o__flipped'}}"
+      {{did-insert this.setupMediaStream}}
+      {{did-update this.setupMediaStream @mediaStream}}>
+    </video>
+    <div class="mediastream-controls {{if this.isMuted 'o__muted'}}" role="button" {{on "click" this.toggleMute}}>
+      {{#if this.isMuted}}
+        <Svg::Unmute title="Unmute"/>
+      {{else}}
+        <Svg::Mute title="Mute"/>
+      {{/if}}
+    </div>
+  </div>
+  
   */
   {
-    id: "+5LE55aq",
-    block: "{\"symbols\":[\"@mediaStream\"],\"statements\":[[9,\"video\",false],[23,\"autoplay\",\"\",null],[23,\"style\",\"width: 200px\",null],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[\"setupMediaStream\"]]],null],[3,0,0,[27,[26,1,\"ModifierHead\"],[]],[[27,[24,0],[\"setupMediaStream\"]],[27,[24,1],[]]],null],[10],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"did-insert\",\"did-update\"]}",
+    id: "160ZWX6E",
+    block: "{\"symbols\":[\"@flipped\",\"@mediaStream\"],\"statements\":[[9,\"div\",true],[12,\"class\",\"mediastream-container layout__box\",null],[10],[1,1,0,0,\"\\n  \"],[9,\"video\",false],[23,\"autoplay\",\"\",null],[14,\"class\",[32,[\"mediastream-video \",[31,97,2,[27,[26,0,\"CallHead\"],[]],[[27,[24,1],[]],\"o__flipped\"],null]]],null],[3,0,0,[27,[26,1,\"ModifierHead\"],[]],[[27,[24,0],[\"setupMediaStream\"]]],null],[3,0,0,[27,[26,2,\"ModifierHead\"],[]],[[27,[24,0],[\"setupMediaStream\"]],[27,[24,2],[]]],null],[10],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n  \"],[9,\"div\",false],[14,\"class\",[32,[\"mediastream-controls \",[31,269,2,[27,[26,0,\"CallHead\"],[]],[[27,[24,0],[\"isMuted\"]],\"o__muted\"],null]]],null],[23,\"role\",\"button\",null],[3,0,0,[27,[26,3,\"ModifierHead\"],[]],[\"click\",[27,[24,0],[\"toggleMute\"]]],null],[10],[1,1,0,0,\"\\n\"],[5,[27,[26,0,\"BlockHead\"],[]],[[27,[24,0],[\"isMuted\"]]],null,[[\"default\",\"else\"],[{\"statements\":[[1,1,0,0,\"      \"],[7,\"svg/unmute\",[[23,\"title\",\"Unmute\",null]],[[],[]],null],[1,1,0,0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[1,1,0,0,\"      \"],[7,\"svg/mute\",[[23,\"title\",\"Mute\",null]],[[],[]],null],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[1,1,0,0,\"  \"],[11],[1,1,0,0,\"\\n\"],[11],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"if\",\"did-insert\",\"did-update\",\"on\"]}",
     meta: {
       moduleName: "vemos-plugin/components/mediastream-video.hbs"
     }
   });
 
-  let MediastreamVideoComponent = (_class = class MediastreamVideoComponent extends _component.default {
+  let MediastreamVideoComponent = (_class = (_temp = class MediastreamVideoComponent extends _component.default {
+    constructor(...args) {
+      super(...args);
+
+      _initializerDefineProperty(this, "isMuted", _descriptor, this);
+    }
+
     setupMediaStream(video) {
       if (this.args.mediaStream) {
         video.srcObject = this.args.mediaStream;
@@ -94571,7 +94595,20 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
       }
     }
 
-  }, (_applyDecoratedDescriptor(_class.prototype, "setupMediaStream", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "setupMediaStream"), _class.prototype)), _class);
+    toggleMute() {
+      let currentState = this.args.mediaStream.getAudioTracks()[0].enabled;
+      this.args.mediaStream.getAudioTracks()[0].enabled = !currentState;
+      this.isMuted = !currentState;
+    }
+
+  }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "isMuted", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: function () {
+      return false;
+    }
+  }), _applyDecoratedDescriptor(_class.prototype, "setupMediaStream", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "setupMediaStream"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "toggleMute", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "toggleMute"), _class.prototype)), _class);
   _exports.default = MediastreamVideoComponent;
 
   Ember._setComponentTemplate(__COLOCATED_TEMPLATE__, MediastreamVideoComponent);
@@ -94673,6 +94710,55 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
   Ember._setComponentTemplate(__COLOCATED_TEMPLATE__, StartPageComponent);
 });
+;define("vemos-plugin/components/svg/mute", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  const __COLOCATED_TEMPLATE__ = Ember.HTMLBars.template(
+  /*
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 384" ...attributes><path d="M288 192c0-38-22-70-53-86v172c31-16 53-48 53-86zM0 128v128h85l107 107V21L85 128z"/><path d="M235 5v44a149 149 0 010 286v44a192 192 0 000-374z"/></svg>
+  */
+  {
+    id: "zgTPIWcx",
+    block: "{\"symbols\":[\"&attrs\"],\"statements\":[[9,\"svg\",false],[23,\"xmlns\",\"http://www.w3.org/2000/svg\",\"http://www.w3.org/2000/xmlns/\"],[23,\"viewBox\",\"0 0 384 384\",null],[15,1],[10],[9,\"path\",true],[12,\"d\",\"M288 192c0-38-22-70-53-86v172c31-16 53-48 53-86zM0 128v128h85l107 107V21L85 128z\",null],[10],[11],[9,\"path\",true],[12,\"d\",\"M235 5v44a149 149 0 010 286v44a192 192 0 000-374z\",null],[10],[11],[11]],\"hasEval\":false,\"upvars\":[]}",
+    meta: {
+      moduleName: "vemos-plugin/components/svg/mute.hbs"
+    }
+  });
+
+  var _default = Ember._setComponentTemplate(__COLOCATED_TEMPLATE__, Ember._templateOnlyComponent());
+
+  _exports.default = _default;
+});
+;define("vemos-plugin/components/svg/unmute", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  const __COLOCATED_TEMPLATE__ = Ember.HTMLBars.template(
+  /*
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 384" ...attributes><path d="M288 192c0-38-22-70-53-86v47l52 53 1-14zM341 192c0 20-4 39-11 56l32 33A191 191 0 00235 5v44c61 18 106 75 106 143zM192 21l-45 45 45 45zM27 0L0 27l101 101H0v128h85l107 107V219l91 91c-15 11-31 20-48 25v44c29-7 56-20 78-38l44 43 27-27-192-192L27 0z"/></svg>
+  
+  */
+  {
+    id: "2UbNYSL3",
+    block: "{\"symbols\":[\"&attrs\"],\"statements\":[[9,\"svg\",false],[23,\"xmlns\",\"http://www.w3.org/2000/svg\",\"http://www.w3.org/2000/xmlns/\"],[23,\"viewBox\",\"0 0 384 384\",null],[15,1],[10],[9,\"path\",true],[12,\"d\",\"M288 192c0-38-22-70-53-86v47l52 53 1-14zM341 192c0 20-4 39-11 56l32 33A191 191 0 00235 5v44c61 18 106 75 106 143zM192 21l-45 45 45 45zM27 0L0 27l101 101H0v128h85l107 107V219l91 91c-15 11-31 20-48 25v44c29-7 56-20 78-38l44 43 27-27-192-192L27 0z\",null],[10],[11],[11],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[]}",
+    meta: {
+      moduleName: "vemos-plugin/components/svg/unmute.hbs"
+    }
+  });
+
+  var _default = Ember._setComponentTemplate(__COLOCATED_TEMPLATE__, Ember._templateOnlyComponent());
+
+  _exports.default = _default;
+});
 ;define("vemos-plugin/components/video-list", ["exports", "@glimmer/component"], function (_exports, _component) {
   "use strict";
 
@@ -94694,18 +94780,18 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
   const __COLOCATED_TEMPLATE__ = Ember.HTMLBars.template(
   /*
     <div class="layout__box o__has-rows o__flexes-to-1 o__scrolls">
-    <MediastreamVideo @mediaStream={{this.ownMediaStreamNoAudio}} />
+    <MediastreamVideo @mediaStream={{this.ownMediaStreamNoAudio}} @flipped={{true}}/>
   
     <hr>
   
-    {{#each this.peerMediaStreams as |mediaStream|}}
+    {{#each this.peerStreamList as |mediaStream|}}
       <MediastreamVideo @mediaStream={{mediaStream}} />
     {{/each}}
   </div>
   */
   {
-    id: "QvnNewxH",
-    block: "{\"symbols\":[\"mediaStream\"],\"statements\":[[9,\"div\",true],[12,\"class\",\"layout__box o__has-rows o__flexes-to-1 o__scrolls\",null],[10],[1,1,0,0,\"\\n  \"],[7,\"mediastream-video\",[],[[\"@mediaStream\"],[[27,[24,0],[\"ownMediaStreamNoAudio\"]]]],null],[1,1,0,0,\"\\n\\n  \"],[9,\"hr\",true],[10],[11],[1,1,0,0,\"\\n\\n\"],[5,[27,[26,1,\"BlockHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[27,[24,0],[\"peerMediaStreams\"]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"    \"],[7,\"mediastream-video\",[],[[\"@mediaStream\"],[[27,[24,1],[]]]],null],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[11]],\"hasEval\":false,\"upvars\":[\"-track-array\",\"each\"]}",
+    id: "wjCk5vKG",
+    block: "{\"symbols\":[\"mediaStream\"],\"statements\":[[9,\"div\",true],[12,\"class\",\"layout__box o__has-rows o__flexes-to-1 o__scrolls\",null],[10],[1,1,0,0,\"\\n  \"],[7,\"mediastream-video\",[],[[\"@mediaStream\",\"@flipped\"],[[27,[24,0],[\"ownMediaStreamNoAudio\"]],true]],null],[1,1,0,0,\"\\n\\n  \"],[9,\"hr\",true],[10],[11],[1,1,0,0,\"\\n\\n\"],[5,[27,[26,1,\"BlockHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[27,[24,0],[\"peerStreamList\"]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"    \"],[7,\"mediastream-video\",[],[[\"@mediaStream\"],[[27,[24,1],[]]]],null],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[11]],\"hasEval\":false,\"upvars\":[\"-track-array\",\"each\"]}",
     meta: {
       moduleName: "vemos-plugin/components/video-list.hbs"
     }
@@ -94729,26 +94815,33 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
       this.peerService.addEventHandler("peer-call", this.answerPeerCall.bind(this));
       this.peerService.addEventHandler("on-stream", this.connectPeerStream.bind(this));
       this.peerService.addEventHandler("connection-opened", this.callPeer.bind(this));
+      this.peerService.addEventHandler("connection-closed", this.removePeerStream.bind(this));
+    }
+
+    get peerStreamList() {
+      return Object.values(this.peerMediaStreams);
     }
 
     answerPeerCall(call) {
-      console.log("answerPeerCall");
+      console.log("answerPeerCall", call);
       call.answer(this.mediaStream);
     }
 
-    connectPeerStream(mediaStream) {
+    connectPeerStream(call, mediaStream) {
       console.log("connectPeerStream", mediaStream);
-
-      if (this.peerMediaStreams.mapBy("id").includes(mediaStream.id)) {
-        return console.log(`Skipping adding media stream. Stream exists already`);
-      }
-
-      this.peerMediaStreams.pushObject(mediaStream);
+      this.peerMediaStreams[call.peer] = mediaStream;
+      this.peerMediaStreams = Object.assign(this.peerMediaStreams);
     }
 
     callPeer(connection) {
       console.log("callPeer");
       this.peerService.callPeer(connection.peer, this.ownMediaStream);
+    }
+
+    removePeerStream(connection) {
+      console.log("removePeerStream", connection);
+      delete this.peerMediaStreams[connection.peer];
+      this.peerMediaStreams = Object.assign(this.peerMediaStreams);
     }
 
     async setupMediaStream() {
@@ -94803,7 +94896,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     enumerable: true,
     writable: true,
     initializer: function () {
-      return Ember.A();
+      return {};
     }
   })), _class);
   _exports.default = VideoListComponent;
@@ -95371,12 +95464,14 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
         this.eventHandlers["peer-call"].forEach(handler => handler(call));
       }
 
-      call.on("stream", this.onStream.bind(this));
+      call.on("stream", this.onStream.bind(this, call));
     }
 
-    onStream(mediaStream) {
+    onStream(call, mediaStream) {
+      console.log("onStream", call, mediaStream);
+
       if (this.eventHandlers["on-stream"]) {
-        this.eventHandlers["on-stream"].forEach(handler => handler(mediaStream));
+        this.eventHandlers["on-stream"].forEach(handler => handler(call, mediaStream));
       } else {
         console.log(`No event handlers for 'on-stream'`);
       }
@@ -95413,6 +95508,10 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     onConnectionClose(connection) {
       this.connections.removeObject(connection);
       console.log("onConnectionClose");
+
+      if (this.eventHandlers["connection-closed"]) {
+        this.eventHandlers["connection-closed"].forEach(handler => handler(connection));
+      }
     }
 
     handleNewConnection(message) {
@@ -95561,7 +95660,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 ;define('vemos-plugin/config/environment', [], function() {
   
           var exports = {
-            'default': {"modulePrefix":"vemos-plugin","environment":"development","rootURL":"/","locationType":"none","EmberENV":{"FEATURES":{},"EXTEND_PROTOTYPES":{"Date":false},"_APPLICATION_TEMPLATE_WRAPPER":false,"_DEFAULT_ASYNC_OBSERVERS":true,"_JQUERY_INTEGRATION":false,"_TEMPLATE_ONLY_GLIMMER_COMPONENTS":true},"APP":{"autoboot":false,"name":"vemos-plugin","version":"0.0.0+7aaaeff1"},"ember-cli-post-build-copy":{"replace":true,"development":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]],"production":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]]},"exportApplicationGlobal":true}
+            'default': {"modulePrefix":"vemos-plugin","environment":"development","rootURL":"/","locationType":"none","EmberENV":{"FEATURES":{},"EXTEND_PROTOTYPES":{"Date":false},"_APPLICATION_TEMPLATE_WRAPPER":false,"_DEFAULT_ASYNC_OBSERVERS":true,"_JQUERY_INTEGRATION":false,"_TEMPLATE_ONLY_GLIMMER_COMPONENTS":true},"APP":{"autoboot":false,"name":"vemos-plugin","version":"0.0.0+5bd697b9"},"ember-cli-post-build-copy":{"replace":true,"development":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]],"production":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]]},"exportApplicationGlobal":true}
           };
           Object.defineProperty(exports, '__esModule', {value: true});
           return exports;
@@ -95570,7 +95669,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
 ;
           if (!runningTests) {
-            require("vemos-plugin/app")["default"].create({"autoboot":false,"name":"vemos-plugin","version":"0.0.0+7aaaeff1"});
+            require("vemos-plugin/app")["default"].create({"autoboot":false,"name":"vemos-plugin","version":"0.0.0+5bd697b9"});
           }
         
 //# sourceMappingURL=app.map

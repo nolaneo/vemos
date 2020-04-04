@@ -26,7 +26,7 @@ class RTCMessage {
       uuid,
       event,
       data,
-      senderId
+      senderId,
     };
   }
 }
@@ -45,7 +45,7 @@ export default class PeerService extends Service {
   initialize() {
     console.log(`Initializing Peer Service`);
     this.peer = new Peer({
-      host: HOST
+      host: HOST,
     });
     this.peer.on("open", this.onPeerOpen.bind(this));
     this.peer.on("connection", this.onPeerConnection.bind(this));
@@ -79,7 +79,7 @@ export default class PeerService extends Service {
       `Sending message [event ${message.event} | uuid ${message.uuid}]`
     );
     message.senderId = this.peerId;
-    this.connections.forEach(connection =>
+    this.connections.forEach((connection) =>
       connection.send(message.serialize())
     );
   }
@@ -94,8 +94,8 @@ export default class PeerService extends Service {
     let message = new RTCMessage({
       event: "new-peer-joined",
       data: {
-        peerId: connection.peer
-      }
+        peerId: connection.peer,
+      },
     });
     this.sendRTCMessage(message);
     this.connections.pushObject(connection);
@@ -113,14 +113,17 @@ export default class PeerService extends Service {
   onPeerCall(call) {
     console.log("onPeerCall", call);
     if (this.eventHandlers["peer-call"]) {
-      this.eventHandlers["peer-call"].forEach(handler => handler(call));
+      this.eventHandlers["peer-call"].forEach((handler) => handler(call));
     }
-    call.on("stream", this.onStream.bind(this));
+    call.on("stream", this.onStream.bind(this, call));
   }
 
-  onStream(mediaStream) {
+  onStream(call, mediaStream) {
+    console.log("onStream", call, mediaStream);
     if (this.eventHandlers["on-stream"]) {
-      this.eventHandlers["on-stream"].forEach(handler => handler(mediaStream));
+      this.eventHandlers["on-stream"].forEach((handler) =>
+        handler(call, mediaStream)
+      );
     } else {
       console.log(`No event handlers for 'on-stream'`);
     }
@@ -132,7 +135,7 @@ export default class PeerService extends Service {
     connection.on("close", this.onConnectionClose.bind(this, connection));
 
     if (this.eventHandlers["connection-opened"]) {
-      this.eventHandlers["connection-opened"].forEach(handler =>
+      this.eventHandlers["connection-opened"].forEach((handler) =>
         handler(connection)
       );
     }
@@ -149,7 +152,7 @@ export default class PeerService extends Service {
       console.log(
         `Received message [event ${message.event} | uuid ${message.uuid}]`
       );
-      this.eventHandlers[message.event].forEach(handler => handler(message));
+      this.eventHandlers[message.event].forEach((handler) => handler(message));
     } else {
       console.log(`No event handlers for ${message.event}`);
     }
@@ -158,6 +161,12 @@ export default class PeerService extends Service {
   onConnectionClose(connection) {
     this.connections.removeObject(connection);
     console.log("onConnectionClose");
+
+    if (this.eventHandlers["connection-closed"]) {
+      this.eventHandlers["connection-closed"].forEach((handler) =>
+        handler(connection)
+      );
+    }
   }
 
   handleNewConnection(message) {

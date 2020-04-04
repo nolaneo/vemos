@@ -97,12 +97,52 @@
   }
 }
 
+.mediastream-video {
+  width: 100%;
+  height: auto;
+}
+
+.mediastream-container {
+  position: relative;
+  border-bottom: 1px solid white;
+}
+
+.mediastream-container:hover .mediastream-controls,
+.mediastream-controls.o__muted {
+  opacity: 1;
+}
+
+.mediastream-controls {
+  opacity: 0;
+  transition: opacity 100ms ease-in-out;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(6px);
+  border-radius: 5px;
+  padding: 3px;
+}
+.mediastream-controls svg {
+  height: 16px;
+  width: 16px;
+  fill: white;
+  opacity: 0.9;
+  mix-blend-mode: overlay;
+}
+
+.mediastream-video.o__flipped {
+  transform: scaleX(-1);
+}
+
 html#vemos-html,
 body#vemos-body,
 body > .ember-view {
   margin: 0;
   padding: 0;
   min-height: 100%;
+  box-sizing: border-box;
 }
 
 body#vemos-body > .ember-view {

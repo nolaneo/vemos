@@ -1,4 +1,14 @@
-<video autoplay style="width: 200px"
-  {{did-insert this.setupMediaStream}}
-  {{did-update this.setupMediaStream @mediaStream}}>
-</video>
+<div class="mediastream-container layout__box">
+  <video autoplay
+    class="mediastream-video {{if @flipped 'o__flipped'}}"
+    {{did-insert this.setupMediaStream}}
+    {{did-update this.setupMediaStream @mediaStream}}>
+  </video>
+  <div class="mediastream-controls {{if this.isMuted 'o__muted'}}" role="button" {{on "click" this.toggleMute}}>
+    {{#if this.isMuted}}
+      <Svg::Unmute title="Unmute"/>
+    {{else}}
+      <Svg::Mute title="Mute"/>
+    {{/if}}
+  </div>
+</div>
