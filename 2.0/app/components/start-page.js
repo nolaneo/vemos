@@ -5,15 +5,17 @@ import { RTCMessage } from "../services/peer-service";
 
 export default class StartPageComponent extends Component {
   @service peerService;
+  @service videoSyncService;
 
   hostId = "";
   message = "";
 
   constructor() {
     super(...arguments);
-    this.peerService.addEventHandler("chat", message => {
+    this.peerService.addEventHandler("chat", (message) => {
       console.log("received:", message.data.text);
     });
+    this.videoSyncService.initialize();
   }
 
   @action hmm() {
@@ -30,8 +32,8 @@ export default class StartPageComponent extends Component {
     let message = new RTCMessage({
       event: "chat",
       data: {
-        text: this.message
-      }
+        text: this.message,
+      },
     });
     this.peerService.sendRTCMessage(message);
   }

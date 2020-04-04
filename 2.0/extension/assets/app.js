@@ -91149,6 +91149,2980 @@ require('ember');
   const versionExtendedRegExp = exports.versionExtendedRegExp = /\d+[.]\d+[.]\d+-[a-z]*([.]\d+)?/; // Match the above but also hyphen followed by any number of lowercase letters, then optionally period and digits
   const shaRegExp = exports.shaRegExp = /[a-z\d]{8}$/; // Match 8 lowercase letters and digits, at the end of the string only (to avoid matching with version extended part)
 });
+;define("ember-concurrency/-buffer-policy", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.dropButKeepLatestPolicy = _exports.cancelOngoingTasksPolicy = _exports.dropQueuedTasksPolicy = _exports.enqueueTasksPolicy = void 0;
+
+  const saturateActiveQueue = scheduler => {
+    while (scheduler.activeTaskInstances.length < scheduler.maxConcurrency) {
+      let taskInstance = scheduler.queuedTaskInstances.shift();
+
+      if (!taskInstance) {
+        break;
+      }
+
+      scheduler.activeTaskInstances.push(taskInstance);
+    }
+  };
+
+  function numPerformSlots(scheduler) {
+    return scheduler.maxConcurrency - scheduler.queuedTaskInstances.length - scheduler.activeTaskInstances.length;
+  }
+
+  const enqueueTasksPolicy = {
+    requiresUnboundedConcurrency: true,
+
+    schedule(scheduler) {
+      // [a,b,_] [c,d,e,f] becomes
+      // [a,b,c] [d,e,f]
+      saturateActiveQueue(scheduler);
+    },
+
+    getNextPerformStatus(scheduler) {
+      return numPerformSlots(scheduler) > 0 ? 'succeed' : 'enqueue';
+    }
+
+  };
+  _exports.enqueueTasksPolicy = enqueueTasksPolicy;
+  const dropQueuedTasksPolicy = {
+    cancelReason: `it belongs to a 'drop' Task that was already running`,
+
+    schedule(scheduler) {
+      // [a,b,_] [c,d,e,f] becomes
+      // [a,b,c] []
+      saturateActiveQueue(scheduler);
+      scheduler.spliceTaskInstances(this.cancelReason, scheduler.queuedTaskInstances, 0, scheduler.queuedTaskInstances.length);
+    },
+
+    getNextPerformStatus(scheduler) {
+      return numPerformSlots(scheduler) > 0 ? 'succeed' : 'drop';
+    }
+
+  };
+  _exports.dropQueuedTasksPolicy = dropQueuedTasksPolicy;
+  const cancelOngoingTasksPolicy = {
+    cancelReason: `it belongs to a 'restartable' Task that was .perform()ed again`,
+
+    schedule(scheduler) {
+      // [a,b,_] [c,d,e,f] becomes
+      // [d,e,f] []
+      let activeTaskInstances = scheduler.activeTaskInstances;
+      let queuedTaskInstances = scheduler.queuedTaskInstances;
+      activeTaskInstances.push(...queuedTaskInstances);
+      queuedTaskInstances.length = 0;
+      let numToShift = Math.max(0, activeTaskInstances.length - scheduler.maxConcurrency);
+      scheduler.spliceTaskInstances(this.cancelReason, activeTaskInstances, 0, numToShift);
+    },
+
+    getNextPerformStatus(scheduler) {
+      return numPerformSlots(scheduler) > 0 ? 'succeed' : 'cancel_previous';
+    }
+
+  };
+  _exports.cancelOngoingTasksPolicy = cancelOngoingTasksPolicy;
+  const dropButKeepLatestPolicy = {
+    cancelReason: `it belongs to a 'keepLatest' Task that was already running`,
+
+    schedule(scheduler) {
+      // [a,b,_] [c,d,e,f] becomes
+      // [d,e,f] []
+      saturateActiveQueue(scheduler);
+      scheduler.spliceTaskInstances(this.cancelReason, scheduler.queuedTaskInstances, 0, scheduler.queuedTaskInstances.length - 1);
+    }
+
+  };
+  _exports.dropButKeepLatestPolicy = dropButKeepLatestPolicy;
+});
+;define("ember-concurrency/-cancelable-promise-helpers", ["exports", "ember-concurrency/-task-instance", "ember-concurrency/utils"], function (_exports, _taskInstance, _utils) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.hash = _exports.race = _exports.allSettled = _exports.all = void 0;
+  const asyncAll = taskAwareVariantOf(Ember.RSVP.Promise, 'all', identity);
+
+  function* resolver(value) {
+    return value;
+  }
+  /**
+   * A cancelation-aware variant of [Promise.all](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all).
+   * The normal version of a `Promise.all` just returns a regular, uncancelable
+   * Promise. The `ember-concurrency` variant of `all()` has the following
+   * additional behavior:
+   *
+   * - if the task that `yield`ed `all()` is canceled, any of the
+   *   {@linkcode TaskInstance}s passed in to `all` will be canceled
+   * - if any of the {@linkcode TaskInstance}s (or regular promises) passed in reject (or
+   *   are canceled), all of the other unfinished `TaskInstance`s will
+   *   be automatically canceled.
+   *
+   * [Check out the "Awaiting Multiple Child Tasks example"](/docs/examples/joining-tasks)
+   */
+
+
+  const all = things => {
+    // Extra assertion here to circumvent the `things.length` short circuit.
+    (true && !(Array.isArray(things)) && Ember.assert(`'all' expects an array.`, Array.isArray(things)));
+
+    if (things.length === 0) {
+      return things;
+    }
+
+    for (let i = 0; i < things.length; ++i) {
+      let t = things[i];
+
+      if (!(t && t[_utils.yieldableSymbol])) {
+        return asyncAll(things);
+      }
+    }
+
+    let isAsync = false;
+    let taskInstances = things.map(thing => {
+      let ti = _taskInstance.default.create({
+        // TODO: consider simpler iterator than full on generator fn?
+        fn: resolver,
+        args: [thing]
+      })._start();
+
+      if (ti._completionState !== 1) {
+        isAsync = true;
+      }
+
+      return ti;
+    });
+
+    if (isAsync) {
+      return asyncAll(taskInstances);
+    } else {
+      return taskInstances.map(ti => ti.value);
+    }
+  };
+  /**
+   * A cancelation-aware variant of [RSVP.allSettled](http://emberjs.com/api/classes/RSVP.html#method_allSettled).
+   * The normal version of a `RSVP.allSettled` just returns a regular, uncancelable
+   * Promise. The `ember-concurrency` variant of `allSettled()` has the following
+   * additional behavior:
+   *
+   * - if the task that `yield`ed `allSettled()` is canceled, any of the
+   *   {@linkcode TaskInstance}s passed in to `allSettled` will be canceled
+   */
+
+
+  _exports.all = all;
+  const allSettled = taskAwareVariantOf(Ember.RSVP, 'allSettled', identity);
+  /**
+   * A cancelation-aware variant of [Promise.race](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race).
+   * The normal version of a `Promise.race` just returns a regular, uncancelable
+   * Promise. The `ember-concurrency` variant of `race()` has the following
+   * additional behavior:
+   *
+   * - if the task that `yield`ed `race()` is canceled, any of the
+   *   {@linkcode TaskInstance}s passed in to `race` will be canceled
+   * - once any of the tasks/promises passed in complete (either success, failure,
+   *   or cancelation), any of the {@linkcode TaskInstance}s passed in will be canceled
+   *
+   * [Check out the "Awaiting Multiple Child Tasks example"](/docs/examples/joining-tasks)
+   */
+
+  _exports.allSettled = allSettled;
+  const race = taskAwareVariantOf(Ember.RSVP.Promise, 'race', identity);
+  /**
+   * A cancelation-aware variant of [RSVP.hash](http://emberjs.com/api/classes/RSVP.html#hash).
+   * The normal version of a `RSVP.hash` just returns a regular, uncancelable
+   * Promise. The `ember-concurrency` variant of `hash()` has the following
+   * additional behavior:
+   *
+   * - if the task that `yield`ed `hash()` is canceled, any of the
+   *   {@linkcode TaskInstance}s passed in to `allSettled` will be canceled
+   * - if any of the items rejects/cancels, all other cancelable items
+   *   (e.g. {@linkcode TaskInstance}s) will be canceled
+   */
+
+  _exports.race = race;
+  const hash = taskAwareVariantOf(Ember.RSVP, 'hash', getValues);
+  _exports.hash = hash;
+
+  function identity(obj) {
+    return obj;
+  }
+
+  function getValues(obj) {
+    return Object.keys(obj).map(k => obj[k]);
+  }
+
+  function taskAwareVariantOf(obj, method, getItems) {
+    return function (thing) {
+      let items = getItems(thing);
+      (true && !(Array.isArray(items)) && Ember.assert(`'${method}' expects an array.`, Array.isArray(items)));
+      let defer = Ember.RSVP.defer();
+      obj[method](thing).then(defer.resolve, defer.reject);
+      let hasCancelled = false;
+
+      let cancelAll = () => {
+        if (hasCancelled) {
+          return;
+        }
+
+        hasCancelled = true;
+        items.forEach(it => {
+          if (it) {
+            if (it instanceof _taskInstance.default) {
+              it.cancel();
+            } else if (typeof it[_utils.cancelableSymbol] === 'function') {
+              it[_utils.cancelableSymbol]();
+            }
+          }
+        });
+      };
+
+      let promise = defer.promise.finally(cancelAll);
+      promise[_utils.cancelableSymbol] = cancelAll;
+      return promise;
+    };
+  }
+});
+;define("ember-concurrency/-encapsulated-task", ["exports", "ember-concurrency/-task-instance"], function (_exports, _taskInstance) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _default = _taskInstance.default.extend({
+    _makeIterator() {
+      let perform = this.perform;
+      (true && !(typeof perform === 'function') && Ember.assert("The object passed to `task()` must define a `perform` generator function, e.g. `perform: function * (a,b,c) {...}`, or better yet `*perform(a,b,c) {...}`", typeof perform === 'function'));
+      return perform.apply(this, this.args);
+    },
+
+    perform: null
+  });
+
+  _exports.default = _default;
+});
+;define("ember-concurrency/-helpers", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.taskHelperClosure = taskHelperClosure;
+
+  function taskHelperClosure(helperName, taskMethod, _args, hash) {
+    let task = _args[0];
+
+    let outerArgs = _args.slice(1);
+
+    return Ember.run.bind(null, function (...innerArgs) {
+      if (!task || typeof task[taskMethod] !== 'function') {
+        (true && !(false) && Ember.assert(`The first argument passed to the \`${helperName}\` helper should be a Task object (without quotes); you passed ${task}`, false));
+        return;
+      }
+
+      if (hash && hash.value) {
+        let event = innerArgs.pop();
+        innerArgs.push(Ember.get(event, hash.value));
+      }
+
+      return task[taskMethod](...outerArgs, ...innerArgs);
+    });
+  }
+});
+;define("ember-concurrency/-property-modifiers-mixin", ["exports", "ember-concurrency/-scheduler", "ember-concurrency/-buffer-policy"], function (_exports, _scheduler, _bufferPolicy) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.resolveScheduler = resolveScheduler;
+  _exports.propertyModifiers = void 0;
+  const propertyModifiers = {
+    // by default, task(...) expands to task(...).enqueue().maxConcurrency(Infinity)
+    _bufferPolicy: _bufferPolicy.enqueueTasksPolicy,
+    _maxConcurrency: Infinity,
+    _taskGroupPath: null,
+    _hasUsedModifier: false,
+    _hasSetBufferPolicy: false,
+    _hasEnabledEvents: false,
+
+    restartable() {
+      return setBufferPolicy(this, _bufferPolicy.cancelOngoingTasksPolicy);
+    },
+
+    enqueue() {
+      return setBufferPolicy(this, _bufferPolicy.enqueueTasksPolicy);
+    },
+
+    drop() {
+      return setBufferPolicy(this, _bufferPolicy.dropQueuedTasksPolicy);
+    },
+
+    keepLatest() {
+      return setBufferPolicy(this, _bufferPolicy.dropButKeepLatestPolicy);
+    },
+
+    maxConcurrency(n) {
+      this._hasUsedModifier = true;
+      this._maxConcurrency = n;
+      assertModifiersNotMixedWithGroup(this);
+      return this;
+    },
+
+    group(taskGroupPath) {
+      this._taskGroupPath = taskGroupPath;
+      assertModifiersNotMixedWithGroup(this);
+      return this;
+    },
+
+    evented() {
+      this._hasEnabledEvents = true;
+      return this;
+    },
+
+    debug() {
+      this._debug = true;
+      return this;
+    }
+
+  };
+  _exports.propertyModifiers = propertyModifiers;
+
+  function setBufferPolicy(obj, policy) {
+    obj._hasSetBufferPolicy = true;
+    obj._hasUsedModifier = true;
+    obj._bufferPolicy = policy;
+    assertModifiersNotMixedWithGroup(obj);
+
+    if (obj._maxConcurrency === Infinity) {
+      obj._maxConcurrency = 1;
+    }
+
+    return obj;
+  }
+
+  function assertModifiersNotMixedWithGroup(obj) {
+    (true && !(!obj._hasUsedModifier || !obj._taskGroupPath) && Ember.assert(`ember-concurrency does not currently support using both .group() with other task modifiers (e.g. drop(), enqueue(), restartable())`, !obj._hasUsedModifier || !obj._taskGroupPath));
+  }
+
+  function resolveScheduler(propertyObj, obj, TaskGroup) {
+    if (propertyObj._taskGroupPath) {
+      let taskGroup = Ember.get(obj, propertyObj._taskGroupPath);
+      (true && !(taskGroup instanceof TaskGroup) && Ember.assert(`Expected path '${propertyObj._taskGroupPath}' to resolve to a TaskGroup object, but instead was ${taskGroup}`, taskGroup instanceof TaskGroup));
+      return taskGroup._scheduler;
+    } else {
+      return _scheduler.default.create({
+        bufferPolicy: propertyObj._bufferPolicy,
+        maxConcurrency: propertyObj._maxConcurrency
+      });
+    }
+  }
+});
+;define("ember-concurrency/-scheduler", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+  let SEEN_INDEX = 0;
+  const Scheduler = Ember.Object.extend({
+    lastPerformed: null,
+    lastStarted: null,
+    lastRunning: null,
+    lastSuccessful: null,
+    lastComplete: null,
+    lastErrored: null,
+    lastCanceled: null,
+    lastIncomplete: null,
+    performCount: 0,
+    boundHandleFulfill: null,
+    boundHandleReject: null,
+
+    init() {
+      this._super(...arguments);
+
+      this.activeTaskInstances = [];
+      this.queuedTaskInstances = [];
+    },
+
+    cancelAll(reason) {
+      let seen = [];
+      this.spliceTaskInstances(reason, this.activeTaskInstances, 0, this.activeTaskInstances.length, seen);
+      this.spliceTaskInstances(reason, this.queuedTaskInstances, 0, this.queuedTaskInstances.length, seen);
+      flushTaskCounts(seen);
+    },
+
+    spliceTaskInstances(cancelReason, taskInstances, index, count, seen) {
+      for (let i = index; i < index + count; ++i) {
+        let taskInstance = taskInstances[i];
+
+        if (!taskInstance.hasStarted) {
+          // This tracking logic is kinda spread all over the place...
+          // maybe TaskInstances themselves could notify
+          // some delegate of queued state changes upon cancelation?
+          Ember.set(taskInstance.task, 'numQueued', taskInstance.task.numQueued - 1);
+        }
+
+        taskInstance.cancel(cancelReason);
+
+        if (seen) {
+          seen.push(taskInstance.task);
+        }
+      }
+
+      taskInstances.splice(index, count);
+    },
+
+    schedule(taskInstance) {
+      Ember.set(this, 'lastPerformed', taskInstance);
+      Ember.set(this, 'performCount', this.performCount + 1);
+      Ember.set(taskInstance.task, 'numQueued', taskInstance.task.numQueued + 1);
+      this.queuedTaskInstances.push(taskInstance);
+
+      this._flushQueues();
+    },
+
+    _flushQueues() {
+      let seen = [];
+
+      for (let i = 0; i < this.activeTaskInstances.length; ++i) {
+        seen.push(this.activeTaskInstances[i].task);
+      }
+
+      this.activeTaskInstances = filterFinished(this.activeTaskInstances);
+      this.bufferPolicy.schedule(this);
+      var lastStarted = null;
+
+      for (let i = 0; i < this.activeTaskInstances.length; ++i) {
+        let taskInstance = this.activeTaskInstances[i];
+
+        if (!taskInstance.hasStarted) {
+          this._startTaskInstance(taskInstance);
+
+          lastStarted = taskInstance;
+        }
+
+        seen.push(taskInstance.task);
+      }
+
+      if (lastStarted) {
+        Ember.set(this, 'lastStarted', lastStarted);
+      }
+
+      Ember.set(this, 'lastRunning', lastStarted);
+
+      for (let i = 0; i < this.queuedTaskInstances.length; ++i) {
+        seen.push(this.queuedTaskInstances[i].task);
+      }
+
+      flushTaskCounts(seen);
+      Ember.set(this, 'concurrency', this.activeTaskInstances.length);
+    },
+
+    _startTaskInstance(taskInstance) {
+      let task = taskInstance.task;
+      Ember.set(task, 'numQueued', task.numQueued - 1);
+      Ember.set(task, 'numRunning', task.numRunning + 1);
+
+      taskInstance._start()._onFinalize(() => {
+        Ember.set(task, 'numRunning', task.numRunning - 1);
+        var state = taskInstance._completionState;
+        Ember.set(this, 'lastComplete', taskInstance);
+
+        if (state === 1) {
+          Ember.set(this, 'lastSuccessful', taskInstance);
+        } else {
+          if (state === 2) {
+            Ember.set(this, 'lastErrored', taskInstance);
+          } else if (state === 3) {
+            Ember.set(this, 'lastCanceled', taskInstance);
+          }
+
+          Ember.set(this, 'lastIncomplete', taskInstance);
+        }
+
+        Ember.run.once(this, this._flushQueues);
+      });
+    }
+
+  });
+
+  function flushTaskCounts(tasks) {
+    SEEN_INDEX++;
+
+    for (let i = 0, l = tasks.length; i < l; ++i) {
+      let task = tasks[i];
+
+      if (task._seenIndex < SEEN_INDEX) {
+        task._seenIndex = SEEN_INDEX;
+        updateTaskChainCounts(task);
+      }
+    }
+  }
+
+  function updateTaskChainCounts(task) {
+    let numRunning = task.numRunning;
+    let numQueued = task.numQueued;
+    let taskGroup = Ember.get(task, 'group');
+
+    while (taskGroup) {
+      Ember.set(taskGroup, 'numRunning', numRunning);
+      Ember.set(taskGroup, 'numQueued', numQueued);
+      taskGroup = Ember.get(taskGroup, 'group');
+    }
+  }
+
+  function filterFinished(taskInstances) {
+    let ret = [];
+
+    for (let i = 0, l = taskInstances.length; i < l; ++i) {
+      let taskInstance = taskInstances[i];
+
+      if (taskInstance.isFinished === false) {
+        ret.push(taskInstance);
+      }
+    }
+
+    return ret;
+  }
+
+  var _default = Scheduler;
+  _exports.default = _default;
+});
+;define("ember-concurrency/-task-group", ["exports", "ember-concurrency/utils", "ember-concurrency/-task-state-mixin", "ember-concurrency/-property-modifiers-mixin"], function (_exports, _utils, _taskStateMixin, _propertyModifiersMixin) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.TaskGroupProperty = _exports.TaskGroup = void 0;
+  const TaskGroup = Ember.Object.extend(_taskStateMixin.default, {
+    isTaskGroup: true,
+
+    toString() {
+      return `<TaskGroup:${this._propertyName}>`;
+    },
+
+    _numRunningOrNumQueued: Ember.computed.or('numRunning', 'numQueued'),
+    isRunning: Ember.computed.bool('_numRunningOrNumQueued'),
+    isQueued: false
+  });
+  _exports.TaskGroup = TaskGroup;
+  let TaskGroupProperty;
+  _exports.TaskGroupProperty = TaskGroupProperty;
+
+  if (true) {
+    _exports.TaskGroupProperty = TaskGroupProperty = class {};
+  } else {
+    _exports.TaskGroupProperty = TaskGroupProperty = class extends _utils._ComputedProperty {};
+  }
+
+  (0, _utils.objectAssign)(TaskGroupProperty.prototype, _propertyModifiersMixin.propertyModifiers);
+});
+;define("ember-concurrency/-task-instance", ["exports", "ember-concurrency/utils"], function (_exports, _utils) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.getRunningInstance = getRunningInstance;
+  _exports.didCancel = didCancel;
+  _exports.go = go;
+  _exports.wrap = wrap;
+  _exports.default = _exports.PERFORM_TYPE_LINKED = _exports.PERFORM_TYPE_UNLINKED = _exports.PERFORM_TYPE_DEFAULT = void 0;
+  const TASK_CANCELATION_NAME = 'TaskCancelation';
+  const COMPLETION_PENDING = 0;
+  const COMPLETION_SUCCESS = 1;
+  const COMPLETION_ERROR = 2;
+  const COMPLETION_CANCEL = 3;
+  const GENERATOR_STATE_BEFORE_CREATE = "BEFORE_CREATE";
+  const GENERATOR_STATE_HAS_MORE_VALUES = "HAS_MORE_VALUES";
+  const GENERATOR_STATE_DONE = "DONE";
+  const GENERATOR_STATE_ERRORED = "ERRORED";
+  const PERFORM_TYPE_DEFAULT = "PERFORM_TYPE_DEFAULT";
+  _exports.PERFORM_TYPE_DEFAULT = PERFORM_TYPE_DEFAULT;
+  const PERFORM_TYPE_UNLINKED = "PERFORM_TYPE_UNLINKED";
+  _exports.PERFORM_TYPE_UNLINKED = PERFORM_TYPE_UNLINKED;
+  const PERFORM_TYPE_LINKED = "PERFORM_TYPE_LINKED";
+  _exports.PERFORM_TYPE_LINKED = PERFORM_TYPE_LINKED;
+  let TASK_INSTANCE_STACK = [];
+
+  function getRunningInstance() {
+    return TASK_INSTANCE_STACK[TASK_INSTANCE_STACK.length - 1];
+  }
+
+  function handleYieldedUnknownThenable(thenable, taskInstance, resumeIndex) {
+    thenable.then(value => {
+      taskInstance.proceed(resumeIndex, _utils.YIELDABLE_CONTINUE, value);
+    }, error => {
+      taskInstance.proceed(resumeIndex, _utils.YIELDABLE_THROW, error);
+    });
+  }
+  /**
+   * Returns true if the object passed to it is a TaskCancelation error.
+   * If you call `someTask.perform().catch(...)` or otherwise treat
+   * a {@linkcode TaskInstance} like a promise, you may need to
+   * handle the cancelation of a TaskInstance differently from
+   * other kinds of errors it might throw, and you can use this
+   * convenience function to distinguish cancelation from errors.
+   *
+   * ```js
+   * click() {
+   *   this.get('myTask').perform().catch(e => {
+   *     if (!didCancel(e)) { throw e; }
+   *   });
+   * }
+   * ```
+   *
+   * @param {Object} error the caught error, which might be a TaskCancelation
+   * @returns {Boolean}
+   */
+
+
+  function didCancel(e) {
+    return e && e.name === TASK_CANCELATION_NAME;
+  }
+
+  function forwardToInternalPromise(method) {
+    return function (...args) {
+      this._hasSubscribed = true;
+      return this.get('_promise')[method](...args);
+    };
+  }
+
+  function spliceSlice(str, index, count, add) {
+    return str.slice(0, index) + (add || "") + str.slice(index + count);
+  }
+  /**
+    A `TaskInstance` represent a single execution of a
+    {@linkcode Task}. Every call to {@linkcode Task#perform} returns
+    a `TaskInstance`.
+  
+    `TaskInstance`s are cancelable, either explicitly
+    via {@linkcode TaskInstance#cancel} or {@linkcode Task#cancelAll},
+    or automatically due to the host object being destroyed, or
+    because concurrency policy enforced by a
+    {@linkcode TaskProperty Task Modifier} canceled the task instance.
+  
+    <style>
+      .ignore-this--this-is-here-to-hide-constructor,
+      #TaskInstance { display: none }
+    </style>
+  
+    @class TaskInstance
+  */
+
+
+  let taskInstanceAttrs = {
+    iterator: null,
+    _disposer: null,
+    _completionState: COMPLETION_PENDING,
+    task: null,
+    args: [],
+    _hasSubscribed: false,
+    _runLoop: true,
+    _debug: false,
+    _hasEnabledEvents: false,
+    cancelReason: null,
+    _performType: PERFORM_TYPE_DEFAULT,
+    _expectsLinkedYield: false,
+
+    /**
+     * If this TaskInstance runs to completion by returning a property
+     * other than a rejecting promise, this property will be set
+     * with that value.
+     *
+     * @memberof TaskInstance
+     * @instance
+     * @readOnly
+     */
+    value: null,
+
+    /**
+     * If this TaskInstance is canceled or throws an error (or yields
+     * a promise that rejects), this property will be set with that error.
+     * Otherwise, it is null.
+     *
+     * @memberof TaskInstance
+     * @instance
+     * @readOnly
+     */
+    error: null,
+
+    /**
+     * True if the task instance is fulfilled.
+     *
+     * @memberof TaskInstance
+     * @instance
+     * @readOnly
+     */
+    isSuccessful: false,
+
+    /**
+     * True if the task instance resolves to a rejection.
+     *
+     * @memberof TaskInstance
+     * @instance
+     * @readOnly
+     */
+    isError: false,
+
+    /**
+     * True if the task instance was canceled before it could run to completion.
+     *
+     * @memberof TaskInstance
+     * @instance
+     * @readOnly
+     */
+    isCanceled: Ember.computed.and('isCanceling', 'isFinished'),
+    isCanceling: false,
+
+    /**
+     * True if the task instance has started, else false.
+     *
+     * @memberof TaskInstance
+     * @instance
+     * @readOnly
+     */
+    hasStarted: false,
+
+    /**
+     * True if the task has run to completion.
+     *
+     * @memberof TaskInstance
+     * @instance
+     * @readOnly
+     */
+    isFinished: false,
+
+    /**
+     * True if the task is still running.
+     *
+     * @memberof TaskInstance
+     * @instance
+     * @readOnly
+     */
+    isRunning: Ember.computed.not('isFinished'),
+
+    /**
+     * Describes the state that the task instance is in. Can be used for debugging,
+     * or potentially driving some UI state. Possible values are:
+     *
+     * - `"dropped"`: task instance was canceled before it started
+     * - `"canceled"`: task instance was canceled before it could finish
+     * - `"finished"`: task instance ran to completion (even if an exception was thrown)
+     * - `"running"`: task instance is currently running (returns true even if
+     *     is paused on a yielded promise)
+     * - `"waiting"`: task instance hasn't begun running yet (usually
+     *     because the task is using the {@linkcode TaskProperty#enqueue .enqueue()}
+     *     task modifier)
+     *
+     * The animated timeline examples on the [Task Concurrency](/#/docs/task-concurrency)
+     * docs page make use of this property.
+     *
+     * @memberof TaskInstance
+     * @instance
+     * @readOnly
+     */
+    state: Ember.computed('isDropped', 'isCanceling', 'hasStarted', 'isFinished', function () {
+      if (Ember.get(this, 'isDropped')) {
+        return 'dropped';
+      } else if (this.isCanceling) {
+        return 'canceled';
+      } else if (this.isFinished) {
+        return 'finished';
+      } else if (this.hasStarted) {
+        return 'running';
+      } else {
+        return 'waiting';
+      }
+    }),
+
+    /**
+     * True if the TaskInstance was canceled before it could
+     * ever start running. For example, calling
+     * {@linkcode Task#perform .perform()} twice on a
+     * task with the {@linkcode TaskProperty#drop .drop()} modifier applied
+     * will result in the second task instance being dropped.
+     *
+     * @memberof TaskInstance
+     * @instance
+     * @readOnly
+     */
+    isDropped: Ember.computed('isCanceling', 'hasStarted', function () {
+      return this.isCanceling && !this.hasStarted;
+    }),
+
+    /**
+     * Event emitted when a new {@linkcode TaskInstance} starts executing.
+     *
+     * `on` from `@ember/object/evented` may be used to create a binding on the host object to the event.
+     *
+     * ```js
+     * export default Ember.Component.extend({
+     *   doSomething: task(function * () {
+     *     // ... does something
+     *   }),
+     *
+     *   onDoSomethingStarted: on('doSomething:started', function (taskInstance) {
+     *     // ...
+     *   })
+     * });
+     * ```
+     *
+     * @event TaskInstance#TASK_NAME:started
+     * @param {TaskInstance} taskInstance - Task instance that was started
+     */
+
+    /**
+     * Event emitted when a {@linkcode TaskInstance} succeeds.
+     *
+     * `on` from `@ember/object/evented` may be used to create a binding on the host object to the event.
+     *
+     * ```js
+     * export default Ember.Component.extend({
+     *   doSomething: task(function * () {
+     *     // ... does something
+     *   }),
+     *
+     *   onDoSomethingSucceeded: on('doSomething:succeeded', function (taskInstance) {
+     *     // ...
+     *   })
+     * });
+     * ```
+     *
+     * @event TaskInstance#TASK_NAME:succeeded
+     * @param {TaskInstance} taskInstance - Task instance that was succeeded
+     */
+
+    /**
+     * Event emitted when a {@linkcode TaskInstance} throws an an error that is
+     * not handled within the task itself.
+     *
+     * `on` from `@ember/object/evented` may be used to create a binding on the host object to the event.
+     *
+     * ```js
+     * export default Ember.Component.extend({
+     *   doSomething: task(function * () {
+     *     // ... does something
+     *   }),
+     *
+     *   onDoSomethingErrored: on('doSomething:errored', function (taskInstance, error) {
+     *     // ...
+     *   })
+     * });
+     * ```
+     *
+     * @event TaskInstance#TASK_NAME:errored
+     * @param {TaskInstance} taskInstance - Task instance that was started
+     * @param {Error} error - Error that was thrown by the task instance
+     */
+
+    /**
+     * Event emitted when a {@linkcode TaskInstance} is canceled.
+     *
+     * `on` from `@ember/object/evented` may be used to create a binding on the host object to the event.
+     *
+     * ```js
+     * export default Ember.Component.extend({
+     *   doSomething: task(function * () {
+     *     // ... does something
+     *   }),
+     *
+     *   onDoSomethingCanceled: on('doSomething:canceled', function (taskInstance, cancelationReason) {
+     *     // ...
+     *   })
+     * });
+     * ```
+     *
+     * @event TaskInstance#TASK_NAME:canceled
+     * @param {TaskInstance} taskInstance - Task instance that was started
+     * @param {string} cancelationReason - Cancelation reason that was was provided to {@linkcode TaskInstance#cancel}
+     */
+    _index: 1,
+
+    _start() {
+      if (this.hasStarted || this.isCanceling) {
+        return this;
+      }
+
+      Ember.set(this, 'hasStarted', true);
+
+      this._scheduleProceed(_utils.YIELDABLE_CONTINUE, undefined);
+
+      this._triggerEvent('started', this);
+
+      return this;
+    },
+
+    toString() {
+      let taskString = "" + this.task;
+      return spliceSlice(taskString, -1, 0, `.perform()`);
+    },
+
+    /**
+     * Cancels the task instance. Has no effect if the task instance has
+     * already been canceled or has already finished running.
+     *
+     * @method cancel
+     * @memberof TaskInstance
+     * @instance
+     */
+    cancel(cancelReason = ".cancel() was explicitly called") {
+      if (this.isCanceling || this.isFinished) {
+        return;
+      }
+
+      Ember.set(this, 'isCanceling', true);
+      let name = this.task && this.task._propertyName || "<unknown>";
+      Ember.set(this, 'cancelReason', `TaskInstance '${name}' was canceled because ${cancelReason}. For more information, see: http://ember-concurrency.com/docs/task-cancelation-help`);
+
+      if (this.hasStarted) {
+        this._proceedSoon(_utils.YIELDABLE_CANCEL, null);
+      } else {
+        this._finalize(null, COMPLETION_CANCEL);
+      }
+    },
+
+    _defer: null,
+    _promise: Ember.computed(function () {
+      this._defer = Ember.RSVP.defer();
+
+      this._maybeResolveDefer();
+
+      return this._defer.promise;
+    }),
+
+    _maybeResolveDefer() {
+      if (!this._defer || !this._completionState) {
+        return;
+      }
+
+      if (this._completionState === COMPLETION_SUCCESS) {
+        this._defer.resolve(this.value);
+      } else {
+        this._defer.reject(this.error);
+      }
+    },
+
+    /**
+     * Returns a promise that resolves with the value returned
+     * from the task's (generator) function, or rejects with
+     * either the exception thrown from the task function, or
+     * an error with a `.name` property with value `"TaskCancelation"`.
+     *
+     * @method then
+     * @memberof TaskInstance
+     * @instance
+     * @return {Promise}
+     */
+    then: forwardToInternalPromise('then'),
+
+    /**
+     * @method catch
+     * @memberof TaskInstance
+     * @instance
+     * @return {Promise}
+     */
+    catch: forwardToInternalPromise('catch'),
+
+    /**
+     * @method finally
+     * @memberof TaskInstance
+     * @instance
+     * @return {Promise}
+     */
+    finally: forwardToInternalPromise('finally'),
+
+    _finalize(_value, _completionState) {
+      let completionState = _completionState;
+      let value = _value;
+      this._index++;
+
+      if (this.isCanceling) {
+        completionState = COMPLETION_CANCEL;
+        value = new Error(this.cancelReason);
+
+        if (this._debug || Ember.ENV.DEBUG_TASKS) {
+          // eslint-disable-next-line no-console
+          console.log(this.cancelReason);
+        }
+
+        value.name = TASK_CANCELATION_NAME;
+        value.taskInstance = this;
+      }
+
+      Ember.set(this, '_completionState', completionState);
+      Ember.set(this, '_result', value);
+
+      if (completionState === COMPLETION_SUCCESS) {
+        Ember.set(this, 'isSuccessful', true);
+        Ember.set(this, 'value', value);
+      } else if (completionState === COMPLETION_ERROR) {
+        Ember.set(this, 'isError', true);
+        Ember.set(this, 'error', value);
+      } else if (completionState === COMPLETION_CANCEL) {
+        Ember.set(this, 'error', value);
+      }
+
+      Ember.set(this, 'isFinished', true);
+
+      this._dispose();
+
+      this._runFinalizeCallbacks();
+
+      this._dispatchFinalizeEvents();
+    },
+
+    _finalizeCallbacks: null,
+
+    _onFinalize(callback) {
+      if (!this._finalizeCallbacks) {
+        this._finalizeCallbacks = [];
+      }
+
+      this._finalizeCallbacks.push(callback);
+
+      if (this._completionState) {
+        this._runFinalizeCallbacks();
+      }
+    },
+
+    _runFinalizeCallbacks() {
+      this._maybeResolveDefer();
+
+      if (this._finalizeCallbacks) {
+        for (let i = 0, l = this._finalizeCallbacks.length; i < l; ++i) {
+          this._finalizeCallbacks[i]();
+        }
+
+        this._finalizeCallbacks = null;
+      }
+
+      this._maybeThrowUnhandledTaskErrorLater();
+    },
+
+    _maybeThrowUnhandledTaskErrorLater() {
+      // this backports the Ember 2.0+ RSVP _onError 'after' microtask behavior to Ember < 2.0
+      if (!this._hasSubscribed && this._completionState === COMPLETION_ERROR) {
+        Ember.run.schedule(Ember.run.backburner.queueNames[Ember.run.backburner.queueNames.length - 1], () => {
+          if (!this._hasSubscribed && !didCancel(this.error)) {
+            Ember.RSVP.reject(this.error);
+          }
+        });
+      }
+    },
+
+    _dispatchFinalizeEvents() {
+      switch (this._completionState) {
+        case COMPLETION_SUCCESS:
+          this._triggerEvent('succeeded', this);
+
+          break;
+
+        case COMPLETION_ERROR:
+          this._triggerEvent('errored', this, this.error);
+
+          break;
+
+        case COMPLETION_CANCEL:
+          this._triggerEvent('canceled', this, this.cancelReason);
+
+          break;
+      }
+    },
+
+    /**
+     * Runs any disposers attached to the task's most recent `yield`.
+     * For instance, when a task yields a TaskInstance, it registers that
+     * child TaskInstance's disposer, so that if the parent task is canceled,
+     * _dispose() will run that disposer and cancel the child TaskInstance.
+     *
+     * @private
+     */
+    _dispose() {
+      if (this._disposer) {
+        let disposer = this._disposer;
+        this._disposer = null; // TODO: test erroring disposer
+
+        disposer();
+      }
+    },
+
+    _isGeneratorDone() {
+      let state = this._generatorState;
+      return state === GENERATOR_STATE_DONE || state === GENERATOR_STATE_ERRORED;
+    },
+
+    /**
+     * Calls .next()/.throw()/.return() on the task's generator function iterator,
+     * essentially taking a single step of execution on the task function.
+     *
+     * @private
+     */
+    _resumeGenerator(nextValue, iteratorMethod) {
+      (true && !(!this._isGeneratorDone()) && Ember.assert("The task generator function has already run to completion. This is probably an ember-concurrency bug.", !this._isGeneratorDone()));
+
+      try {
+        TASK_INSTANCE_STACK.push(this);
+
+        let iterator = this._getIterator();
+
+        let result = iterator[iteratorMethod](nextValue);
+        this._generatorValue = result.value;
+
+        if (result.done) {
+          this._generatorState = GENERATOR_STATE_DONE;
+        } else {
+          this._generatorState = GENERATOR_STATE_HAS_MORE_VALUES;
+        }
+      } catch (e) {
+        this._generatorValue = e;
+        this._generatorState = GENERATOR_STATE_ERRORED;
+      } finally {
+        if (this._expectsLinkedYield) {
+          if (!this._generatorValue || this._generatorValue._performType !== PERFORM_TYPE_LINKED) {
+            // eslint-disable-next-line no-console
+            console.warn("You performed a .linked() task without immediately yielding/returning it. This is currently unsupported (but might be supported in future version of ember-concurrency).");
+          }
+
+          this._expectsLinkedYield = false;
+        }
+
+        TASK_INSTANCE_STACK.pop();
+      }
+    },
+
+    _getIterator() {
+      if (!this.iterator) {
+        this.iterator = this._makeIterator();
+      }
+
+      return this.iterator;
+    },
+
+    /**
+     * Returns a generator function iterator (the object with
+     * .next()/.throw()/.return() methods) using the task function
+     * supplied to `task(...)`. It uses `apply` so that the `this`
+     * context is the host object the task lives on, and passes
+     * the args passed to `perform(...args)` through to the generator
+     * function.
+     *
+     * `_makeIterator` is overridden in EncapsulatedTask to produce
+     * an iterator based on the `*perform()` function on the
+     * EncapsulatedTask definition.
+     *
+     * @private
+     */
+    _makeIterator() {
+      return this.fn.apply(this.context, this.args);
+    },
+
+    /**
+     * The TaskInstance internally tracks an index/sequence number
+     * (the `_index` property) which gets incremented every time the
+     * task generator function iterator takes a step. When a task
+     * function is paused at a `yield`, there are two events that
+     * cause the TaskInstance to take a step: 1) the yielded value
+     * "resolves", thus resuming the TaskInstance's execution, or
+     * 2) the TaskInstance is canceled. We need some mechanism to prevent
+     * stale yielded value resolutions from resuming the TaskFunction
+     * after the TaskInstance has already moved on (either because
+     * the TaskInstance has since been canceled or because an
+     * implementation of the Yieldable API tried to resume the
+     * TaskInstance more than once). The `_index` serves as
+     * that simple mechanism: anyone resuming a TaskInstance
+     * needs to pass in the `index` they were provided that acts
+     * as a ticket to resume the TaskInstance that expires once
+     * the TaskInstance has moved on.
+     *
+     * @private
+     */
+    _advanceIndex(index) {
+      if (this._index === index) {
+        return ++this._index;
+      }
+    },
+
+    _proceedSoon(yieldResumeType, value) {
+      this._advanceIndex(this._index);
+
+      if (this._runLoop) {
+        Ember.run.join(() => {
+          Ember.run.schedule('actions', this, this._proceed, yieldResumeType, value);
+        });
+      } else {
+        setTimeout(() => this._proceed(yieldResumeType, value), 1);
+      }
+    },
+
+    proceed(index, yieldResumeType, value) {
+      if (this._completionState) {
+        return;
+      }
+
+      if (!this._advanceIndex(index)) {
+        return;
+      }
+
+      this._proceedSoon(yieldResumeType, value);
+    },
+
+    _scheduleProceed(yieldResumeType, value) {
+      if (this._completionState) {
+        return;
+      }
+
+      if (this._runLoop && !Ember.run.currentRunLoop) {
+        Ember.run(this, this._proceed, yieldResumeType, value);
+        return;
+      } else if (!this._runLoop && Ember.run.currentRunLoop) {
+        setTimeout(() => this._proceed(yieldResumeType, value), 1);
+        return;
+      } else {
+        this._proceed(yieldResumeType, value);
+      }
+    },
+
+    _proceed(yieldResumeType, value) {
+      if (this._completionState) {
+        return;
+      }
+
+      if (this._generatorState === GENERATOR_STATE_DONE) {
+        this._handleResolvedReturnedValue(yieldResumeType, value);
+      } else {
+        this._handleResolvedContinueValue(yieldResumeType, value);
+      }
+    },
+
+    _handleResolvedReturnedValue(yieldResumeType, value) {
+      // decide what to do in the case of `return maybeYieldable`;
+      // value is the resolved value of the yieldable. We just
+      // need to decide how to finalize.
+      (true && !(this._completionState === COMPLETION_PENDING) && Ember.assert("expected completion state to be pending", this._completionState === COMPLETION_PENDING));
+      (true && !(this._generatorState === GENERATOR_STATE_DONE) && Ember.assert("expected generator to be done", this._generatorState === GENERATOR_STATE_DONE));
+
+      switch (yieldResumeType) {
+        case _utils.YIELDABLE_CONTINUE:
+        case _utils.YIELDABLE_RETURN:
+          this._finalize(value, COMPLETION_SUCCESS);
+
+          break;
+
+        case _utils.YIELDABLE_THROW:
+          this._finalize(value, COMPLETION_ERROR);
+
+          break;
+
+        case _utils.YIELDABLE_CANCEL:
+          Ember.set(this, 'isCanceling', true);
+
+          this._finalize(null, COMPLETION_CANCEL);
+
+          break;
+      }
+    },
+
+    _generatorState: GENERATOR_STATE_BEFORE_CREATE,
+    _generatorValue: null,
+
+    _handleResolvedContinueValue(_yieldResumeType, resumeValue) {
+      let iteratorMethod = _yieldResumeType;
+
+      if (iteratorMethod === _utils.YIELDABLE_CANCEL) {
+        Ember.set(this, 'isCanceling', true);
+        iteratorMethod = _utils.YIELDABLE_RETURN;
+      }
+
+      this._dispose();
+
+      let beforeIndex = this._index;
+
+      this._resumeGenerator(resumeValue, iteratorMethod);
+
+      if (!this._advanceIndex(beforeIndex)) {
+        return;
+      }
+
+      if (this._generatorState === GENERATOR_STATE_ERRORED) {
+        this._finalize(this._generatorValue, COMPLETION_ERROR);
+
+        return;
+      }
+
+      this._handleYieldedValue();
+    },
+
+    _handleYieldedValue() {
+      let yieldedValue = this._generatorValue;
+
+      if (!yieldedValue) {
+        this._proceedWithSimpleValue(yieldedValue);
+
+        return;
+      }
+
+      if (yieldedValue instanceof _utils.RawValue) {
+        this._proceedWithSimpleValue(yieldedValue.value);
+
+        return;
+      }
+
+      this._addDisposer(yieldedValue[_utils.cancelableSymbol]);
+
+      if (yieldedValue[_utils.yieldableSymbol]) {
+        this._invokeYieldable(yieldedValue);
+      } else if (typeof yieldedValue.then === 'function') {
+        handleYieldedUnknownThenable(yieldedValue, this, this._index);
+      } else {
+        this._proceedWithSimpleValue(yieldedValue);
+      }
+    },
+
+    _proceedWithSimpleValue(yieldedValue) {
+      this.proceed(this._index, _utils.YIELDABLE_CONTINUE, yieldedValue);
+    },
+
+    _addDisposer(maybeDisposer) {
+      if (typeof maybeDisposer === 'function') {
+        let priorDisposer = this._disposer;
+
+        if (priorDisposer) {
+          this._disposer = () => {
+            priorDisposer();
+            maybeDisposer();
+          };
+        } else {
+          this._disposer = maybeDisposer;
+        }
+      }
+    },
+
+    _invokeYieldable(yieldedValue) {
+      try {
+        let maybeDisposer = yieldedValue[_utils.yieldableSymbol](this, this._index);
+
+        this._addDisposer(maybeDisposer);
+      } catch (e) {// TODO: handle erroneous yieldable implementation
+      }
+    },
+
+    _triggerEvent(eventType, ...args) {
+      if (!this._hasEnabledEvents) {
+        return;
+      }
+
+      let host = this.task && this.task.context;
+      let eventNamespace = this.task && this.task._propertyName;
+
+      if (host && host.trigger && eventNamespace) {
+        host.trigger(`${eventNamespace}:${eventType}`, ...args);
+      }
+    }
+
+  };
+
+  taskInstanceAttrs[_utils.yieldableSymbol] = function handleYieldedTaskInstance(parentTaskInstance, resumeIndex) {
+    let yieldedTaskInstance = this;
+    yieldedTaskInstance._hasSubscribed = true;
+
+    yieldedTaskInstance._onFinalize(() => {
+      let state = yieldedTaskInstance._completionState;
+
+      if (state === COMPLETION_SUCCESS) {
+        parentTaskInstance.proceed(resumeIndex, _utils.YIELDABLE_CONTINUE, yieldedTaskInstance.value);
+      } else if (state === COMPLETION_ERROR) {
+        parentTaskInstance.proceed(resumeIndex, _utils.YIELDABLE_THROW, yieldedTaskInstance.error);
+      } else if (state === COMPLETION_CANCEL) {
+        parentTaskInstance.proceed(resumeIndex, _utils.YIELDABLE_CANCEL, null);
+      }
+    });
+
+    return function disposeYieldedTaskInstance() {
+      if (yieldedTaskInstance._performType !== PERFORM_TYPE_UNLINKED) {
+        if (yieldedTaskInstance._performType === PERFORM_TYPE_DEFAULT) {
+          let parentObj = parentTaskInstance.task && parentTaskInstance.task.context;
+          let childObj = yieldedTaskInstance.task && yieldedTaskInstance.task.context;
+
+          if (parentObj && childObj && parentObj !== childObj && parentObj.isDestroying && Ember.get(yieldedTaskInstance, 'isRunning')) {
+            let parentName = `\`${parentTaskInstance.task._propertyName}\``;
+            let childName = `\`${yieldedTaskInstance.task._propertyName}\``; // eslint-disable-next-line no-console
+
+            console.warn(`ember-concurrency detected a potentially hazardous "self-cancel loop" between parent task ${parentName} and child task ${childName}. If you want child task ${childName} to be canceled when parent task ${parentName} is canceled, please change \`.perform()\` to \`.linked().perform()\`. If you want child task ${childName} to keep running after parent task ${parentName} is canceled, change it to \`.unlinked().perform()\``);
+          }
+        }
+
+        yieldedTaskInstance.cancel();
+      }
+    };
+  };
+
+  let TaskInstance = Ember.Object.extend(taskInstanceAttrs);
+
+  function go(args, fn, attrs = {}) {
+    return TaskInstance.create(Object.assign({
+      args,
+      fn,
+      context: this
+    }, attrs))._start();
+  }
+
+  function wrap(fn, attrs = {}) {
+    return function wrappedRunnerFunction(...args) {
+      return go.call(this, args, fn, attrs);
+    };
+  }
+
+  var _default = TaskInstance;
+  _exports.default = _default;
+});
+;define("ember-concurrency/-task-property", ["exports", "ember-concurrency/-task-instance", "ember-concurrency/-task-state-mixin", "ember-concurrency/-property-modifiers-mixin", "ember-concurrency/utils", "ember-concurrency/-encapsulated-task"], function (_exports, _taskInstance, _taskStateMixin, _propertyModifiersMixin, _utils, _encapsulatedTask) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.TaskProperty = _exports.Task = void 0;
+  const PerformProxy = Ember.Object.extend({
+    _task: null,
+    _performType: null,
+    _linkedObject: null,
+
+    perform(...args) {
+      return this._task._performShared(args, this._performType, this._linkedObject);
+    }
+
+  });
+  /**
+    The `Task` object lives on a host Ember object (e.g.
+    a Component, Route, or Controller). You call the
+    {@linkcode Task#perform .perform()} method on this object
+    to create run individual {@linkcode TaskInstance}s,
+    and at any point, you can call the {@linkcode Task#cancelAll .cancelAll()}
+    method on this object to cancel all running or enqueued
+    {@linkcode TaskInstance}s.
+  
+  
+    <style>
+      .ignore-this--this-is-here-to-hide-constructor,
+      #Task{ display: none }
+    </style>
+  
+    @class Task
+  */
+
+  const Task = Ember.Object.extend(_taskStateMixin.default, {
+    /**
+     * `true` if any current task instances are running.
+     *
+     * @memberof Task
+     * @member {boolean} isRunning
+     * @instance
+     * @readOnly
+     */
+
+    /**
+     * `true` if any future task instances are queued.
+     *
+     * @memberof Task
+     * @member {boolean} isQueued
+     * @instance
+     * @readOnly
+     */
+
+    /**
+     * `true` if the task is not in the running or queued state.
+     *
+     * @memberof Task
+     * @member {boolean} isIdle
+     * @instance
+     * @readOnly
+     */
+
+    /**
+     * The current state of the task: `"running"`, `"queued"` or `"idle"`.
+     *
+     * @memberof Task
+     * @member {string} state
+     * @instance
+     * @readOnly
+     */
+
+    /**
+     * The most recently started task instance.
+     *
+     * @memberof Task
+     * @member {TaskInstance} last
+     * @instance
+     * @readOnly
+     */
+
+    /**
+     * The most recent task instance that is currently running.
+     *
+     * @memberof Task
+     * @member {TaskInstance} lastRunning
+     * @instance
+     * @readOnly
+     */
+
+    /**
+     * The most recently performed task instance.
+     *
+     * @memberof Task
+     * @member {TaskInstance} lastPerformed
+     * @instance
+     * @readOnly
+     */
+
+    /**
+     * The most recent task instance that succeeded.
+     *
+     * @memberof Task
+     * @member {TaskInstance} lastSuccessful
+     * @instance
+     * @readOnly
+     */
+
+    /**
+     * The most recently completed task instance.
+     *
+     * @memberof Task
+     * @member {TaskInstance} lastComplete
+     * @instance
+     * @readOnly
+     */
+
+    /**
+     * The most recent task instance that errored.
+     *
+     * @memberof Task
+     * @member {TaskInstance} lastErrored
+     * @instance
+     * @readOnly
+     */
+
+    /**
+     * The most recently canceled task instance.
+     *
+     * @memberof Task
+     * @member {TaskInstance} lastCanceled
+     * @instance
+     * @readOnly
+     */
+
+    /**
+     * The most recent task instance that is incomplete.
+     *
+     * @memberof Task
+     * @member {TaskInstance} lastIncomplete
+     * @instance
+     * @readOnly
+     */
+
+    /**
+     * The number of times this task has been performed.
+     *
+     * @memberof Task
+     * @member {number} performCount
+     * @instance
+     * @readOnly
+     */
+    fn: null,
+    context: null,
+    _observes: null,
+    _curryArgs: null,
+    _linkedObjects: null,
+
+    init() {
+      this._super(...arguments);
+
+      if (typeof this.fn === 'object') {
+        let owner = Ember.getOwner(this.context);
+        let ownerInjection = owner ? owner.ownerInjection() : {};
+        this._taskInstanceFactory = _encapsulatedTask.default.extend(ownerInjection, this.fn);
+      }
+
+      (0, _utils._cleanupOnDestroy)(this.context, this, 'cancelAll', {
+        reason: 'the object it lives on was destroyed or unrendered'
+      });
+    },
+
+    _curry(...args) {
+      let task = this._clone();
+
+      task._curryArgs = [...(this._curryArgs || []), ...args];
+      return task;
+    },
+
+    linked() {
+      let taskInstance = (0, _taskInstance.getRunningInstance)();
+
+      if (!taskInstance) {
+        throw new Error(`You can only call .linked() from within a task.`);
+      }
+
+      return PerformProxy.create({
+        _task: this,
+        _performType: _taskInstance.PERFORM_TYPE_LINKED,
+        _linkedObject: taskInstance
+      });
+    },
+
+    unlinked() {
+      return PerformProxy.create({
+        _task: this,
+        _performType: _taskInstance.PERFORM_TYPE_UNLINKED
+      });
+    },
+
+    _clone() {
+      return Task.create({
+        fn: this.fn,
+        context: this.context,
+        _origin: this._origin,
+        _taskGroupPath: this._taskGroupPath,
+        _scheduler: this._scheduler,
+        _propertyName: this._propertyName
+      });
+    },
+
+    /**
+     * This property is true if this task is NOT running, i.e. the number
+     * of currently running TaskInstances is zero.
+     *
+     * This property is useful for driving the state/style of buttons
+     * and loading UI, among other things.
+     *
+     * @memberof Task
+     * @instance
+     * @readOnly
+     */
+
+    /**
+     * This property is true if this task is running, i.e. the number
+     * of currently running TaskInstances is greater than zero.
+     *
+     * This property is useful for driving the state/style of buttons
+     * and loading UI, among other things.
+     *
+     * @memberof Task
+     * @instance
+     * @readOnly
+     */
+
+    /**
+     * EXPERIMENTAL
+     *
+     * This value describes what would happen to the TaskInstance returned
+     * from .perform() if .perform() were called right now.  Returns one of
+     * the following values:
+     *
+     * - `succeed`: new TaskInstance will start running immediately
+     * - `drop`: new TaskInstance will be dropped
+     * - `enqueue`: new TaskInstance will be enqueued for later execution
+     *
+     * @memberof Task
+     * @instance
+     * @private
+     * @readOnly
+     */
+
+    /**
+     * EXPERIMENTAL
+     *
+     * Returns true if calling .perform() right now would immediately start running
+     * the returned TaskInstance.
+     *
+     * @memberof Task
+     * @instance
+     * @private
+     * @readOnly
+     */
+
+    /**
+     * EXPERIMENTAL
+     *
+     * Returns true if calling .perform() right now would immediately cancel (drop)
+     * the returned TaskInstance.
+     *
+     * @memberof Task
+     * @instance
+     * @private
+     * @readOnly
+     */
+
+    /**
+     * EXPERIMENTAL
+     *
+     * Returns true if calling .perform() right now would enqueue the TaskInstance
+     * rather than execute immediately.
+     *
+     * @memberof Task
+     * @instance
+     * @private
+     * @readOnly
+     */
+
+    /**
+     * EXPERIMENTAL
+     *
+     * Returns true if calling .perform() right now would cause a previous task to be canceled
+     *
+     * @memberof Task
+     * @instance
+     * @private
+     * @readOnly
+     */
+
+    /**
+     * The current number of active running task instances. This
+     * number will never exceed maxConcurrency.
+     *
+     * @memberof Task
+     * @instance
+     * @readOnly
+     */
+
+    /**
+     * Cancels all running or queued `TaskInstance`s for this Task.
+     * If you're trying to cancel a specific TaskInstance (rather
+     * than all of the instances running under this task) call
+     * `.cancel()` on the specific TaskInstance.
+     *
+     * @method cancelAll
+     * @memberof Task
+     * @param {Object} [options]
+     * @param {string} [options.reason=.cancelAll() was explicitly called on the Task] - a descriptive reason the task was cancelled
+     * @param {boolean} [options.resetState] - if true, will clear the task state (`last*` and `performCount` properties will be set to initial values)
+     * @instance
+     */
+    toString() {
+      return `<Task:${this._propertyName}>`;
+    },
+
+    _taskInstanceFactory: _taskInstance.default,
+
+    /**
+     * Creates a new {@linkcode TaskInstance} and attempts to run it right away.
+     * If running this task instance would increase the task's concurrency
+     * to a number greater than the task's maxConcurrency, this task
+     * instance might be immediately canceled (dropped), or enqueued
+     * to run at later time, after the currently running task(s) have finished.
+     *
+     * @method perform
+     * @memberof Task
+     * @param {*} arg* - args to pass to the task function
+     * @instance
+     *
+     * @fires TaskInstance#TASK_NAME:started
+     * @fires TaskInstance#TASK_NAME:succeeded
+     * @fires TaskInstance#TASK_NAME:errored
+     * @fires TaskInstance#TASK_NAME:canceled
+     *
+     */
+    perform(...args) {
+      return this._performShared(args, _taskInstance.PERFORM_TYPE_DEFAULT, null);
+    },
+
+    _performShared(args, performType, linkedObject) {
+      let fullArgs = this._curryArgs ? [...this._curryArgs, ...args] : args;
+
+      let taskInstance = this._taskInstanceFactory.create({
+        fn: this.fn,
+        args: fullArgs,
+        context: this.context,
+        owner: this.context,
+        task: this,
+        _debug: this._debug,
+        _hasEnabledEvents: this._hasEnabledEvents,
+        _origin: this,
+        _performType: performType
+      });
+
+      Ember.setOwner(taskInstance, Ember.getOwner(this.context));
+
+      if (performType === _taskInstance.PERFORM_TYPE_LINKED) {
+        linkedObject._expectsLinkedYield = true;
+      }
+
+      if (this.context.isDestroying) {
+        // TODO: express this in terms of lifetimes; a task linked to
+        // a dead lifetime should immediately cancel.
+        taskInstance.cancel();
+      }
+
+      this._scheduler.schedule(taskInstance);
+
+      return taskInstance;
+    },
+
+    [_utils.INVOKE](...args) {
+      return this.perform(...args);
+    }
+
+  });
+  /**
+    A {@link TaskProperty} is the Computed Property-like object returned
+    from the {@linkcode task} function. You can call Task Modifier methods
+    on this object to configure the behavior of the {@link Task}.
+  
+    See [Managing Task Concurrency](/#/docs/task-concurrency) for an
+    overview of all the different task modifiers you can use and how
+    they impact automatic cancelation / enqueueing of task instances.
+  
+    <style>
+      .ignore-this--this-is-here-to-hide-constructor,
+      #TaskProperty { display: none }
+    </style>
+  
+    @class TaskProperty
+  */
+
+  _exports.Task = Task;
+  let TaskProperty;
+  _exports.TaskProperty = TaskProperty;
+
+  if (true) {
+    _exports.TaskProperty = TaskProperty = class {};
+  } else {
+    // Prior to the 3.10.0 refactors, we had to extend the _ComputedProprety class
+    // for a classic decorator/descriptor to run correctly.
+    _exports.TaskProperty = TaskProperty = class extends _utils._ComputedProperty {
+      callSuperSetup() {
+        if (super.setup) {
+          super.setup(...arguments);
+        }
+      }
+
+    };
+  }
+
+  (0, _utils.objectAssign)(TaskProperty.prototype, {
+    setup(proto, taskName) {
+      if (this.callSuperSetup) {
+        this.callSuperSetup(...arguments);
+      }
+
+      if (this._maxConcurrency !== Infinity && !this._hasSetBufferPolicy) {
+        // eslint-disable-next-line no-console
+        console.warn(`The use of maxConcurrency() without a specified task modifier is deprecated and won't be supported in future versions of ember-concurrency. Please specify a task modifier instead, e.g. \`${taskName}: task(...).enqueue().maxConcurrency(${this._maxConcurrency})\``);
+      }
+
+      registerOnPrototype(Ember.addListener, proto, this.eventNames, taskName, 'perform', false);
+      registerOnPrototype(Ember.addListener, proto, this.cancelEventNames, taskName, 'cancelAll', false);
+      registerOnPrototype(Ember.addObserver, proto, this._observes, taskName, 'perform', true);
+    },
+
+    /**
+     * Calling `task(...).on(eventName)` configures the task to be
+     * automatically performed when the specified events fire. In
+     * this way, it behaves like
+     * [Ember.on](http://emberjs.com/api/classes/Ember.html#method_on).
+     *
+     * You can use `task(...).on('init')` to perform the task
+     * when the host object is initialized.
+     *
+     * ```js
+     * export default Ember.Component.extend({
+     *   pollForUpdates: task(function * () {
+     *     // ... this runs when the Component is first created
+     *     // because we specified .on('init')
+     *   }).on('init'),
+     *
+     *   handleFoo: task(function * (a, b, c) {
+     *     // this gets performed automatically if the 'foo'
+     *     // event fires on this Component,
+     *     // e.g., if someone called component.trigger('foo')
+     *   }).on('foo'),
+     * });
+     * ```
+     *
+     * [See the Writing Tasks Docs for more info](/#/docs/writing-tasks)
+     *
+     * @method on
+     * @memberof TaskProperty
+     * @param {String} eventNames*
+     * @instance
+     */
+    on() {
+      this.eventNames = this.eventNames || [];
+      this.eventNames.push.apply(this.eventNames, arguments);
+      return this;
+    },
+
+    /**
+     * This behaves like the {@linkcode TaskProperty#on task(...).on() modifier},
+     * but instead will cause the task to be canceled if any of the
+     * specified events fire on the parent object.
+     *
+     * [See the Live Example](/#/docs/examples/route-tasks/1)
+     *
+     * @method cancelOn
+     * @memberof TaskProperty
+     * @param {String} eventNames*
+     * @instance
+     */
+    cancelOn() {
+      this.cancelEventNames = this.cancelEventNames || [];
+      this.cancelEventNames.push.apply(this.cancelEventNames, arguments);
+      return this;
+    },
+
+    observes(...properties) {
+      this._observes = properties;
+      return this;
+    },
+
+    /**
+     * Configures the task to cancel old currently task instances
+     * to make room for a new one to perform. Sets default
+     * maxConcurrency to 1.
+     *
+     * [See the Live Example](/#/docs/examples/route-tasks/1)
+     *
+     * @method restartable
+     * @memberof TaskProperty
+     * @instance
+     */
+
+    /**
+     * Configures the task to run task instances one-at-a-time in
+     * the order they were `.perform()`ed. Sets default
+     * maxConcurrency to 1.
+     *
+     * @method enqueue
+     * @memberof TaskProperty
+     * @instance
+     */
+
+    /**
+     * Configures the task to immediately cancel (i.e. drop) any
+     * task instances performed when the task is already running
+     * at maxConcurrency. Sets default maxConcurrency to 1.
+     *
+     * @method drop
+     * @memberof TaskProperty
+     * @instance
+     */
+
+    /**
+     * Configures the task to drop all but the most recently
+     * performed {@linkcode TaskInstance }.
+     *
+     * @method keepLatest
+     * @memberof TaskProperty
+     * @instance
+     */
+
+    /**
+     * Sets the maximum number of task instances that are allowed
+     * to run at the same time. By default, with no task modifiers
+     * applied, this number is Infinity (there is no limit
+     * to the number of tasks that can run at the same time).
+     * {@linkcode TaskProperty#restartable .restartable()},
+     * {@linkcode TaskProperty#enqueue .enqueue()}, and
+     * {@linkcode TaskProperty#drop .drop()} set the default
+     * maxConcurrency to 1, but you can override this value
+     * to set the maximum number of concurrently running tasks
+     * to a number greater than 1.
+     *
+     * [See the AJAX Throttling example](/#/docs/examples/ajax-throttling)
+     *
+     * The example below uses a task with `maxConcurrency(3)` to limit
+     * the number of concurrent AJAX requests (for anyone using this task)
+     * to 3.
+     *
+     * ```js
+     * doSomeAjax: task(function * (url) {
+     *   return Ember.$.getJSON(url).promise();
+     * }).maxConcurrency(3),
+     *
+     * elsewhere() {
+     *   this.get('doSomeAjax').perform("http://www.example.com/json");
+     * },
+     * ```
+     *
+     * @method maxConcurrency
+     * @memberof TaskProperty
+     * @param {Number} n The maximum number of concurrently running tasks
+     * @instance
+     */
+
+    /**
+     * Adds this task to a TaskGroup so that concurrency constraints
+     * can be shared between multiple tasks.
+     *
+     * [See the Task Group docs for more information](/#/docs/task-groups)
+     *
+     * @method group
+     * @memberof TaskProperty
+     * @param {String} groupPath A path to the TaskGroup property
+     * @instance
+     */
+
+    /**
+     * Activates lifecycle events, allowing Evented host objects to react to task state
+     * changes.
+     *
+     * ```js
+     *
+     * export default Component.extend({
+     *   uploadTask: task(function* (file) {
+     *     // ... file upload stuff
+     *   }).evented(),
+     *
+     *   uploadedStarted: on('uploadTask:started', function(taskInstance) {
+     *     this.get('analytics').track("User Photo: upload started");
+     *   }),
+     * });
+     * ```
+     *
+     * @method evented
+     * @memberof TaskProperty
+     * @instance
+     */
+
+    /**
+     * Logs lifecycle events to aid in debugging unexpected Task behavior.
+     * Presently only logs cancelation events and the reason for the cancelation,
+     * e.g. "TaskInstance 'doStuff' was canceled because the object it lives on was destroyed or unrendered"
+     *
+     * @method debug
+     * @memberof TaskProperty
+     * @instance
+     */
+    perform() {
+      (true && !(false) && Ember.deprecate(`[DEPRECATED] An ember-concurrency task property was not set on its object via 'defineProperty'.
+              You probably used 'set(obj, "myTask", task(function* () { ... }) )'.
+              Unfortunately due to this we can't tell you the name of the task.`, false, {
+        id: 'ember-meta.descriptor-on-object',
+        until: '3.5.0',
+        url: 'https://emberjs.com/deprecations/v3.x#toc_use-defineProperty-to-define-computed-properties'
+      }));
+      throw new Error("An ember-concurrency task property was not set on its object via 'defineProperty'. See deprecation warning for details.");
+    }
+
+  });
+  (0, _utils.objectAssign)(TaskProperty.prototype, _propertyModifiersMixin.propertyModifiers);
+
+  function registerOnPrototype(addListenerOrObserver, proto, names, taskName, taskMethod, once) {
+    if (names) {
+      for (let i = 0; i < names.length; ++i) {
+        let name = names[i];
+        let handlerName = `__ember_concurrency_handler_${handlerCounter++}`;
+        proto[handlerName] = makeTaskCallback(taskName, taskMethod, once);
+        addListenerOrObserver(proto, name, null, handlerName);
+      }
+    }
+  }
+
+  function makeTaskCallback(taskName, method, once) {
+    return function () {
+      let task = this.get(taskName);
+
+      if (once) {
+        Ember.run.scheduleOnce('actions', task, method, ...arguments);
+      } else {
+        task[method].apply(task, arguments);
+      }
+    };
+  }
+
+  let handlerCounter = 0;
+});
+;define("ember-concurrency/-task-state-mixin", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+  const {
+    alias
+  } = Ember.computed; // this is a mixin of properties/methods shared between Tasks and TaskGroups
+
+  var _default = Ember.Mixin.create({
+    isRunning: Ember.computed.gt('numRunning', 0),
+    isQueued: Ember.computed.gt('numQueued', 0),
+    isIdle: Ember.computed('isRunning', 'isQueued', function () {
+      return !this.get('isRunning') && !this.get('isQueued');
+    }),
+    state: Ember.computed('isRunning', 'isQueued', function () {
+      if (this.get('isRunning')) {
+        return 'running';
+      } else if (this.get('isQueued')) {
+        return 'queued';
+      } else {
+        return 'idle';
+      }
+    }),
+    _propertyName: null,
+    _origin: null,
+    name: alias('_propertyName'),
+    concurrency: alias('numRunning'),
+    last: alias('_scheduler.lastStarted'),
+    lastRunning: alias('_scheduler.lastRunning'),
+    lastPerformed: alias('_scheduler.lastPerformed'),
+    lastSuccessful: alias('_scheduler.lastSuccessful'),
+    lastComplete: alias('_scheduler.lastComplete'),
+    lastErrored: alias('_scheduler.lastErrored'),
+    lastCanceled: alias('_scheduler.lastCanceled'),
+    lastIncomplete: alias('_scheduler.lastIncomplete'),
+    performCount: alias('_scheduler.performCount'),
+    numRunning: 0,
+    numQueued: 0,
+    _seenIndex: 0,
+
+    cancelAll(options) {
+      let {
+        reason,
+        resetState
+      } = options || {};
+      reason = reason || ".cancelAll() was explicitly called on the Task";
+
+      this._scheduler.cancelAll(reason);
+
+      if (resetState) {
+        this._resetState();
+      }
+    },
+
+    group: Ember.computed(function () {
+      return this._taskGroupPath && Ember.get(this.context, this._taskGroupPath);
+    }),
+    _scheduler: null,
+
+    _resetState() {
+      this.setProperties({
+        'last': null,
+        'lastRunning': null,
+        'lastStarted': null,
+        'lastPerformed': null,
+        'lastSuccessful': null,
+        'lastComplete': null,
+        'lastErrored': null,
+        'lastCanceled': null,
+        'lastIncomplete': null,
+        'performCount': 0
+      });
+    }
+
+  });
+
+  _exports.default = _default;
+});
+;define("ember-concurrency/-wait-for", ["exports", "ember-concurrency/utils"], function (_exports, _utils) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.waitForQueue = waitForQueue;
+  _exports.waitForEvent = waitForEvent;
+  _exports.waitForProperty = waitForProperty;
+
+  class WaitForQueueYieldable extends _utils.Yieldable {
+    constructor(queueName) {
+      super();
+      this.queueName = queueName;
+      this.timerId = null;
+    }
+
+    [_utils.yieldableSymbol](taskInstance, resumeIndex) {
+      try {
+        this.timerId = Ember.run.schedule(this.queueName, () => {
+          taskInstance.proceed(resumeIndex, _utils.YIELDABLE_CONTINUE, null);
+        });
+      } catch (error) {
+        taskInstance.proceed(resumeIndex, _utils.YIELDABLE_THROW, error);
+      }
+    }
+
+    [_utils.cancelableSymbol]() {
+      Ember.run.cancel(this.timerId);
+      this.timerId = null;
+    }
+
+  }
+
+  class WaitForEventYieldable extends _utils.Yieldable {
+    constructor(object, eventName) {
+      super();
+      this.object = object;
+      this.eventName = eventName;
+      this.fn = null;
+      this.didFinish = false;
+      this.usesDOMEvents = false;
+      this.requiresCleanup = false;
+    }
+
+    [_utils.yieldableSymbol](taskInstance, resumeIndex) {
+      this.fn = event => {
+        this.didFinish = true;
+
+        this[_utils.cancelableSymbol]();
+
+        taskInstance.proceed(resumeIndex, _utils.YIELDABLE_CONTINUE, event);
+      };
+
+      if (typeof this.object.addEventListener === 'function') {
+        // assume that we're dealing with a DOM `EventTarget`.
+        this.usesDOMEvents = true;
+        this.object.addEventListener(this.eventName, this.fn);
+      } else if (typeof this.object.one === 'function') {
+        // assume that we're dealing with either `Ember.Evented` or a compatible
+        // interface, like jQuery.
+        this.object.one(this.eventName, this.fn);
+      } else {
+        this.requiresCleanup = true;
+        this.object.on(this.eventName, this.fn);
+      }
+    }
+
+    [_utils.cancelableSymbol]() {
+      if (this.fn) {
+        if (this.usesDOMEvents) {
+          // unfortunately this is required, because IE 11 does not support the
+          // `once` option: https://caniuse.com/#feat=once-event-listener
+          this.object.removeEventListener(this.eventName, this.fn);
+        } else if (!this.didFinish || this.requiresCleanup) {
+          this.object.off(this.eventName, this.fn);
+        }
+
+        this.fn = null;
+      }
+    }
+
+  }
+
+  class WaitForPropertyYieldable extends _utils.Yieldable {
+    constructor(object, key, predicateCallback = Boolean) {
+      super();
+      this.object = object;
+      this.key = key;
+
+      if (typeof predicateCallback === 'function') {
+        this.predicateCallback = predicateCallback;
+      } else {
+        this.predicateCallback = v => v === predicateCallback;
+      }
+
+      this.observerBound = false;
+    }
+
+    [_utils.yieldableSymbol](taskInstance, resumeIndex) {
+      this.observerFn = () => {
+        let value = Ember.get(this.object, this.key);
+        let predicateValue = this.predicateCallback(value);
+
+        if (predicateValue) {
+          taskInstance.proceed(resumeIndex, _utils.YIELDABLE_CONTINUE, value);
+          return true;
+        }
+      };
+
+      if (!this.observerFn()) {
+        Ember.addObserver(this.object, this.key, null, this.observerFn);
+        this.observerBound = true;
+      }
+    }
+
+    [_utils.cancelableSymbol]() {
+      if (this.observerBound && this.observerFn) {
+        Ember.removeObserver(this.object, this.key, null, this.observerFn);
+        this.observerFn = null;
+      }
+    }
+
+  }
+  /**
+   * Use `waitForQueue` to pause the task until a certain run loop queue is reached.
+   *
+   * ```js
+   * import { task, waitForQueue } from 'ember-concurrency';
+   * export default Component.extend({
+   *   myTask: task(function * () {
+   *     yield waitForQueue('afterRender');
+   *     console.log("now we're in the afterRender queue");
+   *   })
+   * });
+   * ```
+   *
+   * @param {string} queueName the name of the Ember run loop queue
+   */
+
+
+  function waitForQueue(queueName) {
+    return new WaitForQueueYieldable(queueName);
+  }
+  /**
+   * Use `waitForEvent` to pause the task until an event is fired. The event
+   * can either be a jQuery event or an Ember.Evented event (or any event system
+   * where the object supports `.on()` `.one()` and `.off()`).
+   *
+   * ```js
+   * import { task, waitForEvent } from 'ember-concurrency';
+   * export default Component.extend({
+   *   myTask: task(function * () {
+   *     console.log("Please click anywhere..");
+   *     let clickEvent = yield waitForEvent($('body'), 'click');
+   *     console.log("Got event", clickEvent);
+   *
+   *     let emberEvent = yield waitForEvent(this, 'foo');
+   *     console.log("Got foo event", emberEvent);
+   *
+   *     // somewhere else: component.trigger('foo', { value: 123 });
+   *   })
+   * });
+   * ```
+   *
+   * @param {object} object the Ember Object, jQuery element, or other object with .on() and .off() APIs
+   *                 that the event fires from
+   * @param {function} eventName the name of the event to wait for
+   */
+
+
+  function waitForEvent(object, eventName) {
+    (true && !((0, _utils.isEventedObject)(object)) && Ember.assert(`${object} must include Ember.Evented (or support \`.on()\` and \`.off()\`) or DOM EventTarget (or support \`addEventListener\` and  \`removeEventListener\`) to be able to use \`waitForEvent\``, (0, _utils.isEventedObject)(object)));
+    return new WaitForEventYieldable(object, eventName);
+  }
+  /**
+   * Use `waitForProperty` to pause the task until a property on an object
+   * changes to some expected value. This can be used for a variety of use
+   * cases, including synchronizing with another task by waiting for it
+   * to become idle, or change state in some other way. If you omit the
+   * callback, `waitForProperty` will resume execution when the observed
+   * property becomes truthy. If you provide a callback, it'll be called
+   * immediately with the observed property's current value, and multiple
+   * times thereafter whenever the property changes, until you return
+   * a truthy value from the callback, or the current task is canceled.
+   * You can also pass in a non-Function value in place of the callback,
+   * in which case the task will continue executing when the property's
+   * value becomes the value that you passed in.
+   *
+   * ```js
+   * import { task, waitForProperty } from 'ember-concurrency';
+   * export default Component.extend({
+   *   foo: 0,
+   *
+   *   myTask: task(function * () {
+   *     console.log("Waiting for `foo` to become 5");
+   *
+   *     yield waitForProperty(this, 'foo', v => v === 5);
+   *     // alternatively: yield waitForProperty(this, 'foo', 5);
+   *
+   *     // somewhere else: this.set('foo', 5)
+   *
+   *     console.log("`foo` is 5!");
+   *
+   *     // wait for another task to be idle before running:
+   *     yield waitForProperty(this, 'otherTask.isIdle');
+   *     console.log("otherTask is idle!");
+   *   })
+   * });
+   * ```
+   *
+   * @param {object} object an object (most likely an Ember Object)
+   * @param {string} key the property name that is observed for changes
+   * @param {function} callbackOrValue a Function that should return a truthy value
+   *                                   when the task should continue executing, or
+   *                                   a non-Function value that the watched property
+   *                                   needs to equal before the task will continue running
+   */
+
+
+  function waitForProperty(object, key, predicateCallback) {
+    return new WaitForPropertyYieldable(object, key, predicateCallback);
+  }
+});
+;define("ember-concurrency/helpers/cancel-all", ["exports", "ember-concurrency/-helpers"], function (_exports, _helpers) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.cancelHelper = cancelHelper;
+  _exports.default = void 0;
+  const CANCEL_REASON = "the 'cancel-all' template helper was invoked";
+
+  function cancelHelper(args) {
+    let cancelable = args[0];
+
+    if (!cancelable || typeof cancelable.cancelAll !== 'function') {
+      (true && !(false) && Ember.assert(`The first argument passed to the \`cancel-all\` helper should be a Task or TaskGroup (without quotes); you passed ${cancelable}`, false));
+    }
+
+    return (0, _helpers.taskHelperClosure)('cancel-all', 'cancelAll', [cancelable, {
+      reason: CANCEL_REASON
+    }]);
+  }
+
+  var _default = Ember.Helper.helper(cancelHelper);
+
+  _exports.default = _default;
+});
+;define("ember-concurrency/helpers/perform", ["exports", "ember-concurrency/-helpers"], function (_exports, _helpers) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.performHelper = performHelper;
+  _exports.default = void 0;
+
+  function performHelper(args, hash) {
+    return (0, _helpers.taskHelperClosure)('perform', 'perform', args, hash);
+  }
+
+  var _default = Ember.Helper.helper(performHelper);
+
+  _exports.default = _default;
+});
+;define("ember-concurrency/helpers/task", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  function taskHelper([task, ...args]) {
+    return task._curry(...args);
+  }
+
+  var _default = Ember.Helper.helper(taskHelper);
+
+  _exports.default = _default;
+});
+;define("ember-concurrency/index", ["exports", "ember-concurrency/utils", "ember-concurrency/-task-property", "ember-concurrency/-task-instance", "ember-concurrency/-task-group", "ember-concurrency/-cancelable-promise-helpers", "ember-concurrency/-wait-for", "ember-concurrency/-property-modifiers-mixin"], function (_exports, _utils, _taskProperty, _taskInstance, _taskGroup, _cancelablePromiseHelpers, _waitFor, _propertyModifiersMixin) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.task = task;
+  _exports.taskGroup = taskGroup;
+  Object.defineProperty(_exports, "timeout", {
+    enumerable: true,
+    get: function () {
+      return _utils.timeout;
+    }
+  });
+  Object.defineProperty(_exports, "forever", {
+    enumerable: true,
+    get: function () {
+      return _utils.forever;
+    }
+  });
+  Object.defineProperty(_exports, "rawTimeout", {
+    enumerable: true,
+    get: function () {
+      return _utils.rawTimeout;
+    }
+  });
+  Object.defineProperty(_exports, "didCancel", {
+    enumerable: true,
+    get: function () {
+      return _taskInstance.didCancel;
+    }
+  });
+  Object.defineProperty(_exports, "all", {
+    enumerable: true,
+    get: function () {
+      return _cancelablePromiseHelpers.all;
+    }
+  });
+  Object.defineProperty(_exports, "allSettled", {
+    enumerable: true,
+    get: function () {
+      return _cancelablePromiseHelpers.allSettled;
+    }
+  });
+  Object.defineProperty(_exports, "hash", {
+    enumerable: true,
+    get: function () {
+      return _cancelablePromiseHelpers.hash;
+    }
+  });
+  Object.defineProperty(_exports, "race", {
+    enumerable: true,
+    get: function () {
+      return _cancelablePromiseHelpers.race;
+    }
+  });
+  Object.defineProperty(_exports, "waitForQueue", {
+    enumerable: true,
+    get: function () {
+      return _waitFor.waitForQueue;
+    }
+  });
+  Object.defineProperty(_exports, "waitForEvent", {
+    enumerable: true,
+    get: function () {
+      return _waitFor.waitForEvent;
+    }
+  });
+  Object.defineProperty(_exports, "waitForProperty", {
+    enumerable: true,
+    get: function () {
+      return _waitFor.waitForProperty;
+    }
+  });
+  const setDecorator = Ember._setClassicDecorator || Ember._setComputedDecorator;
+
+  function _computed(fn) {
+    if (true) {
+      let cp = function (proto, key) {
+        if (cp.setup !== undefined) {
+          cp.setup(proto, key);
+        }
+
+        return Ember.computed(fn)(...arguments);
+      };
+
+      setDecorator(cp);
+      return cp;
+    } else {
+      return Ember.computed(fn);
+    }
+  }
+  /**
+   * A Task is a cancelable, restartable, asynchronous operation that
+   * is driven by a generator function. Tasks are automatically canceled
+   * when the object they live on is destroyed (e.g. a Component
+   * is unrendered).
+   *
+   * To define a task, use the `task(...)` function, and pass in
+   * a generator function, which will be invoked when the task
+   * is performed. The reason generator functions are used is
+   * that they (like the proposed ES7 async-await syntax) can
+   * be used to elegantly express asynchronous, cancelable
+   * operations.
+   *
+   * You can also define an
+   * <a href="/#/docs/encapsulated-task">Encapsulated Task</a>
+   * by passing in an object that defined a `perform` generator
+   * function property.
+   *
+   * The following Component defines a task called `myTask` that,
+   * when performed, prints a message to the console, sleeps for 1 second,
+   * prints a final message to the console, and then completes.
+   *
+   * ```js
+   * import { task, timeout } from 'ember-concurrency';
+   * export default Component.extend({
+   *   myTask: task(function * () {
+   *     console.log("Pausing for a second...");
+   *     yield timeout(1000);
+   *     console.log("Done!");
+   *   })
+   * });
+   * ```
+   *
+   * ```hbs
+   * <button {{action myTask.perform}}>Perform Task</button>
+   * ```
+   *
+   * By default, tasks have no concurrency constraints
+   * (multiple instances of a task can be running at the same time)
+   * but much of a power of tasks lies in proper usage of Task Modifiers
+   * that you can apply to a task.
+   *
+   * @param {function} generatorFunction the generator function backing the task.
+   * @returns {TaskProperty}
+   */
+
+
+  function task(taskFn) {
+    let tp = _computed(function (_propertyName) {
+      tp.taskFn.displayName = `${_propertyName} (task)`;
+      return _taskProperty.Task.create({
+        fn: tp.taskFn,
+        context: this,
+        _origin: this,
+        _taskGroupPath: tp._taskGroupPath,
+        _scheduler: (0, _propertyModifiersMixin.resolveScheduler)(tp, this, _taskGroup.TaskGroup),
+        _propertyName,
+        _debug: tp._debug,
+        _hasEnabledEvents: tp._hasEnabledEvents
+      });
+    });
+
+    tp.taskFn = taskFn;
+    Object.setPrototypeOf(tp, _taskProperty.TaskProperty.prototype);
+    return tp;
+  }
+  /**
+   * "Task Groups" provide a means for applying
+   * task modifiers to groups of tasks. Once a {@linkcode Task} is declared
+   * as part of a group task, modifiers like `drop()` or `restartable()`
+   * will no longer affect the individual `Task`. Instead those
+   * modifiers can be applied to the entire group.
+   *
+   * ```js
+   * import { task, taskGroup } from 'ember-concurrency';
+   *
+   * export default Controller.extend({
+   *   chores: taskGroup().drop(),
+   *
+   *   mowLawn:       task(taskFn).group('chores'),
+   *   doDishes:      task(taskFn).group('chores'),
+   *   changeDiapers: task(taskFn).group('chores')
+   * });
+   * ```
+   *
+   * @returns {TaskGroup}
+   */
+
+
+  function taskGroup(taskFn) {
+    let tp = _computed(function (_propertyName) {
+      return _taskGroup.TaskGroup.create({
+        fn: tp.taskFn,
+        context: this,
+        _origin: this,
+        _taskGroupPath: tp._taskGroupPath,
+        _scheduler: (0, _propertyModifiersMixin.resolveScheduler)(tp, this, _taskGroup.TaskGroup),
+        _propertyName
+      });
+    });
+
+    tp.taskFn = taskFn;
+    Object.setPrototypeOf(tp, _taskGroup.TaskGroupProperty.prototype);
+    return tp;
+  }
+});
+;define("ember-concurrency/initializers/ember-concurrency", ["exports", "ember-concurrency"], function (_exports, _emberConcurrency) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+  // This initializer exists only to make sure that the following
+  // imports happen before the app boots.
+  var _default = {
+    name: 'ember-concurrency',
+    initialize: function () {}
+  };
+  _exports.default = _default;
+});
+;define("ember-concurrency/utils", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.isEventedObject = isEventedObject;
+  _exports._cleanupOnDestroy = _cleanupOnDestroy;
+  _exports.timeout = timeout;
+  _exports.raw = raw;
+  _exports.rawTimeout = rawTimeout;
+  _exports.yieldableToPromise = yieldableToPromise;
+  _exports.RawValue = _exports.forever = _exports.Yieldable = _exports._ComputedProperty = _exports.YIELDABLE_CANCEL = _exports.YIELDABLE_RETURN = _exports.YIELDABLE_THROW = _exports.YIELDABLE_CONTINUE = _exports.yieldableSymbol = _exports.cancelableSymbol = _exports.INVOKE = _exports.objectAssign = _exports.Arguments = void 0;
+
+  function isEventedObject(c) {
+    return c && (typeof c.one === 'function' && typeof c.off === 'function' || typeof c.on === 'function' && typeof c.off === 'function' || typeof c.addEventListener === 'function' && typeof c.removeEventListener === 'function');
+  }
+
+  class Arguments {
+    constructor(args, defer) {
+      this.args = args;
+      this.defer = defer;
+    }
+
+    resolve(value) {
+      if (this.defer) {
+        this.defer.resolve(value);
+      }
+    }
+
+  }
+
+  _exports.Arguments = Arguments;
+
+  let objectAssign = Object.assign || function objectAssign(target) {
+    'use strict';
+
+    if (target == null) {
+      throw new TypeError('Cannot convert undefined or null to object');
+    }
+
+    target = Object(target);
+
+    for (var index = 1; index < arguments.length; index++) {
+      var source = arguments[index];
+
+      if (source != null) {
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+    }
+
+    return target;
+  };
+
+  _exports.objectAssign = objectAssign;
+
+  function _cleanupOnDestroy(owner, object, cleanupMethodName, ...args) {
+    // TODO: find a non-mutate-y, non-hacky way of doing this.
+    if (!owner.willDestroy) {
+      // we're running in non Ember object (possibly in a test mock)
+      return;
+    }
+
+    if (!owner.willDestroy.__ember_processes_destroyers__) {
+      let oldWillDestroy = owner.willDestroy;
+      let disposers = [];
+
+      owner.willDestroy = function () {
+        for (let i = 0, l = disposers.length; i < l; i++) {
+          disposers[i]();
+        }
+
+        oldWillDestroy.apply(owner, arguments);
+      };
+
+      owner.willDestroy.__ember_processes_destroyers__ = disposers;
+    }
+
+    owner.willDestroy.__ember_processes_destroyers__.push(() => {
+      object[cleanupMethodName](...args);
+    });
+  }
+
+  let INVOKE = "__invoke_symbol__";
+  _exports.INVOKE = INVOKE;
+  let locations = ['@ember/-internals/glimmer/index', '@ember/-internals/glimmer', 'ember-glimmer', 'ember-glimmer/helpers/action', 'ember-htmlbars/keywords/closure-action', 'ember-routing-htmlbars/keywords/closure-action', 'ember-routing/keywords/closure-action'];
+
+  for (let i = 0; i < locations.length; i++) {
+    if (locations[i] in Ember.__loader.registry) {
+      _exports.INVOKE = INVOKE = Ember.__loader.require(locations[i])['INVOKE'];
+      break;
+    }
+  } // TODO: Symbol polyfill?
+
+
+  const cancelableSymbol = "__ec_cancel__";
+  _exports.cancelableSymbol = cancelableSymbol;
+  const yieldableSymbol = "__ec_yieldable__";
+  _exports.yieldableSymbol = yieldableSymbol;
+  const YIELDABLE_CONTINUE = "next";
+  _exports.YIELDABLE_CONTINUE = YIELDABLE_CONTINUE;
+  const YIELDABLE_THROW = "throw";
+  _exports.YIELDABLE_THROW = YIELDABLE_THROW;
+  const YIELDABLE_RETURN = "return";
+  _exports.YIELDABLE_RETURN = YIELDABLE_RETURN;
+  const YIELDABLE_CANCEL = "cancel";
+  _exports.YIELDABLE_CANCEL = YIELDABLE_CANCEL;
+  const _ComputedProperty = Ember.ComputedProperty;
+  _exports._ComputedProperty = _ComputedProperty;
+
+  class Yieldable {
+    constructor() {
+      this[yieldableSymbol] = this[yieldableSymbol].bind(this);
+      this[cancelableSymbol] = this[cancelableSymbol].bind(this);
+    }
+
+    then(...args) {
+      return yieldableToPromise(this).then(...args);
+    }
+
+    [yieldableSymbol]() {}
+
+    [cancelableSymbol]() {}
+
+  }
+
+  _exports.Yieldable = Yieldable;
+
+  class TimeoutYieldable extends Yieldable {
+    constructor(ms) {
+      super();
+      this.ms = ms;
+      this.timerId = null;
+    }
+
+    [yieldableSymbol](taskInstance, resumeIndex) {
+      this.timerId = Ember.run.later(() => {
+        taskInstance.proceed(resumeIndex, YIELDABLE_CONTINUE, taskInstance._result);
+      }, this.ms);
+    }
+
+    [cancelableSymbol]() {
+      Ember.run.cancel(this.timerId);
+      this.timerId = null;
+    }
+
+  }
+  /**
+   *
+   * Yielding `timeout(ms)` will pause a task for the duration
+   * of time passed in, in milliseconds.
+   *
+   * This timeout will be scheduled on the Ember runloop, which
+   * means that test helpers will wait for it to complete before
+   * continuing with the test. See `rawTimeout()` if you need
+   * different behavior.
+   *
+   * The task below, when performed, will print a message to the
+   * console every second.
+   *
+   * ```js
+   * export default Component.extend({
+   *   myTask: task(function * () {
+   *     while (true) {
+   *       console.log("Hello!");
+   *       yield timeout(1000);
+   *     }
+   *   })
+   * });
+   * ```
+   *
+   * @param {number} ms - the amount of time to sleep before resuming
+   *   the task, in milliseconds
+   */
+
+
+  function timeout(ms) {
+    return new TimeoutYieldable(ms);
+  }
+  /**
+   *
+   * Yielding `forever` will pause a task indefinitely until
+   * it is cancelled (i.e. via host object destruction, .restartable(),
+   * or manual cancellation).
+   *
+   * This is often useful in cases involving animation: if you're
+   * using Liquid Fire, or some other animation scheme, sometimes you'll
+   * notice buttons visibly reverting to their inactive states during
+   * a route transition. By yielding `forever` in a Component task that drives a
+   * button's active state, you can keep a task indefinitely running
+   * until the animation runs to completion.
+   *
+   * NOTE: Liquid Fire also includes a useful `waitUntilIdle()` method
+   * on the `liquid-fire-transitions` service that you can use in a lot
+   * of these cases, but it won't cover cases of asynchrony that are
+   * unrelated to animation, in which case `forever` might be better suited
+   * to your needs.
+   *
+   * ```js
+   * import { task, forever } from 'ember-concurrency';
+   *
+   * export default Component.extend({
+   *   myService: service(),
+   *   myTask: task(function * () {
+   *     yield this.myService.doSomethingThatCausesATransition();
+   *     yield forever;
+   *   })
+   * });
+   * ```
+   */
+
+
+  class ForeverYieldable extends Yieldable {
+    [yieldableSymbol]() {}
+
+    [cancelableSymbol]() {}
+
+  }
+
+  const forever = new ForeverYieldable();
+  _exports.forever = forever;
+
+  class RawValue {
+    constructor(value) {
+      this.value = value;
+    }
+
+  }
+
+  _exports.RawValue = RawValue;
+
+  function raw(value) {
+    return new RawValue(value);
+  }
+
+  class RawTimeoutYieldable extends Yieldable {
+    constructor(ms) {
+      super();
+      this.ms = ms;
+      this.timerId = null;
+    }
+
+    [yieldableSymbol](taskInstance, resumeIndex) {
+      this.timerId = setTimeout(() => {
+        taskInstance.proceed(resumeIndex, YIELDABLE_CONTINUE, taskInstance._result);
+      }, this.ms);
+    }
+
+    [cancelableSymbol]() {
+      clearTimeout(this.timerId);
+      this.timerId = null;
+    }
+
+  }
+  /**
+   *
+   * Yielding `rawTimeout(ms)` will pause a task for the duration
+   * of time passed in, in milliseconds.
+   *
+   * The timeout will use the native `setTimeout()` browser API,
+   * instead of the Ember runloop, which means that test helpers
+   * will *not* wait for it to complete.
+   *
+   * The task below, when performed, will print a message to the
+   * console every second.
+   *
+   * ```js
+   * export default Component.extend({
+   *   myTask: task(function * () {
+   *     while (true) {
+   *       console.log("Hello!");
+   *       yield rawTimeout(1000);
+   *     }
+   *   })
+   * });
+   * ```
+   *
+   * @param {number} ms - the amount of time to sleep before resuming
+   *   the task, in milliseconds
+   */
+
+
+  function rawTimeout(ms) {
+    return new RawTimeoutYieldable(ms);
+  }
+
+  function yieldableToPromise(yieldable) {
+    let def = Ember.RSVP.defer();
+    let thinInstance = {
+      proceed(_index, resumeType, value) {
+        if (resumeType == YIELDABLE_CONTINUE || resumeType == YIELDABLE_RETURN) {
+          def.resolve(value);
+        } else {
+          def.reject(value);
+        }
+      }
+
+    };
+    let maybeDisposer = yieldable[yieldableSymbol](thinInstance, 0);
+    def.promise[cancelableSymbol] = maybeDisposer || yieldable[cancelableSymbol];
+    return def.promise;
+  }
+});
 ;define('ember-data/-private', ['exports', '@ember-data/store', 'ember-data/version', '@ember-data/model/-private', '@ember-data/store/-private', '@ember-data/record-data/-private'], function (exports, store, VERSION, Private, Private$1, Private$2) { 'use strict';
 
   store = store && Object.prototype.hasOwnProperty.call(store, 'default') ? store['default'] : store;
@@ -94352,25 +97326,25 @@ var __ember_auto_import__ =
 /************************************************************************/
 /******/ ({
 
-/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/app.js":
+/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-272173435oV9V2u0H/cache-264-bundler/staging/app.js":
 /*!****************************************************************************************************************************!*\
-  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/app.js ***!
+  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-272173435oV9V2u0H/cache-264-bundler/staging/app.js ***!
   \****************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("\nif (typeof document !== 'undefined') {\n  __webpack_require__.p = (function(){\n    var scripts = document.querySelectorAll('script');\n    return scripts[scripts.length - 1].src.replace(/\\/[^/]*$/, '/');\n  })();\n}\n\nmodule.exports = (function(){\n  var d = _eai_d;\n  var r = _eai_r;\n  window.emberAutoImportDynamic = function(specifier) {\n    return r('_eai_dyn_' + specifier);\n  };\n    d('@glimmer/tracking', [], function() { return __webpack_require__(/*! ./node_modules/@glimmer/tracking/dist/modules/es2017/index.js */ \"./node_modules/@glimmer/tracking/dist/modules/es2017/index.js\"); });\n    d('peerjs', [], function() { return __webpack_require__(/*! ./node_modules/peerjs/dist/peerjs.min.js */ \"./node_modules/peerjs/dist/peerjs.min.js\"); });\n    d('uuid', [], function() { return __webpack_require__(/*! ./node_modules/uuid/dist/esm-node/index.js */ \"./node_modules/uuid/dist/esm-browser/index.js\"); });\n})();\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/app.js?");
+eval("\nif (typeof document !== 'undefined') {\n  __webpack_require__.p = (function(){\n    var scripts = document.querySelectorAll('script');\n    return scripts[scripts.length - 1].src.replace(/\\/[^/]*$/, '/');\n  })();\n}\n\nmodule.exports = (function(){\n  var d = _eai_d;\n  var r = _eai_r;\n  window.emberAutoImportDynamic = function(specifier) {\n    return r('_eai_dyn_' + specifier);\n  };\n    d('@glimmer/tracking', [], function() { return __webpack_require__(/*! ./node_modules/@glimmer/tracking/dist/modules/es2017/index.js */ \"./node_modules/@glimmer/tracking/dist/modules/es2017/index.js\"); });\n    d('peerjs', [], function() { return __webpack_require__(/*! ./node_modules/peerjs/dist/peerjs.min.js */ \"./node_modules/peerjs/dist/peerjs.min.js\"); });\n    d('uuid', [], function() { return __webpack_require__(/*! ./node_modules/uuid/dist/esm-node/index.js */ \"./node_modules/uuid/dist/esm-browser/index.js\"); });\n})();\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-272173435oV9V2u0H/cache-264-bundler/staging/app.js?");
 
 /***/ }),
 
-/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/l.js":
+/***/ "../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-272173435oV9V2u0H/cache-264-bundler/staging/l.js":
 /*!**************************************************************************************************************************!*\
-  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/l.js ***!
+  !*** /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-272173435oV9V2u0H/cache-264-bundler/staging/l.js ***!
   \**************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("\nwindow._eai_r = require;\nwindow._eai_d = define;\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/l.js?");
+eval("\nwindow._eai_r = require;\nwindow._eai_d = define;\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-272173435oV9V2u0H/cache-264-bundler/staging/l.js?");
 
 /***/ }),
 
@@ -94387,12 +97361,12 @@ eval("function webpackEmptyContext(req) {\n\tvar e = new Error(\"Cannot find mod
 
 /***/ 0:
 /*!*****************************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/l.js /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/app.js ***!
+  !*** multi /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-272173435oV9V2u0H/cache-264-bundler/staging/l.js /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-272173435oV9V2u0H/cache-264-bundler/staging/app.js ***!
   \*****************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/l.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/l.js\");\nmodule.exports = __webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/app.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/app.js\");\n\n\n//# sourceURL=webpack://__ember_auto_import__/multi_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/l.js_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-23784X3V4X6xyUdFs/cache-256-bundler/staging/app.js?");
+eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-272173435oV9V2u0H/cache-264-bundler/staging/l.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-272173435oV9V2u0H/cache-264-bundler/staging/l.js\");\nmodule.exports = __webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-272173435oV9V2u0H/cache-264-bundler/staging/app.js */\"../../../../../private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-272173435oV9V2u0H/cache-264-bundler/staging/app.js\");\n\n\n//# sourceURL=webpack://__ember_auto_import__/multi_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-272173435oV9V2u0H/cache-264-bundler/staging/l.js_/private/var/folders/ft/lcmk2lms7l91mq71lz63n62m0000gp/T/broccoli-272173435oV9V2u0H/cache-264-bundler/staging/app.js?");
 
 /***/ })
 
@@ -94621,7 +97595,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
   });
   _exports.default = void 0;
 
-  var _class, _descriptor, _temp;
+  var _class, _descriptor, _descriptor2, _temp;
 
   function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
 
@@ -94671,6 +97645,8 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
       _initializerDefineProperty(this, "peerService", _descriptor, this);
 
+      _initializerDefineProperty(this, "videoSyncService", _descriptor2, this);
+
       _defineProperty(this, "hostId", "");
 
       _defineProperty(this, "message", "");
@@ -94678,6 +97654,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
       this.peerService.addEventHandler("chat", message => {
         console.log("received:", message.data.text);
       });
+      this.videoSyncService.initialize();
     }
 
     hmm() {
@@ -94701,6 +97678,11 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     }
 
   }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "peerService", [Ember.inject.service], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "videoSyncService", [Ember.inject.service], {
     configurable: true,
     enumerable: true,
     writable: true,
@@ -94968,6 +97950,32 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
   _exports.default = _default;
 });
+;define("vemos-plugin/helpers/cancel-all", ["exports", "ember-concurrency/helpers/cancel-all"], function (_exports, _cancelAll) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _cancelAll.default;
+    }
+  });
+});
+;define("vemos-plugin/helpers/perform", ["exports", "ember-concurrency/helpers/perform"], function (_exports, _perform) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _perform.default;
+    }
+  });
+});
 ;define("vemos-plugin/helpers/pluralize", ["exports", "ember-inflector/lib/helpers/pluralize"], function (_exports, _pluralize) {
   "use strict";
 
@@ -94987,6 +97995,19 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
   _exports.default = void 0;
   var _default = _singularize.default;
   _exports.default = _default;
+});
+;define("vemos-plugin/helpers/task", ["exports", "ember-concurrency/helpers/task"], function (_exports, _task) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _task.default;
+    }
+  });
 });
 ;define("vemos-plugin/initializers/app-version", ["exports", "ember-cli-app-version/initializer-factory", "vemos-plugin/config/environment"], function (_exports, _initializerFactory, _environment) {
   "use strict";
@@ -95026,6 +98047,19 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
   };
   _exports.default = _default;
+});
+;define("vemos-plugin/initializers/ember-concurrency", ["exports", "ember-concurrency/initializers/ember-concurrency"], function (_exports, _emberConcurrency) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _emberConcurrency.default;
+    }
+  });
 });
 ;define("vemos-plugin/initializers/ember-data-data-adapter", ["exports", "@ember-data/debug/setup"], function (_exports, _setup) {
   "use strict";
@@ -95567,6 +98601,149 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
     }
   });
 });
+;define("vemos-plugin/services/video-sync-service", ["exports", "ember-concurrency", "vemos-plugin/peer-service"], function (_exports, _emberConcurrency, _peerService) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _class, _descriptor, _descriptor2, _temp;
+
+  function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
+
+  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) { var desc = {}; Object.keys(descriptor).forEach(function (key) { desc[key] = descriptor[key]; }); desc.enumerable = !!desc.enumerable; desc.configurable = !!desc.configurable; if ('value' in desc || desc.initializer) { desc.writable = true; } desc = decorators.slice().reverse().reduce(function (desc, decorator) { return decorator(target, property, desc) || desc; }, desc); if (context && desc.initializer !== void 0) { desc.value = desc.initializer ? desc.initializer.call(context) : void 0; desc.initializer = undefined; } if (desc.initializer === void 0) { Object.defineProperty(target, property, desc); desc = null; } return desc; }
+
+  function _initializerWarningHelper(descriptor, context) { throw new Error('Decorating class property failed. Please ensure that ' + 'proposal-class-properties is enabled and runs after the decorators transform.'); }
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  class VideoHandler {
+    constructor() {
+      _defineProperty(this, "handlerName", "Default");
+
+      _defineProperty(this, "peerService", undefined);
+
+      _defineProperty(this, "parentDomService", undefined);
+
+      _defineProperty(this, "videoElement", undefined);
+    }
+
+    /*
+     * By default, this function simply finds the largest video in the parent DOM
+     */
+    getElementReference() {
+      console.log("getElementReference");
+      let videos = this.parentDomService.window.document.querySelectorAll("video");
+      console.log(`${this.handlerName} Handler – Found ${videos.length} videos`);
+      let videoSizes = Array.from(videos).reduce((sizes, video) => {
+        let rect = video.getBoundingClientRect();
+        sizes[video] = rect.height * rect.width;
+        return sizes;
+      }, {});
+      let largestVideoSize = Object.values(videos).sort().reverse().firstObject;
+      return Object.keys(videoSizes).find(video => videoSizes[video] === largestVideoSize);
+    }
+
+    seek(time) {
+      this.videoElement.currentTime = time;
+    }
+
+    play() {
+      this.videoElement.play();
+    }
+
+    pause() {
+      this.videoElement.pause();
+    }
+
+    async addListeners() {
+      console.log("Add Video Listeners");
+      await (0, _emberConcurrency.timeout)(3000);
+      this.videoElement = this.getElementReference();
+      this.videoElement.addEventListener("seeked", () => {
+        let message = new _peerService.RTCMessage({
+          event: "video-seek",
+          data: {
+            time: this.videoElement.currentTime
+          }
+        });
+        this.peerService.sendRTCMessage(message);
+      });
+      this.videoElement.addEventListener("play", () => {
+        let message = new _peerService.RTCMessage({
+          event: "video-play",
+          data: {}
+        });
+        this.peerService.sendRTCMessage(message);
+      });
+      this.videoElement.addEventListener("pause", () => {
+        let message = new _peerService.RTCMessage({
+          event: "video-pause",
+          data: {}
+        });
+        this.peerService.sendRTCMessage(message);
+      });
+    }
+
+    removeListeners() {}
+
+  }
+
+  class NetflixHandler extends VideoHandler {
+    constructor(peerService, parentDomService) {
+      super(peerService, parentDomService);
+      this.handlerName = "Netflix";
+    }
+
+  }
+
+  let VideoSyncServiceService = (_class = (_temp = class VideoSyncServiceService extends Ember.Service {
+    constructor(...args) {
+      super(...args);
+
+      _initializerDefineProperty(this, "peerService", _descriptor, this);
+
+      _initializerDefineProperty(this, "parentDomService", _descriptor2, this);
+
+      _defineProperty(this, "currentHandler", undefined);
+    }
+
+    initialize() {
+      this.currentHandler = new this.handlerClass(this.peerService, this.parentDomService);
+      this.currentHandler.addListeners();
+    }
+
+    play() {
+      this.currentHandler.play();
+    }
+
+    pause() {
+      this.currentHandler.pause();
+    }
+
+    seek(message) {
+      this.currentHandler.seek(message.data.time);
+    }
+
+    get handlerClass() {
+      return NetflixHandler;
+    }
+
+  }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "peerService", [Ember.inject.service], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "parentDomService", [Ember.inject.service], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: null
+  })), _class);
+  _exports.default = VideoSyncServiceService;
+});
 ;define("vemos-plugin/templates/application", ["exports"], function (_exports) {
   "use strict";
 
@@ -95660,7 +98837,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 ;define('vemos-plugin/config/environment', [], function() {
   
           var exports = {
-            'default': {"modulePrefix":"vemos-plugin","environment":"development","rootURL":"/","locationType":"none","EmberENV":{"FEATURES":{},"EXTEND_PROTOTYPES":{"Date":false},"_APPLICATION_TEMPLATE_WRAPPER":false,"_DEFAULT_ASYNC_OBSERVERS":true,"_JQUERY_INTEGRATION":false,"_TEMPLATE_ONLY_GLIMMER_COMPONENTS":true},"APP":{"autoboot":false,"name":"vemos-plugin","version":"0.0.0+5bd697b9"},"ember-cli-post-build-copy":{"replace":true,"development":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]],"production":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]]},"exportApplicationGlobal":true}
+            'default': {"modulePrefix":"vemos-plugin","environment":"development","rootURL":"/","locationType":"none","EmberENV":{"FEATURES":{},"EXTEND_PROTOTYPES":{"Date":false},"_APPLICATION_TEMPLATE_WRAPPER":false,"_DEFAULT_ASYNC_OBSERVERS":true,"_JQUERY_INTEGRATION":false,"_TEMPLATE_ONLY_GLIMMER_COMPONENTS":true},"APP":{"autoboot":false,"name":"vemos-plugin","version":"0.0.0+233e499b"},"ember-cli-post-build-copy":{"replace":true,"development":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]],"production":[["/assets/app.js","extension/assets/app.js"],["/assets/app.css","extension/assets/app.css"]]},"exportApplicationGlobal":true}
           };
           Object.defineProperty(exports, '__esModule', {value: true});
           return exports;
@@ -95669,7 +98846,7 @@ eval("__webpack_require__(/*! /private/var/folders/ft/lcmk2lms7l91mq71lz63n62m00
 
 ;
           if (!runningTests) {
-            require("vemos-plugin/app")["default"].create({"autoboot":false,"name":"vemos-plugin","version":"0.0.0+5bd697b9"});
+            require("vemos-plugin/app")["default"].create({"autoboot":false,"name":"vemos-plugin","version":"0.0.0+233e499b"});
           }
         
 //# sourceMappingURL=app.map
