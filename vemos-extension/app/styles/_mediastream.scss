@@ -1,0 +1,66 @@
+.mediastream-video {
+  width: 100%;
+  height: auto;
+  margin-bottom: 5px;
+}
+
+.mediastream-container {
+  position: relative;
+}
+
+.mediastream-container:hover .mediastream-controls,
+.mediastream-controls.o__muted {
+  opacity: 1;
+}
+
+.mediastream-controls {
+  opacity: 0;
+  transition: opacity 100ms ease-in-out;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+  border-radius: 5px;
+  padding: 3px;
+  svg {
+    height: 16px;
+    width: 16px;
+    fill: white;
+    opacity: 0.8;
+  }
+}
+
+.mediastream-video.o__flipped {
+  transform: scaleX(-1);
+}
+
+.mediastream__waveform {
+  position: absolute;
+  height: 20px;
+  bottom: 5px;
+  left: 5px;
+}
+
+.mediastream__waveform-bar {
+  margin: 0 1px;
+  width: 4px;
+  border-radius: 2px;
+  min-height: 4px;
+  max-height: 100%;
+  background-color: limegreen;
+  transition: height 100ms linear;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  opacity: 0.9;
+}
+
+.mediastream__waveform-bar.o__small {
+  max-height: 75%;
+  height: calc(var(--height) / 2);
+}
+
+.mediastream__waveform-bar.o__large {
+  height: var(--height);
+}
