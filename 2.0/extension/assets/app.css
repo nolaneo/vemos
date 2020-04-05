@@ -135,7 +135,7 @@ body#vemos-body > .ember-view {
   bottom: 5px;
   right: 5px;
   cursor: pointer;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(6px);
   border-radius: 5px;
   padding: 3px;
@@ -144,8 +144,7 @@ body#vemos-body > .ember-view {
   height: 16px;
   width: 16px;
   fill: white;
-  opacity: 0.9;
-  mix-blend-mode: overlay;
+  opacity: 0.8;
 }
 #vemos-body .mediastream-video.o__flipped {
   transform: scaleX(-1);
@@ -184,9 +183,8 @@ body#vemos-body > .ember-view {
 }
 #vemos-body .sidebar__logo svg {
   height: 24px;
-  width: 24px;
 }
-#vemos-body .sidebar__logo svg path {
+#vemos-body .sidebar__logo svg * {
   fill: #ccc;
 }
 #vemos-body .sidebar__copy {
