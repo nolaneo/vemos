@@ -3,7 +3,8 @@ mkdir site
 cp vemos-org/index.html ./site
 cp CNAME ./site
 git add site
-git commit -am "site release"
+now=$(date)
+git commit -am "site release [${now}]"
 git subtree split --prefix site -b gh-pages
 git push -f origin gh-pages:gh-pages
 git branch -D gh-pages
