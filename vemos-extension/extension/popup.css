@@ -1,0 +1,85 @@
+.popup {
+  width: 300px;
+  border-radius: 3px;
+  background: #111;
+  border: 1px solid #ccc;
+  padding: 5px;
+}
+
+.popup-logo {
+  padding: 5px;
+}
+
+.popup-logo svg {
+  height: 30px;
+}
+
+.popup-logo svg * {
+  fill: white;
+}
+
+.popup-button {
+  border: 1px solid white;
+  border-radius: 2px;
+  color: white;
+  font-family: sans-serif;
+  margin: 10px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.popup-button:hover {
+  color: #111;
+  background-color: white;
+}
+
+.layout__box {
+  flex: 0 0 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.layout__box.o__has-columns {
+  display: flex;
+  flex-direction: row;
+}
+
+.layout__box.o__has-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.layout__box.o__scrolls {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.layout__box.o__flexes-to-1 {
+  flex: 1 1 auto;
+}
+
+.layout__box.o__flexes-to-5 {
+  flex: 5 1 auto;
+}
+
+.layout__box.o__centers-horizontally {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.layout__box.o__centers-vertically {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.layout__box.o__centers-all {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
