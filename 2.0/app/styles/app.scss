@@ -1,6 +1,3 @@
-@import "mediastream";
-@import "sidebar";
-
 html#vemos-html,
 body#vemos-body,
 body > .ember-view {
@@ -21,6 +18,9 @@ body#vemos-body > .ember-view {
 }
 
 #vemos-body {
+  @import "mediastream";
+  @import "sidebar";
+
   .layout__box {
     flex: 0 0 auto;
     min-width: 0;

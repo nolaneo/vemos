@@ -16,6 +16,24 @@ class ContentScript {
       require("vemos-plugin/app")["default"].create({
         rootElement: iframe.contentDocument.body,
       });
+
+      let script = document.createElement("script");
+      script.type = "text/javascript";
+      script.id = "vemos-netflix-reference";
+      script.innerHTML = `
+        console.log('Vemos - Adding Netflix API Listener');
+        window.addEventListener("message", (event) => {
+          if (event.data.vemosSeekTime) {
+            console.log("VEMOS Neflix API seek", event.data.vemosSeekTime);
+            let videoPlayer = netflix.appContext.state.playerApp.getAPI().videoPlayer;
+            let player = videoPlayer.getVideoPlayerBySessionId(
+              videoPlayer.getAllPlayerSessionIds()[0]
+            );
+            player.seek(Math.round(Number(event.data.vemosSeekTime)) * 1000);
+          }
+        });
+      `;
+      document.head.appendChild(script);
     }
   }
 
@@ -49,6 +67,7 @@ class ContentScript {
       </html>
     `);
     iframe.contentDocument.close();
+    iframe.contentWindow.VEMOS_NETFLIX_PLAYER = window.VEMOS_NETFLIX_PLAYER;
   }
 }
 

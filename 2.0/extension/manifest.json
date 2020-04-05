@@ -24,6 +24,7 @@
         "*://*.disneyplus.com/*"
       ],
       "js": ["assets/app.js", "content.js"],
+      "css": ["assets/app.css"],
       "run_at": "document_end"
     }
   ],
@@ -34,9 +35,9 @@
     "audioCapture"
   ],
   "web_accessible_resources": [
-    "frame-styles.css",
     "assets/app.css",
-    "assets/app.js"
+    "assets/app.js",
+    "vemos-netflix-api.js"
   ],
   "content_security_policy": "script-src 'self'; object-src 'self'; font-src 'self'; connect-src 'self';"
 }

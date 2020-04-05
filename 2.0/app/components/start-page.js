@@ -27,11 +27,6 @@ export default class StartPageComponent extends Component {
     }
   }
 
-  @action testConnection() {
-    console.log(`testConnection`, this.hostId);
-    this.peerService.connectToPeer(this.hostId);
-  }
-
   @action copyLink() {
     this.generateLink();
   }

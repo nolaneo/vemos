@@ -39,35 +39,57 @@ class VideoHandler {
     return video;
   }
 
-  seek(time) {
-    if (time !== this.videoElement.currentTime) {
-      this.withDisabledEventPropagation("seek", () => {
-        this.videoElement.currentTime = time;
-      });
+  async seek(time) {
+    if (Math.abs(time - this.videoElement.currentTime) < 0.5) {
+      return console.log("Ignoring seek as time within 500ms");
     }
+
+    return await this.withDisabledEventPropagation(["seek"], async () => {
+      console.log("seek", time);
+      await this.performSeek(time);
+    });
   }
 
-  play() {
+  async performSeek(time) {
+    this.videoElement.currentTime = time;
+  }
+
+  async play(time) {
+    await this.seek(time);
     if (this.videoElement.paused) {
-      this.withDisabledEventPropagation("play", () => {
-        this.videoElement.play();
+      return await this.withDisabledEventPropagation(["play"], async () => {
+        console.log("play");
+        await this.performPlay();
       });
+    } else {
+      console.log("Ignoring play – already playing");
     }
   }
 
-  pause() {
+  async performPlay() {
+    return await this.videoElement.play();
+  }
+
+  async pause() {
     if (!this.videoElement.paused) {
-      this.withDisabledEventPropagation("pause", () => {
-        this.videoElement.pause();
+      return await this.withDisabledEventPropagation(["pause"], async () => {
+        console.log("pause");
+        await this.performPause();
       });
+    } else {
+      console.log("Ignoring pause – already paused");
     }
   }
 
-  async withDisabledEventPropagation(event, block) {
-    this.ignoredEvents.add(event);
-    block.call();
-    await timeout(100);
-    this.ignoredEvents.delete(event);
+  async performPause() {
+    return await this.videoElement.pause();
+  }
+
+  async withDisabledEventPropagation(events, block) {
+    events.forEach((event) => this.ignoredEvents.add(event));
+    await block.call();
+    await timeout(50);
+    events.forEach((event) => this.ignoredEvents.delete(event));
   }
 
   async addListeners() {
@@ -80,6 +102,7 @@ class VideoHandler {
     }
 
     this.videoElement.pause();
+    await timeout(100);
 
     this.videoElement.addEventListener("seeked", this.onSeek.bind(this));
     this.videoElement.addEventListener("play", this.onPlay.bind(this));
@@ -111,7 +134,9 @@ class VideoHandler {
     }
     let message = new RTCMessage({
       event: "video-play",
-      data: {},
+      data: {
+        time: this.videoElement.currentTime,
+      },
     });
     this.peerService.sendRTCMessage(message);
   }
@@ -133,9 +158,18 @@ class VideoHandler {
 }
 
 class NetflixHandler extends VideoHandler {
+  netflixAPI = undefined;
+  netflixPlayer = undefined;
+
   constructor(peerService, parentDomService) {
     super(peerService, parentDomService);
     this.handlerName = "Netflix";
+  }
+
+  async performSeek(time) {
+    console.log("[Netflix] Perform Seek");
+    this.parentDomService.window.postMessage({ vemosSeekTime: time }, "*");
+    return await timeout(50);
   }
 }
 
@@ -145,7 +179,9 @@ export default class VideoSyncService extends Service {
 
   currentHandler = undefined;
 
-  initialize() {
+  async initialize() {
+    // Give the host some time to load their video player
+    await timeout(5000);
     this.currentHandler = new this.handlerClass(
       this.peerService,
       this.parentDomService
@@ -157,19 +193,23 @@ export default class VideoSyncService extends Service {
     this.peerService.addEventHandler("video-pause", this.pause.bind(this));
   }
 
-  play() {
-    this.currentHandler.play();
+  async play(message) {
+    await this.currentHandler.play(message.data.time);
   }
 
-  pause() {
-    this.currentHandler.pause();
+  async pause() {
+    await this.currentHandler.pause();
   }
 
-  seek(message) {
-    this.currentHandler.seek(message.data.time);
+  async seek(message) {
+    await this.currentHandler.seek(message.data.time);
   }
 
   get handlerClass() {
-    return NetflixHandler;
+    if (this.parentDomService.window.location.href.includes("netflix.com")) {
+      return NetflixHandler;
+    } else {
+      return VideoHandler;
+    }
   }
 }

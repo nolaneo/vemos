@@ -1,8 +1,9 @@
-<div class="mediastream-container layout__box">
+<div class="mediastream-container layout__box" data-tippy-content="HEllo world">
   <video autoplay
     class="mediastream-video {{if @flipped 'o__flipped'}}"
     {{did-insert this.setupMediaStream}}
-    {{did-update this.setupMediaStream @mediaStream}}>
+    {{did-update this.setupMediaStream @mediaStream}}
+  >
   </video>
   <div class="mediastream-controls {{if this.isMuted 'o__muted'}}" role="button" {{on "click" this.toggleMute}}>
     {{#if this.isMuted}}
@@ -11,4 +12,5 @@
       <Svg::Mute title="Mute"/>
     {{/if}}
   </div>
+  <MediastreamAudioIndicator @mediaStream={{this.audioStream}} />
 </div>
