@@ -71,6 +71,18 @@ class ContentScript {
   }
 }
 
-let contentScript = new ContentScript();
+if (window.VEMOS_PEER_ID) {
+  let contentScript = new ContentScript();
+  contentScript.injectVemos();
+}
 
-contentScript.injectVemos();
+let browser = window.browser || window.chrome;
+
+browser.runtime.onMessage.addListener(function (request, _, sendResponse) {
+  if (request.startVemos) {
+    console.log("Message received. Starting Vemos!");
+    let contentScript = new ContentScript();
+    contentScript.injectVemos();
+    sendResponse(true);
+  }
+});

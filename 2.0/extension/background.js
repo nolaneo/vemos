@@ -1,24 +1,24 @@
-/* global chrome */
+let browser = window.browser || window.chrome;
 
-chrome.runtime.onInstalled.addListener(function () {
-  chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
-    chrome.declarativeContent.onPageChanged.addRules([
+browser.runtime.onInstalled.addListener(function () {
+  browser.declarativeContent.onPageChanged.removeRules(undefined, function () {
+    browser.declarativeContent.onPageChanged.addRules([
       {
         conditions: [
-          new chrome.declarativeContent.PageStateMatcher({
+          new browser.declarativeContent.PageStateMatcher({
             pageUrl: { hostSuffix: "netflix.com" },
           }),
-          new chrome.declarativeContent.PageStateMatcher({
+          new browser.declarativeContent.PageStateMatcher({
             pageUrl: { hostSuffix: "youtube.com" },
           }),
-          new chrome.declarativeContent.PageStateMatcher({
+          new browser.declarativeContent.PageStateMatcher({
             pageUrl: { hostSuffix: "hulu.com" },
           }),
-          new chrome.declarativeContent.PageStateMatcher({
+          new browser.declarativeContent.PageStateMatcher({
             pageUrl: { hostSuffix: "disneyplus.com" },
           }),
         ],
-        actions: [new chrome.declarativeContent.ShowPageAction()],
+        actions: [new browser.declarativeContent.ShowPageAction()],
       },
     ]);
   });
