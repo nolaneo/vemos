@@ -23,7 +23,8 @@
         "*://*.youtube.com/*",
         "*://*.netflix.com/*",
         "*://*.hulu.com/",
-        "*://*.disneyplus.com/*"
+        "*://*.disneyplus.com/*",
+        "*://*.primevideo.com/*"
       ],
       "js": ["url.js"],
       "run_at": "document_start"
@@ -34,7 +35,8 @@
         "*://*.youtube.com/*",
         "*://*.netflix.com/*",
         "*://*.hulu.com/",
-        "*://*.disneyplus.com/*"
+        "*://*.disneyplus.com/*",
+        "*://*.primevideo.com/*"
       ],
       "js": ["assets/app.js", "content.js"],
       "css": ["assets/app.css"],
@@ -53,10 +55,6 @@
     "declarativeContent",
     "*://*.vemos.org/*"
   ],
-  "web_accessible_resources": [
-    "assets/app.css",
-    "assets/app.js",
-    "vemos-netflix-api.js"
-  ],
+  "web_accessible_resources": ["assets/app.css", "assets/app.js"],
   "content_security_policy": "script-src 'self'; object-src 'self'; font-src 'self'; connect-src 'self';"
 }

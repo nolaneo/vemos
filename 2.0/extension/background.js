@@ -17,6 +17,9 @@ browser.runtime.onInstalled.addListener(function () {
           new browser.declarativeContent.PageStateMatcher({
             pageUrl: { hostSuffix: "disneyplus.com" },
           }),
+          new browser.declarativeContent.PageStateMatcher({
+            pageUrl: { hostSuffix: "primevideo.com" },
+          }),
         ],
         actions: [new browser.declarativeContent.ShowPageAction()],
       },
