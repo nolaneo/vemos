@@ -49,12 +49,7 @@
     "48": "icons/48.png",
     "128": "icons/128.png"
   },
-  "permissions": [
-    "activeTab",
-    "cookies",
-    "declarativeContent",
-    "*://*.vemos.org/*"
-  ],
+  "permissions": ["activeTab", "declarativeContent", "*://*.vemos.org/*"],
   "web_accessible_resources": ["assets/app.css", "assets/app.js"],
   "content_security_policy": "script-src 'self'; object-src 'self'; font-src 'self'; connect-src 'self';"
 }
