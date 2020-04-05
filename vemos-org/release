@@ -1,6 +1,6 @@
 cd ..
 mkdir site
-cp vemos-org/index.html
+cp vemos-org/index.html ./site
 cp CNAME ./site
 git add site
 git commit -am "site release"
