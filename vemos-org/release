@@ -6,4 +6,4 @@ git add site
 git commit -am "site release"
 git subtree split --prefix site -b gh-pages
 git push -f origin gh-pages:gh-pages
-rm -rf site/
+git reset HEAD --hard
