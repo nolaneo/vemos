@@ -3,6 +3,18 @@
   border-left: 1px solid #555;
 }
 
+.sidebar__get-started {
+  text-align: center;
+}
+
+.sidebar__get-started-list {
+  padding-left: 20px;
+}
+
+.sidebar__get-started-list li {
+  margin-bottom: 10px;
+}
+
 .sidebar__logo {
   padding: 5px;
   svg {
@@ -29,4 +41,8 @@
 .sidebar__copy:hover {
   color: #111;
   background-color: white;
+}
+
+.sidebar__get-started-button {
+  margin-top: 40px;
 }

@@ -4,12 +4,29 @@
       <Svg::Logo/>
     </div>
   </div>
-  <div class="layout__box o__flexes-to-1 o__scrolls">
+  <div class="layout__box {{if this.peerService.connections.length 'o__flexes-to-1'}} o__scrolls">
     <VideoList/>
   </div>
-  <div class="layout__box">
-    <div class="sidebar__copy" role="button" {{on "click" this.copyLink}}>
-      {{this.linkText}}
+   {{#if this.peerService.connections.length}}
+    <div class="layout__box">
+      <div class="sidebar__copy" role="button" {{on "click" this.copyLink}}>
+        {{this.linkText}}
+      </div>
     </div>
-  </div>
+   {{else}}
+    <div class="layout__box o__flexes-to-1 o__centers-vertically">
+      <div class="layout__box o__flexes-to-1">
+        <h3 class="sidebar__get-started">Let's get started!</h3>
+        <ol class="sidebar__get-started-list">
+          <li>Open the video you want to watch with your friends.</li>
+          <li>Copy the invite link below.</li>
+          <li>Send the link to your friends.</li>
+          <li>Grab some popcorn while you wait for them to join!</li>
+        </ol>
+        <div class="sidebar__copy sidebar__get-started-button" role="button" {{on "click" this.copyLink}}>
+          {{this.linkText}}
+        </div>
+      </div>
+    </div>
+   {{/if}}
 </div>

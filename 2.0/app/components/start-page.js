@@ -28,6 +28,7 @@ export default class StartPageComponent extends Component {
   }
 
   @action copyLink() {
+    this.videoSyncService.initialize();
     this.generateLink();
   }
 

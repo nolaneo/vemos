@@ -3,6 +3,19 @@
   "version": "0.0.1",
   "description": "Watch movies and TV shows together with your friends",
   "manifest_version": 2,
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "page_action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/get_started16.png",
+      "32": "images/get_started32.png",
+      "48": "images/get_started48.png",
+      "128": "images/get_started128.png"
+    }
+  },
   "content_scripts": [
     {
       "matches": [
@@ -28,12 +41,13 @@
       "run_at": "document_end"
     }
   ],
-  "permissions": [
-    "cookies",
-    "*://*.vemos.org/*",
-    "videoCapture",
-    "audioCapture"
-  ],
+  "icons": {
+    "16": "images/get_started16.png",
+    "32": "images/get_started32.png",
+    "48": "images/get_started48.png",
+    "128": "images/get_started128.png"
+  },
+  "permissions": ["cookies", "declarativeContent", "*://*.vemos.org/*"],
   "web_accessible_resources": [
     "assets/app.css",
     "assets/app.js",

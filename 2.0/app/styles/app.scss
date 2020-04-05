@@ -5,6 +5,9 @@ body > .ember-view {
   padding: 0;
   min-height: 100%;
   box-sizing: border-box;
+  color: #eee;
+  font-family: sans-serif;
+  font-size: 12px;
 }
 
 body#vemos-body > .ember-view {
