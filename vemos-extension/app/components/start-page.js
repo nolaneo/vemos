@@ -9,6 +9,7 @@ export default class StartPageComponent extends Component {
   @service videoSyncService;
   @service parentDomService;
 
+  @tracked showHeadphoneWarning = true;
   @tracked linkText = "Copy invite link";
 
   constructor() {
@@ -25,6 +26,10 @@ export default class StartPageComponent extends Component {
         this.parentDomService.window.VEMOS_PEER_ID
       );
     }
+  }
+
+  @action disableHeadphoneWarning() {
+    this.showHeadphoneWarning = false;
   }
 
   @action copyLink() {
