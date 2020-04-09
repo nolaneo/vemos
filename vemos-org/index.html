@@ -1,11 +1,56 @@
 <html>
   <head>
-    <title>
-      Vemos | Watch Netflix, Disney Plus, Hulu, Primevideo, together with
-      friends
-    </title>
+    <title>Vemos | Virtual movie nights with friends</title>
+
+    <link href="vemos.css" rel="stylesheet" />
+
+    <meta
+      name="viewport"
+      content="initial-scale=1, width=device-width"
+      class="next-head"
+    />
+    <link rel="icon" type="image/png" href="./assets/images/favicon.png" />
+
+    <script>
+      window.intercomSettings = {
+        app_id: "3dccd12b8cfcf5daf1f4546e6165e47fa95e3472"
+      };
+    </script>
+    
+    <script>
+    (function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(args){i.q.push(args);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/3dccd12b8cfcf5daf1f4546e6165e47fa95e3472';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();
+    </script>
+
   </head>
   <body>
-    Coming soon!
+    <div class="desktop layout__box o__has-rows o__scrolls o__flexes-to-1">
+      <div class="full-window layout__box o__has-columns o__flexes-to-1">
+        <div class="layout__box o__has-rows half-window-width darkpurple">
+          <div class="layout__box o__centers-all">
+            <img class="desktop-logo" src="assets/images/logo.svg"/>
+          </div>
+          <div class="desktop-heading">Virtual movie nights made <b class="underline">easy.</b></div>
+          <div class="desktop-blurb">Now you and your friends can watch movies together, <pink>in sync</pink>, with <pink>full video chat</pink> right on your favourite sites, for free.</div>
+          <div class="layout__box o__flexes-to-1">
+            <!--spacer-->
+          </div>
+          <a class="desktop-cta" href="https://chrome.google.com/webstore/detail/pbonnafeomejlkdmjlealabfanohjogh" target="_blank">
+            Get it free on the Chrome store
+          </a>
+        </div>
+        <div class="layout__box o__has-rows half-window-width white">
+          <div class="browser-frame layout__box o__has-rows">
+            <div class="browser-toolbar layout__box o__has-columns">
+              <div class="browser-toolbar-circle"></div>
+              <div class="browser-toolbar-circle"></div>
+              <div class="browser-toolbar-circle"></div>
+            </div>
+            <video src="assets/videos/videohq.mp4" autoplay muted loop></video>
+          </div>
+          <div class="desktop-works-with">Works with the most popular streaming services</div>
+          <img src="assets/images/services/logos.svg" class="desktop-logos"/>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
