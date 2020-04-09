@@ -1,7 +1,7 @@
 cd ..
 rm -rf ./site
 mkdir site
-cp vemos-org/* ./site
+cp -a vemos-org/ ./site
 cp CNAME ./site
 git add site
 now=$(date)
