@@ -12,20 +12,21 @@
     <link rel="icon" type="image/png" href="./assets/images/favicon.png" />
 
     <script>
-      window.intercomSettings = {
-        app_id: "3dccd12b8cfcf5daf1f4546e6165e47fa95e3472"
-      };
+      window.addEventListener('DOMContentLoaded', (event) => {
+          let section = document.querySelector('.sync-section');
+          let v1 = document.querySelector('#sync-1');
+          let v2 = document.querySelector('#sync-2');
+          v1.play();
+          setTimeout(() => {
+            v2.play();
+          }, 400);
+      });
     </script>
-    
-    <script>
-    (function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(args){i.q.push(args);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/3dccd12b8cfcf5daf1f4546e6165e47fa95e3472';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();
-    </script>
-
   </head>
   <body>
     <div class="desktop layout__box o__has-rows o__scrolls o__flexes-to-1">
-      <div class="full-window layout__box o__has-columns o__flexes-to-1">
-        <div class="layout__box o__has-rows half-window-width darkpurple">
+      <div class="full-window layout__box o__has-columns o__flexes-to-1 main-columns">
+        <div class="layout__box o__has-rows half-window-width darkpurple round-bottom-right">
           <div class="layout__box o__centers-all">
             <img class="desktop-logo" src="assets/images/logo.svg"/>
           </div>
@@ -51,6 +52,91 @@
           <img src="assets/images/services/logos.svg" class="desktop-logos"/>
         </div>
       </div>
+
+      <div class="desktop-grid white">
+
+        <div class="layout__box o__has-rows o__centers-all section">
+          <div class="browser-frame layout__box o__has-rows">
+            <div class="browser-toolbar layout__box o__has-columns">
+              <div class="browser-toolbar-circle"></div>
+              <div class="browser-toolbar-circle"></div>
+              <div class="browser-toolbar-circle"></div>
+            </div>
+            <img src="assets/images/videochat.png" class="desktop-video-chat">
+          </div>
+        </div>
+
+        <div class="layout__box o__has-rows o__centers-vertically round-top-left round-bottom-left darkpurple">
+          <div class="section">
+            <div class="section-head">Full video chat built in.</div>
+            <div class="section-subheading">Feel like you're watching together in the same room.</div>
+          </div>
+        </div>
+
+        <div class="layout__box o__has-rows section darkpurple round-bottom-right round-top-right sync-section">
+          <div class="sync-video o__2">
+            <div  class="browser-frame layout__box o__has-rows">
+              <div class="browser-toolbar layout__box o__has-columns">
+                <div class="browser-toolbar-circle"></div>
+                <div class="browser-toolbar-circle"></div>
+                <div class="browser-toolbar-circle"></div>
+              </div>
+              <video id="sync-1" src="assets/videos/sync.mp4" muted loop></video>
+            </div>
+          </div>
+          <div class="sync-video o__1">
+            <div  class="browser-frame layout__box o__has-rows">
+              <div class="browser-toolbar layout__box o__has-columns">
+                <div class="browser-toolbar-circle"></div>
+                <div class="browser-toolbar-circle"></div>
+                <div class="browser-toolbar-circle"></div>
+              </div>
+              <video id="sync-2" src="assets/videos/sync.mp4" muted loop></video>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="layout__box o__has-rows o__centers-vertically">
+          <div class="section">
+            <div class="section-head">Stay in sync.</div>
+            <div class="section-subheading color-darkpurple">Never count down to pressing the play button again. Vemos keeps everyone in sync: play, pause, and seek.</div>
+          </div>
+        </div>
+
+        <div class="layout__box o__has-rows o__centers-all section">
+          <a class="desktop-cta" href="https://chrome.google.com/webstore/detail/pbonnafeomejlkdmjlealabfanohjogh" target="_blank">
+            Get it free on the Chrome store
+          </a>
+        </div>
+
+        <div class="layout__box o__has-rows o__centers-vertically round-top-left round-bottom-left darkpurple">
+          <div class="section">
+            <div class="section-head">Completely free.</div>
+            <div class="section-subheading">No accounts, no signup, no bullshit. Get the extension and grab the popcorn!</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="final-section layout__box o__centers-horizontally">
+        <div class="final-section-inner">
+          <div class="final-section-header">About Vemos</div>
+          <div class="final-section-blurb">This project was started in 2018 as a way to make it easy for my girlfriend and I to watch movies together while she travelled.</div>
+          <div class="final-section-blurb">Since then, with Coronavirus causing people to be away from their friends and loved ones the world over, it seemed like a good time to reboot Vemos and make it useful for everyone stuck inside.</div>
+          <div class="final-section-blurb">Vemos is open source, it uses <a href="https://peerjs.com/" target="_blank">Peer JS</a> to set up WebRTC connections for the video call functionality, and <a href="https://emberjs.com/">Ember JS</a> for everything else. If you'd like to help out, <a href="https://github.com/nolaneo/vemos" target="_blank">please check it out on Github.</a></div>
+        </div>
+      </div>
     </div>
   </body>
+
+  <script>
+    window.intercomSettings = {
+      app_id: "3dccd12b8cfcf5daf1f4546e6165e47fa95e3472"
+    };
+  </script>
+  
+  <script>
+  (function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(args){i.q.push(args);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/3dccd12b8cfcf5daf1f4546e6165e47fa95e3472';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();
+  </script>
 </html>
