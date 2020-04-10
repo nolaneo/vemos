@@ -147,15 +147,20 @@ pink {
   grid-template-rows: auto auto;
 }
 
-@media only screen and (min-device-width: 320px) and (max-device-width: 667px) and (orientation: portrait) {
+@media only screen and (min-device-width: 320px) and (max-device-width: 667px) {
   body {
     padding: 1px;
+  }
+  .spacer {
+    height: 20px !important;
   }
   .main-columns {
     flex-direction: column !important;
   }
   .full-window {
-    min-height: initial !important;
+    min-height: fit-content !important;
+    max-width: 100vw;
+    overflow: hidden;
   }
   .half-window-width {
     padding: 20px !important;
