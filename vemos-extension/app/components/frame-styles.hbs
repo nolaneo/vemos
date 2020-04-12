@@ -4,6 +4,7 @@
       transform: translate(0, 0);
       width: 90vw;
       height: 100vh;
+      transition: width 200ms ease;
     }
 
     #vemos-container {
@@ -13,7 +14,18 @@
       bottom: 0;
       width: 10vw;
       background-color: black;
+      transition: right 200ms ease;
     }
+
+    {{#if this.settingsService.isMinimized}}
+      body {
+        width: 100%;
+      }
+
+      #vemos-container {
+        right: -10vw;
+      }
+    {{/if}}
 
     #vemos-frame {
       height: 100%;

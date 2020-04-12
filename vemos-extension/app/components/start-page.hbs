@@ -3,6 +3,7 @@
     <div class="sidebar__logo">
       <Svg::Logo/>
     </div>
+    <MaximizeButton />
   </div>
   <div class="layout__box {{if this.peerService.connections.length 'o__flexes-to-1'}} o__scrolls">
     <VideoList/>
@@ -36,3 +37,4 @@
     <Notice::Headphones @onClose={{this.disableHeadphoneWarning}}/>
   </ParentDomFrame>
 {{/if}}
+
