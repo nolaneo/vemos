@@ -7,10 +7,11 @@ export default class MediastreamVideoComponent extends Component {
   @service parentDomService;
 
   @action setupMediaStream(video) {
-    if (this.args.vemosStream.displayableStream) {
+    if (this.args.vemosStream.displayableStream && !this.args.vemosStream.isHidden) {
       video.srcObject = this.args.vemosStream.displayableStream;
     } else {
       console.log(`Media stream was not provided from peer ${this.args.vemosStream.peerId}`);
+      video.srcObject = undefined;
     }
   }
 

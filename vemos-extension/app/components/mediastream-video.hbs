@@ -2,24 +2,34 @@
   <video autoplay
     class="mediastream-video {{if @flipped 'o__flipped'}}"
     {{did-insert this.setupMediaStream}}
-    {{did-update this.setupMediaStream @vemosStream}}
+    {{did-update this.setupMediaStream @vemosStream.isHidden}}
   >
   </video>
   <div class="mediastream-controls o__audio-controls {{if @vemosStream.isMuted 'o__muted'}}" role="button" {{on "click" this.toggleAudio}}>
     {{#if @vemosStream.isMuted}}
-      <Svg::Unmute title="Unmute"/>
+      {{#if @vemosStream.isOwnStream}}
+        <Svg::UnmuteMicrophone title="Unmute"/>
+      {{else}}
+        <Svg::Unmute title="Unmute"/>
+      {{/if}}
     {{else}}
-      <Svg::Mute title="Mute"/>
+      {{#if @vemosStream.isOwnStream}}
+        <Svg::MuteMicrophone title="Unmute"/>
+      {{else}}
+        <Svg::Mute title="Unmute"/>
+      {{/if}}
     {{/if}}
   </div>
 
-  <div class="mediastream-controls o__video-controls {{if @vemosStream.isDisabled 'o__muted'}}" role="button" {{on "click" this.toggleVideo}}>
-    {{#if @vemosStream.isDisabled}}
-      <Svg::Unmute title="Unmute"/>
-    {{else}}
-      <Svg::Mute title="Mute"/>
-    {{/if}}
-  </div>
+  {{#if @vemosStream.isOwnStream}}
+    <div class="mediastream-controls o__video-controls {{if @vemosStream.isHidden 'o__muted'}}" role="button" {{on "click" this.toggleVideo}}>
+      {{#if @vemosStream.isHidden}}
+        <Svg::EnableVideo title="Enable video"/>
+      {{else}}
+        <Svg::DisableVideo title="Disable video"/>
+      {{/if}}
+    </div>
+  {{/if}}
 
   <MediastreamAudioIndicator @mediaStream={{@vemosStream.audioStream}} />
 </div>
