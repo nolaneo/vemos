@@ -116,6 +116,9 @@ export default class PeerService extends Service {
       this.eventHandlers["peer-call"].forEach((handler) => handler(call));
     }
     call.on("stream", this.onStream.bind(this, call));
+    call.on("addtrack", () => {
+      console.log('ADD TRACK');
+    })
   }
 
   onStream(call, mediaStream) {

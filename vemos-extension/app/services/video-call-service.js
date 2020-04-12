@@ -2,6 +2,7 @@ import Service, { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { A } from '@ember/array';
 import { isNone, isPresent } from '@ember/utils';
+import { later } from '@ember/runloop';
 
 class VemosStream {
   videoCallService = undefined;
@@ -24,7 +25,7 @@ class VemosStream {
     this.videoCallService = videoCallService;
 
     this.isMuted = !this.audioStream.getAudioTracks().some(track => track.enabled);
-    this.isHidden = !this.displayableStream.getVideoTracks().some(track => track.enabled);
+    this.setHiddenState();
 
     if (isNone(peerId)) {
       throw new Error('Attempt to create a stream with no peer ID specified');
@@ -33,6 +34,16 @@ class VemosStream {
     if (isNone(mediaStream)) {
       throw new Error('Attempt to create a stream with no mediaStream specified');
     }
+
+    this.displayableStream.getVideoTracks().forEach(track => track.onended = () => {
+      console.log('IT ENDED');
+      this.isHidden = true;
+    });
+  }
+
+
+  setHiddenState() {
+    !this.displayableStream.getVideoTracks().some(track => track.enabled);
   }
 
   toggleAudio(providedState) {
@@ -49,19 +60,22 @@ class VemosStream {
     }
     let isEnabled = providedState ?? isPresent(this.displayableStream.getVideoTracks());
     if (isEnabled) {
-      this.displayableStream.getVideoTracks().forEach(track => {
-        this.displayableStream.removeTrack(track);
-        this.mediaStream.removeTrack(track);
-        track.stop();
-      });
-      this.mediaStream.getVideoTracks().forEach(track => {
-        this.mediaStream.removeTrack(track);
-        track.stop();
-      });
+      this.disableTracksForStream(this.displayableStream);
+      this.disableTracksForStream(this.mediaStream);
       this.isHidden = true;
     } else {
       this.videoCallService.restartStream();
     }
+  }
+
+  disableTracksForStream(stream) {
+    stream.getVideoTracks().forEach(track => {
+      track.enabled = false;
+      later(this, () => {
+        stream.removeTrack(track);
+        track.stop();
+      }, 100);
+    });
   }
 }
 
@@ -91,12 +105,15 @@ export default class VideoCallServiceService extends Service {
 
     if (existingStream) {
       console.log(`Replacing existing stream for peer ${stream.peerId}`);
-      this.activeStreams.replace(this.activeStreams.indexOf(existingStream), stream);
-      this.activeStreams = this.activeStreams; // Force ember to see the change to this
-    } else {
+      stream.toggleAudio(!existingStream.isMuted);
+      let index = this.activeStreams.indexOf(existingStream);
+      this.activeStreams.removeObject(existingStream);
+      this.activeStreams.insertAt(index, stream);
+    }  else {
       console.log(`Adding new stream for peer ${stream.peerId}`);
       this.activeStreams.pushObject(stream);
     }
+
   }
 
   removeStream(peerId) {
@@ -134,6 +151,9 @@ export default class VideoCallServiceService extends Service {
       this.ownMediaStream.displayableStream.addTrack(track);
     });
     this.ownMediaStream.isHidden = false;
+    this.peerService.connections.forEach(connection => {
+      this.peerService.callPeer(connection.peer, this.ownMediaStream.mediaStream);
+    });
   }
 
   async getStream() {

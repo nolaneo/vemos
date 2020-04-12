@@ -58,6 +58,6 @@ export default class VideoListComponent extends Component {
 
   removePeerStream(connection) {
     console.log("removePeerStream", connection);
-    this.videoCallService.removeStream(conneciton.peer);
+    this.videoCallService.removeStream(connection.peer);
   }
 }
