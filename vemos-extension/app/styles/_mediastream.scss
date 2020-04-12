@@ -17,8 +17,7 @@
   opacity: 0;
   transition: opacity 100ms ease-in-out;
   position: absolute;
-  bottom: 5px;
-  right: 5px;
+
   cursor: pointer;
   background-color: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(6px);
@@ -30,6 +29,16 @@
     fill: white;
     opacity: 0.8;
   }
+}
+
+.mediastream-controls.o__audio-controls {
+  bottom: 5px;
+  right: 5px;
+}
+
+.mediastream-controls.o__video-controls {
+  bottom: 5px;
+  right: 25px;
 }
 
 .mediastream-video.o__flipped {

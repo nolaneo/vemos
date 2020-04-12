@@ -4,24 +4,21 @@ import { tracked } from "@glimmer/tracking";
 import { inject as service } from "@ember/service";
 
 export default class MediastreamVideoComponent extends Component {
-  @tracked isMuted = false;
   @service parentDomService;
 
   @action setupMediaStream(video) {
-    if (this.args.mediaStream) {
-      video.srcObject = this.args.mediaStream;
+    if (this.args.vemosStream.displayableStream) {
+      video.srcObject = this.args.vemosStream.displayableStream;
     } else {
-      console.log(`Media stream was not provided`);
+      console.log(`Media stream was not provided from peer ${this.args.vemosStream.peerId}`);
     }
   }
 
-  get audioStream() {
-    return this.args.mutableVideoStream || this.args.mediaStream;
+  @action toggleVideo() {
+    this.args.vemosStream.toggleVideo();
   }
 
-  @action toggleMute() {
-    let currentState = this.audioStream.getAudioTracks()[0].enabled;
-    this.audioStream.getAudioTracks()[0].enabled = !currentState;
-    this.isMuted = !this.audioStream.getAudioTracks()[0].enabled;
+  @action toggleAudio() {
+    this.args.vemosStream.toggleAudio();
   }
 }
