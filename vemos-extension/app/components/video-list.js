@@ -28,6 +28,10 @@ export default class VideoListComponent extends Component {
       "connection-closed",
       this.removePeerStream.bind(this)
     );
+    this.peerService.addEventHandler(
+      "webcam-disabled",
+      this.disableVideoTracks.bind(this)
+    );
   }
 
   @action setupOwnStream() {
@@ -47,7 +51,7 @@ export default class VideoListComponent extends Component {
     let stream = new VemosStream({
       peerId: call.peer,
       mediaStream,
-    })
+    });
     this.videoCallService.addStream(stream);
   }
 
@@ -59,5 +63,9 @@ export default class VideoListComponent extends Component {
   removePeerStream(connection) {
     console.log("removePeerStream", connection);
     this.videoCallService.removeStream(connection.peer);
+  }
+
+  disableVideoTracks(message) {
+    this.videoCallService.disableTracksForPeer(message.senderId);
   }
 }

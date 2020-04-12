@@ -3,6 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { A } from '@ember/array';
 import { isNone, isPresent } from '@ember/utils';
 import { later } from '@ember/runloop';
+import { RTCMessage } from "./peer-service";
 
 class VemosStream {
   videoCallService = undefined;
@@ -34,16 +35,15 @@ class VemosStream {
     if (isNone(mediaStream)) {
       throw new Error('Attempt to create a stream with no mediaStream specified');
     }
-
-    this.displayableStream.getVideoTracks().forEach(track => track.onended = () => {
-      console.log('IT ENDED');
-      this.isHidden = true;
-    });
   }
 
-
   setHiddenState() {
-    !this.displayableStream.getVideoTracks().some(track => track.enabled);
+    let tracks = this.displayableStream.getVideoTracks();
+    if (isPresent(tracks)) {
+      this.isHidden = !this.displayableStream.getVideoTracks().some(track => track.enabled);
+    } else {
+      this.isHidden = true;
+    }
   }
 
   toggleAudio(providedState) {
@@ -63,8 +63,9 @@ class VemosStream {
       this.disableTracksForStream(this.displayableStream);
       this.disableTracksForStream(this.mediaStream);
       this.isHidden = true;
+      this.videoCallService.endVideoStream();
     } else {
-      this.videoCallService.restartStream();
+      this.videoCallService.restartVideoStream();
     }
   }
 
@@ -144,7 +145,7 @@ export default class VideoCallServiceService extends Service {
     this.addStream(ownVemosStream);
   }
 
-  async restartStream() {
+  async restartVideoStream() {
     let stream = await this.getStream();
     stream.getVideoTracks().forEach(track => {
       this.ownMediaStream.mediaStream.addTrack(track);
@@ -171,5 +172,24 @@ export default class VideoCallServiceService extends Service {
         console.error("Could not generate a MediaStream. Returning blank stream");
         return new MediaStream();
       });
+  }
+
+  async endVideoStream() {
+    let message = new RTCMessage({
+      event: "webcam-disabled",
+      data: {}
+    });
+    this.peerService.sendRTCMessage(message);
+  }
+
+  disableTracksForPeer(peerId) {
+    console.log(`Disable video for ${peerId}`);
+    let stream = this.activeStreams.find(stream => stream.peerId === peerId);
+    if (stream) {
+      stream.displayableStream.getVideoTracks().forEach(track => stream.displayableStream.removeTrack(track));
+      stream.setHiddenState();
+    } else {
+      console.log(`No stream found for ${peerId} to disable`);
+    }
   }
 }
