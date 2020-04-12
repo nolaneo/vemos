@@ -8,6 +8,7 @@ export default class StartPageComponent extends Component {
   @service peerService;
   @service videoSyncService;
   @service parentDomService;
+  @service settingsService;
 
   @tracked showHeadphoneWarning = true;
   @tracked linkText = "Copy invite link";
