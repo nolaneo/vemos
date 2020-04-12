@@ -24,7 +24,10 @@
         "*://*.netflix.com/*",
         "*://*.hulu.com/",
         "*://*.disneyplus.com/*",
-        "*://*.primevideo.com/*"
+        "*://*.primevideo.com/*",
+        "*://*.primevideo.co.uk/*",
+        "*://*.amazon.com/*",
+        "*://*.amazon.co.uk/*"
       ],
       "js": ["url.js"],
       "run_at": "document_start"
@@ -36,7 +39,10 @@
         "*://*.netflix.com/*",
         "*://*.hulu.com/",
         "*://*.disneyplus.com/*",
-        "*://*.primevideo.com/*"
+        "*://*.primevideo.com/*",
+        "*://*.primevideo.co.uk/*",
+        "*://*.amazon.com/*",
+        "*://*.amazon.co.uk/*"
       ],
       "js": ["assets/app.js", "content.js"],
       "css": ["assets/app.css"],
