@@ -17,8 +17,7 @@
   opacity: 0;
   transition: opacity 100ms ease-in-out;
   position: absolute;
-  bottom: 5px;
-  right: 5px;
+
   cursor: pointer;
   background-color: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(6px);
@@ -30,6 +29,16 @@
     fill: white;
     opacity: 0.8;
   }
+}
+
+.mediastream-controls.o__audio-controls {
+  bottom: 5px;
+  right: 5px;
+}
+
+.mediastream-controls.o__video-controls {
+  bottom: 5px;
+  right: 30px;
 }
 
 .mediastream-video.o__flipped {
@@ -52,7 +61,7 @@
   background-color: limegreen;
   transition: height 100ms linear;
   box-sizing: border-box;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgb(149, 248, 149);
   opacity: 0.9;
 }
 
@@ -63,4 +72,15 @@
 
 .mediastream__waveform-bar.o__large {
   height: var(--height);
+}
+
+.mediastream-default-person {
+  position: absolute;
+  left: calc(50% - 15px);
+  top: calc(50% - 15px);
+  svg {
+    width: 30px;
+    height: 30px;
+    fill: rgba(255,255,255, 0.5);
+  }
 }
