@@ -1,24 +1,19 @@
 let browser = window.browser || window.chrome;
 
-
-const KNOWN_HOSTS = [
-  "netflix.com",
-  "youtube.com",
-  "disneyplus.com",
-  "hulu.com",
-  "primevideo.com",
-  "primevideo.co.uk",
-  "amazon.com",
-  "amazon.co.uk",
-];
-
-browser.runtime.onInstalled.addListener(function () {
-  browser.declarativeContent.onPageChanged.removeRules(undefined, function () {
-    browser.declarativeContent.onPageChanged.addRules([
-      {
-        conditions: KNOWN_HOSTS.map(hostSuffix => new browser.declarativeContent.PageStateMatcher({ pageUrl: { hostSuffix } })),
-        actions: [new browser.declarativeContent.ShowPageAction()],
-      }
-    ]);
-  });
+browser.runtime.onMessage.addListener(async (request, _, sendResponse) => {
+  if (request.registerContentScriptsOnUrl) {
+    await browser.contentScripts.register({
+      js: [{ file: 'url.js' }],
+      runAt: 'document_start',
+      matches: [request.registerContentScriptsOnUrl]
+    });
+    await browser.contentScripts.register({
+      js: [{ file: 'assets/app.js' }, { file: 'content.js' }],
+      css: [{ file: 'assets/app.css' }],
+      runAt: 'document_end',
+      matches: [request.registerContentScriptsOnUrl]
+    });
+    console.log("Content scripts registered", request.registerContentScriptsOnUrl);
+    sendResponse(true);
+  }
 });

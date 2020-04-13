@@ -51,10 +51,12 @@ module.exports = function (environment) {
     development: [
       ["/assets/app.js", "extension/assets/app.js"],
       ["/assets/app.css", "extension/assets/app.css"],
+      ["/assets/content-scripts-register-polyfill.js", "extension/content-scripts-register-polyfill.js"],
     ],
     production: [
       ["/assets/app.js", "extension/assets/app.js"],
       ["/assets/app.css", "extension/assets/app.css"],
+      ["/assets/content-scripts-register-polyfill.js", "extension/content-scripts-register-polyfill.js"],
     ],
   };
 

@@ -18,5 +18,7 @@ module.exports = function (defaults) {
     },
   });
 
+  app.import('node_modules/content-scripts-register-polyfill/index.js', { outputFile: 'assets/content-scripts-register-polyfill.js' });
+
   return app.toTree();
 };

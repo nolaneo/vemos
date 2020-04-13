@@ -78,6 +78,7 @@ if (window.VEMOS_PEER_ID) {
 
 let browser = window.browser || window.chrome;
 
+console.log("Adding Vemos message listener");
 browser.runtime.onMessage.addListener(function (request, _, sendResponse) {
   if (request.startVemos) {
     console.log("Message received. Starting Vemos!");
