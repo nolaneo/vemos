@@ -101,7 +101,7 @@ if (window.VEMOS_CONTENT_SET)  {
       console.log("A Peer ID was present, booting Vemos");
       let contentScript = new ContentScript();
       contentScript.injectVemos();
-    }, 100);
+    }, 250);
   }
 
   let browser = window.browser || window.chrome;

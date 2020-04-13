@@ -13,7 +13,7 @@ async function openVemos(tabs) {
       console.log("Vemos Started Result:", response);
       window.close();
     });
-  }, 200);
+  }, 250);
 }
 
   

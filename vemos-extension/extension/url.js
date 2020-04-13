@@ -10,6 +10,7 @@ if (window.VEMOS_URL_SET)  {
     let version = browser.runtime.getManifest().version;
     window.document.documentElement.setAttribute('vemos-version', version);
   } else if (queryParams.get("vemos-id")) {
+    console.log("Setting vemos peer id");
     window.VEMOS_PEER_ID = queryParams.get("vemos-id");
     let url = new URL(window.location.href);
     url.searchParams.delete("vemos-id");
