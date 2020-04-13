@@ -41,8 +41,10 @@ function requestPermissions(permissionURL) {
         console.log("Content scripts registered", permissionURL);
         let startVemos = document.getElementById("start-vemos");
         let getPermissions = document.getElementById("get-permissions");
+        let getPermissionsDescription = document.getElementById("permission-description");
         startVemos.style.display = 'block';
         getPermissions.style.display = 'none';
+        getPermissionsDescription.style.display = 'none';
         executeScripts();
       } else {
         console.log('Permission refused');
@@ -53,6 +55,8 @@ function requestPermissions(permissionURL) {
 window.addEventListener("DOMContentLoaded", () => {
   let startVemos = document.getElementById("start-vemos");
   let getPermissions = document.getElementById("get-permissions");
+  let getPermissionsDescription = document.getElementById("permission-description");
+
 
   browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     console.log('URL',tabs[0].url);
@@ -64,6 +68,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }, (hasPermission) => {
       if (hasPermission) {
         getPermissions.style.display = 'none';
+        getPermissionsDescription.style.display = 'none';
       } else {
         getPermissions.innerText = `Allow Vemos to run on ${url.host}`;
         startVemos.style.display = 'none';
