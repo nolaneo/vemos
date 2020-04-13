@@ -15,10 +15,6 @@ if (window.VEMOS_CONTENT_SET)  {
       if (document.body && document.contentType !== "application/pdf") {
         this.injectExtensionFrame();
         this.injectEmberApp();
-        // let iframe = document.getElementById(IFRAME_ID);
-        // require("vemos-plugin/app")["default"].create({
-        //   rootElement: iframe.contentDocument.body,
-        // });
 
         let script = document.createElement("script");
         script.type = "text/javascript";
