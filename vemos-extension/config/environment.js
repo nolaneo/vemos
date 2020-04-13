@@ -18,7 +18,7 @@ module.exports = function (environment) {
     },
 
     APP: {
-      autoboot: false,
+      autoboot: true,
     },
   };
 

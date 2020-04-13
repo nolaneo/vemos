@@ -15,10 +15,10 @@ if (window.VEMOS_CONTENT_SET)  {
       if (document.body && document.contentType !== "application/pdf") {
         this.injectExtensionFrame();
         this.injectEmberApp();
-        let iframe = document.getElementById(IFRAME_ID);
-        require("vemos-plugin/app")["default"].create({
-          rootElement: iframe.contentDocument.body,
-        });
+        // let iframe = document.getElementById(IFRAME_ID);
+        // require("vemos-plugin/app")["default"].create({
+        //   rootElement: iframe.contentDocument.body,
+        // });
 
         let script = document.createElement("script");
         script.type = "text/javascript";
@@ -62,14 +62,38 @@ if (window.VEMOS_CONTENT_SET)  {
         <html id="vemos-html">
           <head>
             <title>Vemos</title>
-            <link rel="stylesheet" type="text/css" href="${this.browser.runtime.getURL(
-              "assets/app.css"
-            )}" />
           </head>
           <body id="vemos-body"></body>
         </html>
       `);
+
+      
       iframe.contentDocument.close();
+
+      let script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.charset = 'utf-8';
+      script.src = this.browser.runtime.getURL("assets/app.js");
+
+
+      let styles = document.createElement('link');
+      styles.type = 'text/css';
+      styles.rel = "stylesheet";
+      styles.charset = 'utf-8';
+      styles.href = this.browser.runtime.getURL("assets/app.css");
+
+      iframe.contentWindow.document.head.appendChild(script);
+      iframe.contentWindow.document.head.appendChild(styles);
+
+      if (window.VEMOS_PEER_ID) {
+        let meta = document.createElement('meta');
+        meta.id = 'vemos-peer-id';
+        meta.name ="VEMOS_PEER_ID";
+        meta.content = window.VEMOS_PEER_ID;
+        iframe.contentWindow.document.head.appendChild(meta);
+
+      }
+
       iframe.contentWindow.VEMOS_NETFLIX_PLAYER = window.VEMOS_NETFLIX_PLAYER;
     }
   }
@@ -77,12 +101,11 @@ if (window.VEMOS_CONTENT_SET)  {
   window.VEMOS_CONTENT_SET = true;
 
   if (window.VEMOS_PEER_ID) {
-    setTimeout(async () => {
+    setTimeout(() =>{
       console.log("A Peer ID was present, booting Vemos");
-      await browser.tabs.executeScript({ file: 'assets/app.js' });
       let contentScript = new ContentScript();
       contentScript.injectVemos();
-    }, 1000);
+    }, 100);
   }
 
   let browser = window.browser || window.chrome;
@@ -91,7 +114,6 @@ if (window.VEMOS_CONTENT_SET)  {
     console.log("Adding Vemos message listener");
     browser.runtime.onMessage.addListener(async function (request, _, sendResponse) {
       if (request.startVemos) {
-        await browser.tabs.executeScript({ file: 'assets/app.js' });
         console.log("Message received. Starting Vemos!");
         let contentScript = new ContentScript();
         contentScript.injectVemos();

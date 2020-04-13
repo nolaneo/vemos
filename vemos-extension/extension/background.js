@@ -39,7 +39,7 @@ function contentScriptLoader() {
         {
           conditions: [new browser.declarativeContent.PageStateMatcher({ pageUrl: { schemes: ['http', 'https'] } })],
           actions: [new browser.declarativeContent.RequestContentScript({
-            js: ['url.js', 'assets/app.js', 'content.js']
+            js: ['url.js', 'content.js']
           })],
         }
       ]);
