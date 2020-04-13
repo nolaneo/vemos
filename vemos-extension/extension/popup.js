@@ -1,17 +1,13 @@
 let browser = window.browser || window.chrome;
 
 async function executeScripts() {
-  if (!window.EXECUTED_SCRIPTS) {
-    await browser.tabs.executeScript({ file: 'url.js' });
-    await browser.tabs.executeScript({ file: 'assets/app.js' });
-    await browser.tabs.executeScript({ file: 'content.js' });
-    window.EXECUTED_SCRIPTS = true;
-  }
+  await browser.tabs.executeScript({ file: 'url.js' });
+  await browser.tabs.executeScript({ file: 'assets/app.js' });
+  await browser.tabs.executeScript({ file: 'content.js' });
 }
 
 async function openVemos(tabs) {
   console.log('Open Vemos');
-  executeScripts();
   browser.tabs.sendMessage(tabs[0].id, { startVemos: true }, (response) => {
     console.log("Vemos Started Result:", response);
     window.close();
@@ -61,7 +57,7 @@ window.addEventListener("DOMContentLoaded", () => {
   browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     console.log('URL',tabs[0].url);
     let url = new URL(tabs[0].url);
-    let permissionURL = `*://${url.host}/*`;
+    let permissionURL = `${url.protocol}//${url.host}/*`;
 
     browser.permissions.contains({
       origins: [permissionURL]
@@ -87,7 +83,7 @@ window.addEventListener("DOMContentLoaded", () => {
     browser.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
       console.log('URL',tabs[0].url);
       let url = new URL(tabs[0].url);
-      let permissionURL = `*://${url.host}/*`;
+      let permissionURL = `${url.protocol}//${url.host}/*`;
       await requestPermissions(permissionURL);
     });
   };

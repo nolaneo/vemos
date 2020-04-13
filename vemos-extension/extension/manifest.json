@@ -39,8 +39,11 @@
     "48": "icons/48.png",
     "128": "icons/128.png"
   },
-  "permissions": ["activeTab", "*://*.vemos.org/*"],
-  "optional_permissions": ["<all_urls>"],
+  "permissions": ["activeTab", "declarativeContent", "*://*.vemos.org/*"],
+  "optional_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
   "web_accessible_resources": ["assets/app.css", "assets/app.js"],
   "content_security_policy": "script-src 'self'; object-src 'self'; font-src 'self'; connect-src 'self';"
 }
