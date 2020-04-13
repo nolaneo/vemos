@@ -2,16 +2,18 @@ let browser = window.browser || window.chrome;
 
 async function executeScripts() {
   await browser.tabs.executeScript({ file: 'url.js' });
-  await browser.tabs.executeScript({ file: 'assets/app.js' });
   await browser.tabs.executeScript({ file: 'content.js' });
 }
 
 async function openVemos(tabs) {
   console.log('Open Vemos');
-  browser.tabs.sendMessage(tabs[0].id, { startVemos: true }, (response) => {
-    console.log("Vemos Started Result:", response);
-    window.close();
-  });
+  await executeScripts();
+  setTimeout(() => {
+    browser.tabs.sendMessage(tabs[0].id, { startVemos: true }, (response) => {
+      console.log("Vemos Started Result:", response);
+      window.close();
+    });
+  }, 200);
 }
 
   
@@ -45,7 +47,6 @@ function requestPermissions(permissionURL) {
         startVemos.style.display = 'block';
         getPermissions.style.display = 'none';
         getPermissionsDescription.style.display = 'none';
-        executeScripts();
       } else {
         console.log('Permission refused');
       }
@@ -79,6 +80,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   startVemos.onclick = () => {
     browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      executeScripts();
       openVemos(tabs);
     });
   };
