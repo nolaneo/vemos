@@ -63,7 +63,6 @@ window.addEventListener("DOMContentLoaded", () => {
       origins: [permissionURL]
     }, (hasPermission) => {
       if (hasPermission) {
-        executeScripts();
         getPermissions.style.display = 'none';
       } else {
         getPermissions.innerText = `Allow Vemos to run on ${url.host}`;
