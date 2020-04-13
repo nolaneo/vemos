@@ -1,9 +1,86 @@
 <html>
   <head>
-    <title>
-    </title>
+    <title>Vemos | Virtual movie nights with friends</title>
+
+    <link href="vemos.css" rel="stylesheet" />
+
+    <meta
+      name="viewport"
+      content="initial-scale=1, width=device-width"
+      class="next-head"
+    />
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-47908774-3"></script>
+
+    <link rel="icon" type="image/png" href="./assets/images/favicon.png" />
+
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-47908774-3');
+    </script>
+
+    <script>
+      window.addEventListener('DOMContentLoaded', (event) => {
+        if (window.VEMOS_VERSION) {
+          let queryParamString = window.location.search;
+          let queryParams = new URLSearchParams(queryParamString);
+          if (queryParams.get("destination")) {
+            console.log('Destination found');
+            try {
+              let destinationUrl = decodeURIComponent(queryParams.get("destination"));
+              gtag('event', 'action', {
+                'event_label': 'rerouting-successfully',
+                'non_interaction': true,
+              });
+              window.location.href = destinationUrl;
+            } catch (error) {
+              gtag('event', 'action', {
+                'event_label': 'parsing-error',
+                'non_interaction': true,
+              });
+              document.querySelector('.error-section').classList.add('o__visible');
+              document.querySelector('.loading-text').classList.add('o__hidden');
+              console.error(error);
+            }
+ 
+          } else {
+            console.error('Destination not present');
+            gtag('event', 'action', {
+              'event_label': 'rerouting-error',
+              'non_interaction': true,
+            });
+            document.querySelector('.error-section').classList.add('o__visible');
+            document.querySelector('.loading-text').classList.add('o__hidden');
+
+          }
+        } else {
+          console.error('Extension not present');
+          gtag('event', 'action', {
+            'event_label': 'not-installed-error',
+            'non_interaction': true,
+          });
+          document.querySelector('.not-installed').classList.add('o__visible');
+          document.querySelector('.loading-text').classList.add('o__hidden');
+        }
+      });
+    </script>
   </head>
   <body>
-    Check extension
+    <div class="layout__box o__has-rows o__flexes-to-1 o__centers-all">
+      <div class="loading">
+        <img src="assets/images/logo-purple.svg">
+        <div class="loading-text">Loading...</div>
+        <div class="error-section">
+          Hmm, something went wrong. We couldn't figure out where to go from the link you received. Please check that you copied the whole link and try again.
+        </div>
+        <div class="not-installed">
+          It looks like you don't have Vemos installed. Before joining your friends, you'll need to install it from the Chrome store. <a href="https://chrome.google.com/webstore/detail/pbonnafeomejlkdmjlealabfanohjogh">You can get it here.</a>
+          Once installed, try the link again.
+        </div>
+      </div>
+    </div>
   </body>
 </html>
