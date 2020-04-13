@@ -83,7 +83,7 @@ body * {
 
 .desktop-heading {
   font-family: 'Playfair Display', serif;
-  font-size: min(10vh, 6vw);
+  font-size: min(9vh, 6vw);
   margin-top: 11vh;
   color: var(--pink);
   text-align: center;
@@ -282,6 +282,10 @@ pink {
 
   .instruction-image {
     max-width: 80vw;
+  }
+
+  .section-head {
+    font-size: 50px !important;
   }
 }
 
