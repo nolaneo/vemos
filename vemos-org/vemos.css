@@ -58,12 +58,31 @@ body * {
   color: #8a6d3b;
   display: none;
   font-family: sans-serif;
+  line-height: 1.5;
 }
 
 .error-section.o__visible,
 .permission-section.o__visible,
 .not-installed.o__visible {
   display: block;
+}
+
+#grant-permissions {
+  width: 100%;
+  padding: 5px;
+  font-size: 14px;
+  text-align: center;
+  border-radius: 3px;
+  border: 2px solid #8a6d3b;
+  box-sizing: border-box;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+#grant-permissions:hover {
+  color: white;
+  background-color: yellowgreen;
+  border-color: darkolivegreen;
 }
 
 .desktop .full-window {
