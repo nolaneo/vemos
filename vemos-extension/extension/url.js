@@ -4,12 +4,7 @@ if (window.VEMOS_URL_SET)  {
   let queryParamString = window.location.search;
   let queryParams = new URLSearchParams(queryParamString);
   
-  if (window.location.host === 'vemos.org') {
-    console.log('Setting Vemos version');
-    let browser = window.browser || window.chrome;
-    let version = browser.runtime.getManifest().version;
-    window.document.documentElement.setAttribute('vemos-version', version);
-  } else if (queryParams.get("vemos-id")) {
+  if (queryParams.get("vemos-id")) {
     console.log("Setting vemos peer id");
     window.VEMOS_PEER_ID = queryParams.get("vemos-id");
     let url = new URL(window.location.href);

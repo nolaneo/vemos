@@ -18,6 +18,11 @@
   },
   "content_scripts": [
     {
+      "matches": ["*://*.vemos.org/connect", "http://localhost/*"],
+      "js": ["permission_check.js"],
+      "run_at": "document_start"
+    },
+    {
       "matches": [
         "*://*.vemos.org/*"
       ],
@@ -28,7 +33,7 @@
       "matches": [
         "*://*.vemos.org/*"
       ],
-      "js": ["assets/app.js", "content.js"],
+      "js": ["content.js"],
       "css": ["assets/app.css"],
       "run_at": "document_end"
     }
@@ -39,7 +44,7 @@
     "48": "icons/48.png",
     "128": "icons/128.png"
   },
-  "permissions": ["activeTab", "declarativeContent", "*://*.vemos.org/*"],
+  "permissions": ["activeTab", "declarativeContent", "*://*.vemos.org/*", "http://localhost/*"],
   "optional_permissions": [
     "http://*/*",
     "https://*/*"

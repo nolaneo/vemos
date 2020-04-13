@@ -24,6 +24,7 @@
 
     <script>
       window.addEventListener('DOMContentLoaded', (event) => {
+        console.log('Loading Vemos Version');
         let extensionVersion = window.document.documentElement.getAttribute('vemos-version');
         if (extensionVersion) {
           let queryParamString = window.location.search;
@@ -32,11 +33,31 @@
             console.log('Destination found');
             try {
               let destinationUrl = decodeURIComponent(queryParams.get("destination"));
-              gtag('event', 'action', {
-                'event_label': 'rerouting-successfully',
-                'non_interaction': true,
+
+              let url = new URL(destinationUrl);
+              let permissionURL = `${url.protocol}//${url.host}/*`;
+
+              window.addEventListener("message", event => {
+                if (event.data.permissionResult) {
+                  if (event.data.permissionResult == 'available') {
+                    gtag('event', 'action', {
+                      'event_label': 'rerouting-successfully',
+                      'non_interaction': true,
+                    });
+                    window.location.href = destinationUrl;
+                  } else {
+                    document.querySelector('.permission-section').classList.add('o__visible');
+                    document.querySelector('#site-name').innerHTML = url.host;
+                    document.querySelector('#grant-permissions').addEventListener("click", () => {
+                      window.postMessage({ permissionURL, request: true }, '*');
+
+                    })
+                  }
+                }
               });
-              window.location.href = destinationUrl;
+
+              window.postMessage({ permissionURL, request: false }, '*');
+
             } catch (error) {
               gtag('event', 'action', {
                 'event_label': 'parsing-error',
@@ -80,6 +101,12 @@
         <div class="not-installed">
           It looks like you don't have Vemos installed. Before joining your friends, you'll need to install it from the Chrome store. <a href="https://chrome.google.com/webstore/detail/pbonnafeomejlkdmjlealabfanohjogh">You can get it here.</a>
           Once installed, try the link again.
+        </div>
+        <div class="permission-section">
+          Pardon the interruption. Before we jump over to <b id="site-name"></b> Vemos needs permissions to run on that site first.
+          <button id="grant-permissions">
+            Grant permissions
+          </button>
         </div>
       </div>
     </div>

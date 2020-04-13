@@ -34,4 +34,24 @@ browser.runtime.onInstalled.addListener(function () {
 browser.permissions.onAdded.addListener(function() {
   console.log('On Added');
   contentScriptLoader();
-})
+});
+
+browser.runtime.onMessage.addListener(function(request, _, sendResponse) {
+  if (request.permissionURL) {
+    if (request.request) {
+      browser.permissions.request({
+        origins: [request.permissionURL]
+      }, result => {
+        sendResponse({ result: Boolean(result) });
+      });
+    } else {
+      browser.permissions.contains({
+        origins: [request.permissionURL]
+      }, result => {
+        sendResponse({ result: Boolean(result) });
+      });
+    }
+
+  }
+  return true;
+});
