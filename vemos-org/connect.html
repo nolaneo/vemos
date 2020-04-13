@@ -24,7 +24,8 @@
 
     <script>
       window.addEventListener('DOMContentLoaded', (event) => {
-        if (window.VEMOS_VERSION) {
+        let extensionVersion = window.document.documentElement.getAttribute('vemos-version');
+        if (extensionVersion) {
           let queryParamString = window.location.search;
           let queryParams = new URLSearchParams(queryParamString);
           if (queryParams.get("destination")) {
