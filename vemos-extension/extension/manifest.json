@@ -1,6 +1,6 @@
 {
   "name": "Vemos",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Virtual movie nights made easy",
   "manifest_version": 2,
   "background": {
@@ -27,7 +27,8 @@
         "*://*.primevideo.com/*",
         "*://*.primevideo.co.uk/*",
         "*://*.amazon.com/*",
-        "*://*.amazon.co.uk/*"
+        "*://*.amazon.co.uk/*",
+        "*://*.plex.tv/*"
       ],
       "js": ["url.js"],
       "run_at": "document_start"
@@ -42,7 +43,8 @@
         "*://*.primevideo.com/*",
         "*://*.primevideo.co.uk/*",
         "*://*.amazon.com/*",
-        "*://*.amazon.co.uk/*"
+        "*://*.amazon.co.uk/*",
+        "*://*.plex.tv/*"
       ],
       "js": ["assets/app.js", "content.js"],
       "css": ["assets/app.css"],

@@ -10,6 +10,7 @@ const KNOWN_HOSTS = [
   "primevideo.co.uk",
   "amazon.com",
   "amazon.co.uk",
+  "plex.tv",
 ];
 
 browser.runtime.onInstalled.addListener(function () {
