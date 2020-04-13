@@ -1,0 +1,226 @@
+<html>
+  <head>
+    <title>Vemos | Virtual movie nights with friends</title>
+
+    <link href="vemos.css" rel="stylesheet" />
+
+    <meta property="og:title" content="Vemos">
+    <meta property="og:description" content="Virual movie nights made easy!">
+    <meta property="og:image" content="https://raw.githubusercontent.com/nolaneo/vemos/master/vemos-org/assets/images/thumbnail.jpg">
+    <meta property="og:url" content="https://vemos.org">
+
+    <meta name="twitter:title" content="Vemos">
+    <meta name="twitter:description" content="Virual movie nights made easy!">
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/nolaneo/vemos/master/vemos-org/assets/images/thumbnail.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <meta
+      name="viewport"
+      content="initial-scale=1, width=device-width"
+      class="next-head"
+    />
+    <link rel="icon" type="image/png" href="./assets/images/favicon.png" />
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-47908774-3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-47908774-3');
+    </script>
+
+    <script>
+      window.addEventListener('DOMContentLoaded', (event) => {
+          let section = document.querySelector('.sync-section');
+          let v1 = document.querySelector('#sync-1');
+          let v2 = document.querySelector('#sync-2');
+          v1.play();
+          setTimeout(() => {
+            v2.play();
+          }, 400);
+      });
+    </script>
+  </head>
+  <body>
+    <div class="desktop layout__box o__has-rows o__scrolls o__flexes-to-1">
+      <div class="full-window layout__box o__has-columns o__flexes-to-1 main-columns">
+        <div class="layout__box o__has-rows half-window-width darkpurple round-bottom-right">
+          <div class="layout__box o__centers-all">
+            <img class="desktop-logo" src="assets/images/logo.svg"/>
+          </div>
+          <div class="desktop-heading">Virtual movie nights made <b class="underline">easy.</b></div>
+          <div class="desktop-blurb">Now you and your friends can watch movies together, <pink>in sync</pink>, with <pink>full video chat</pink> right on your favourite sites, for free.</div>
+          <div class="layout__box o__flexes-to-1 spacer">
+            <!--spacer-->
+          </div>
+          <a class="desktop-cta" href="https://chrome.google.com/webstore/detail/pbonnafeomejlkdmjlealabfanohjogh" target="_blank">
+            Get it free on the Chrome store
+          </a>
+        </div>
+        <div class="layout__box o__has-rows half-window-width white">
+          <div class="browser-frame layout__box o__has-rows">
+            <div class="browser-toolbar layout__box o__has-columns">
+              <div class="browser-toolbar-circle"></div>
+              <div class="browser-toolbar-circle"></div>
+              <div class="browser-toolbar-circle"></div>
+            </div>
+            <video src="assets/videos/videohq.mp4" autoplay loop autobuffer muted playsinline></video>
+          </div>
+          <div class="desktop-works-with">Works with the most popular streaming services</div>
+          <img src="assets/images/services/logos.svg" class="desktop-logos"/>
+        </div>
+      </div>
+
+      <div class="desktop-grid white">
+
+        <div class="layout__box o__has-rows o__centers-all section">
+          <div class="browser-frame layout__box o__has-rows">
+            <div class="browser-toolbar layout__box o__has-columns">
+              <div class="browser-toolbar-circle"></div>
+              <div class="browser-toolbar-circle"></div>
+              <div class="browser-toolbar-circle"></div>
+            </div>
+            <img src="assets/images/videochat.jpg" class="desktop-video-chat">
+          </div>
+        </div>
+
+        <div class="layout__box o__has-rows o__centers-vertically round-top-left round-bottom-left darkpurple">
+          <div class="section">
+            <div class="section-head">Full video chat built in.</div>
+            <div class="section-subheading">Feel like you're watching together in the same room.</div>
+          </div>
+        </div>
+
+        <div class="layout__box o__has-rows section darkpurple round-bottom-right round-top-right sync-section">
+          <div class="sync-video o__2">
+            <div  class="browser-frame layout__box o__has-rows">
+              <div class="browser-toolbar layout__box o__has-columns">
+                <div class="browser-toolbar-circle"></div>
+                <div class="browser-toolbar-circle"></div>
+                <div class="browser-toolbar-circle"></div>
+              </div>
+              <video id="sync-1" src="assets/videos/sync.mp4" loop autobuffer muted playsinline></video>
+            </div>
+          </div>
+          <div class="sync-video o__1">
+            <div  class="browser-frame layout__box o__has-rows">
+              <div class="browser-toolbar layout__box o__has-columns">
+                <div class="browser-toolbar-circle"></div>
+                <div class="browser-toolbar-circle"></div>
+                <div class="browser-toolbar-circle"></div>
+              </div>
+              <video id="sync-2" src="assets/videos/sync.mp4" loop autobuffer muted playsinline></video>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="layout__box o__has-rows o__centers-vertically">
+          <div class="section">
+            <div class="section-head">Stay in sync.</div>
+            <div class="section-subheading color-darkpurple">Never count down to pressing the play button again. Vemos keeps everyone in sync: play, pause, and seek.</div>
+          </div>
+        </div>
+
+        <div class="layout__box o__has-rows o__centers-all section">
+          <a class="desktop-cta" href="https://chrome.google.com/webstore/detail/pbonnafeomejlkdmjlealabfanohjogh" target="_blank">
+            Get it free on the Chrome store
+          </a>
+        </div>
+
+        <div class="layout__box o__has-rows o__centers-vertically round-top-left round-bottom-left darkpurple">
+          <div class="section">
+            <div class="section-head">Completely free.</div>
+            <div class="section-subheading">No accounts, no signup, no bullshit. Get the extension and grab the popcorn!</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="instructions layout__box o__centers-horizontally">
+        <div class="instructions-inner layout__box o__has-rows o__flexes-to-1">
+          <div class="instructions-title">
+            How to set it up
+          </div>
+
+          <div class="instruction-section layout__box o__has-columns">
+            <div class="instruction-number">1.</div>
+            <div class="layout__box o__flexes-to-1">
+              Install the extension from the <a href="https://chrome.google.com/webstore/detail/pbonnafeomejlkdmjlealabfanohjogh" target="_blank">Chrome store</a>.<br><b>Your friends will need to install it too.</b>
+              <img src="assets/images/instructions/instructions-1.gif" class="instruction-image"/>
+            </div>
+          </div>
+
+          <div class="instruction-section layout__box o__has-columns">
+            <div class="instruction-number">2.</div>
+            <div class="layout__box o__flexes-to-1">
+              Open up your favourite streaming site (Netflix, Primevideo, Disney+, Hulu, and YouTube are supported).
+              <img src="assets/images/instructions/instructions-2.jpg" class="instruction-image"/>
+            </div>
+          </div>
+
+          <div class="instruction-section layout__box o__has-columns">
+            <div class="instruction-number">3.</div>
+            <div class="layout__box o__flexes-to-1">
+              Pick a video that you want to watch with your friends.
+              <video src="assets/images/instructions/install3.mp4" autoplay loop autobuffer muted playsinline class="instruction-image"/>
+            </div>
+          </div>
+
+          <div class="instruction-section layout__box o__has-columns">
+            <div class="instruction-number">4.</div>
+            <div class="layout__box o__flexes-to-1">
+              Start the Vemos extension.
+              <video src="assets/images/instructions/install4.mp4" autoplay loop autobuffer muted playsinline class="instruction-image"/>
+            </div>
+          </div>
+
+          <div class="instruction-section layout__box o__has-columns">
+            <div class="instruction-number">5.</div>
+            <div class="layout__box o__flexes-to-1">
+                Copy your invite link
+              <video src="assets/images/instructions/install5.mp4" autoplay loop autobuffer muted playsinline class="instruction-image"/>
+            </div>
+          </div>
+
+          <div class="instruction-section layout__box o__has-columns">
+            <div class="instruction-number">6.</div>
+            <div class="layout__box o__flexes-to-1">
+                Send this link to your friends
+              <video src="assets/images/instructions/install6.mp4" autoplay loop autobuffer muted playsinline class="instruction-image"/>
+            </div>
+          </div>
+
+          <div class="instruction-section layout__box o__has-columns">
+            <div class="instruction-number">7.</div>
+            <div class="layout__box o__flexes-to-1">
+              Wait for your friends to connect, and that's it!
+              <img src="assets/images/instructions/install.jpg" class="instruction-image"/>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="final-section layout__box o__centers-horizontally">
+        <div class="final-section-inner">
+          <div class="final-section-header">About Vemos</div>
+          <div class="final-section-blurb">This project was started in 2018 as a way to make it easy for my girlfriend and I to watch movies together while she travelled.</div>
+          <div class="final-section-blurb">Since then, with Coronavirus causing people to be away from their friends and loved ones the world over, it seemed like a good time to reboot Vemos and make it useful for everyone stuck inside.</div>
+          <div class="final-section-blurb">Vemos is open source, it uses <a href="https://peerjs.com/" target="_blank">Peer JS</a> to set up WebRTC connections for the video call functionality, and <a href="https://emberjs.com/">Ember JS</a> for everything else. If you'd like to help out, <a href="https://github.com/nolaneo/vemos" target="_blank">please check it out on Github.</a></div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    window.intercomSettings = {
+      app_id: "3dccd12b8cfcf5daf1f4546e6165e47fa95e3472"
+    };
+  </script>
+  
+  <script>
+  (function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(args){i.q.push(args);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/3dccd12b8cfcf5daf1f4546e6165e47fa95e3472';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();
+  </script>
+</html>
