@@ -21,10 +21,11 @@ export default class StartPageComponent extends Component {
 
   async attemptImmediateConnection() {
     await timeout(2000);
-    if (this.parentDomService.window.VEMOS_PEER_ID) {
+    let sepecifiedPeer = document.querySelector('#vemos-peer-id').getAttribute('content');
+    if (sepecifiedPeer) {
       console.log("Connecting to peer specified in query param");
       this.peerService.connectToPeer(
-        this.parentDomService.window.VEMOS_PEER_ID
+        sepecifiedPeer
       );
     }
   }

@@ -34,6 +34,12 @@
   background-color: white;
 }
 
+#permission-description {
+  color: #ccc;
+  text-align: center;
+  padding: 10px;
+}
+
 .layout__box {
   flex: 0 0 auto;
   min-width: 0;

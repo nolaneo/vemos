@@ -65,6 +65,7 @@
     "edition": "octane"
   },
   "dependencies": {
+    "content-scripts-register-polyfill": "^1.0.0",
     "peerjs": "^1.2.0",
     "uuid": "^7.0.2"
   }
