@@ -18,7 +18,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.vemos.org/connect"],
+      "matches": ["*://*.vemos.org/connect*"],
       "js": ["permission_check.js"],
       "run_at": "document_start"
     },
