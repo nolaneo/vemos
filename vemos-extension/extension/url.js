@@ -7,15 +7,10 @@ if (window.VEMOS_URL_SET) {
   if (queryParams.get("vemos-id")) {
     console.log("Setting vemos peer id");
     window.VEMOS_PEER_ID = queryParams.get("vemos-id");
-    let url = new URL(window.location.href);
-    url.searchParams.delete("vemos-id");
-    window.history.replaceState(
-      window.history.state,
-      window.document.title,
-      url.toString()
-    );
   } else {
     console.log("No peer id");
   }
   window.VEMOS_URL_SET = true;
+} else {
+  console.log("Not removing Vemos Peer ID");
 }

@@ -1,7 +1,7 @@
 /* global require */
 
-if (window.VEMOS_CONTENT_SET)  {
-  console.log('VEMOS CONTENT ALREADY INITIALIZED');
+if (window.VEMOS_CONTENT_SET) {
+  console.log("VEMOS CONTENT ALREADY INITIALIZED");
 } else {
   const EXTENSION_ID = "vemos-container";
   const IFRAME_ID = "vemos-frame";
@@ -63,31 +63,28 @@ if (window.VEMOS_CONTENT_SET)  {
         </html>
       `);
 
-      
       iframe.contentDocument.close();
 
-      let script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.charset = 'utf-8';
+      let script = document.createElement("script");
+      script.type = "text/javascript";
+      script.charset = "utf-8";
       script.src = this.browser.runtime.getURL("assets/app.js");
 
-
-      let styles = document.createElement('link');
-      styles.type = 'text/css';
+      let styles = document.createElement("link");
+      styles.type = "text/css";
       styles.rel = "stylesheet";
-      styles.charset = 'utf-8';
+      styles.charset = "utf-8";
       styles.href = this.browser.runtime.getURL("assets/app.css");
 
       iframe.contentWindow.document.head.appendChild(script);
       iframe.contentWindow.document.head.appendChild(styles);
 
       if (window.VEMOS_PEER_ID) {
-        let meta = document.createElement('meta');
-        meta.id = 'vemos-peer-id';
-        meta.name ="VEMOS_PEER_ID";
+        let meta = document.createElement("meta");
+        meta.id = "vemos-peer-id";
+        meta.name = "VEMOS_PEER_ID";
         meta.content = window.VEMOS_PEER_ID;
         iframe.contentWindow.document.head.appendChild(meta);
-
       }
 
       iframe.contentWindow.VEMOS_NETFLIX_PLAYER = window.VEMOS_NETFLIX_PLAYER;
@@ -97,8 +94,15 @@ if (window.VEMOS_CONTENT_SET)  {
   window.VEMOS_CONTENT_SET = true;
 
   if (window.VEMOS_PEER_ID) {
-    setTimeout(() =>{
+    setTimeout(() => {
       console.log("A Peer ID was present, booting Vemos");
+      let url = new URL(window.location.href);
+      url.searchParams.delete("vemos-id");
+      window.history.replaceState(
+        window.history.state,
+        window.document.title,
+        url.toString()
+      );
       let contentScript = new ContentScript();
       contentScript.injectVemos();
     }, 250);
@@ -108,13 +112,17 @@ if (window.VEMOS_CONTENT_SET)  {
 
   if (browser.runtime) {
     console.log("Adding Vemos message listener");
-    browser.runtime.onMessage.addListener(async function (request, _, sendResponse) {
+    browser.runtime.onMessage.addListener(async function (
+      request,
+      _,
+      sendResponse
+    ) {
       if (request.startVemos) {
         console.log("Message received. Starting Vemos!");
         let contentScript = new ContentScript();
         contentScript.injectVemos();
         sendResponse(true);
       }
-    });  
+    });
   }
 }
