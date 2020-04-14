@@ -4,16 +4,9 @@
 
     <link href="vemos.css" rel="stylesheet" />
 
-    <meta
-      name="viewport"
-      content="initial-scale=1, width=device-width"
-      class="next-head"
-    />
+    <meta name="viewport" content="initial-scale=1, width=device-width" class="next-head" />
 
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=UA-47908774-3"
-    ></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-47908774-3"></script>
 
     <link rel="icon" type="image/png" href="./assets/images/favicon.png" />
 
@@ -35,18 +28,14 @@
         let destinationUrl = decodeURIComponent(queryParams.get("destination"));
 
         console.log("destinationUrl", destinationUrl);
-        let extensionVersion = window.document.documentElement.getAttribute(
-          "vemos-version"
-        );
+        let extensionVersion = window.document.documentElement.getAttribute("vemos-version");
         if (extensionVersion) {
           let queryParamString = window.location.search;
           let queryParams = new URLSearchParams(queryParamString);
           if (queryParams.get("destination")) {
             console.log("Destination found");
             try {
-              let destinationUrl = decodeURIComponent(
-                queryParams.get("destination")
-              );
+              let destinationUrl = decodeURIComponent(queryParams.get("destination"));
 
               let url = new URL(destinationUrl);
               let permissionURL = `${url.protocol}//${url.host}/*`;
@@ -58,23 +47,29 @@
                       event_label: "rerouting-successfully",
                       non_interaction: true,
                     });
-                    window.location.href = url.toString();
-                  } else {
-                    document
-                      .querySelector(".permission-section")
-                      .classList.add("o__visible");
-                    document
-                      .querySelector(".loading-text")
-                      .classList.add("o__hidden");
-                    document.querySelector("#site-name").innerHTML = url.host;
-                    document
-                      .querySelector("#grant-permissions")
-                      .addEventListener("click", () => {
-                        window.postMessage(
-                          { permissionURL, request: true },
-                          "*"
-                        );
+                    // Some messengers seem to decode the Vemos themselves to do link tracking.
+                    // This messes up our own decode logic: it is possible to lose the Vemos ID.
+                    // This code attemps to readd any missing keys.
+                    Array.from(queryParams.keys())
+                      .filter((k) => k !== "destination")
+                      .forEach((key) => {
+                        url.searchParams.append(queryParams.get(key));
                       });
+
+                    if (!url.toString("vemos-id")) {
+                      console.error("The final URL did not contain a Vemos ID", url.toString());
+                      document.querySelector(".error-section").classList.add("o__visible");
+                      document.querySelector(".loading-text").classList.add("o__hidden");
+                    } else {
+                      window.location.href = url.toString();
+                    }
+                  } else {
+                    document.querySelector(".permission-section").classList.add("o__visible");
+                    document.querySelector(".loading-text").classList.add("o__hidden");
+                    document.querySelector("#site-name").innerHTML = url.host;
+                    document.querySelector("#grant-permissions").addEventListener("click", () => {
+                      window.postMessage({ permissionURL, request: true }, "*");
+                    });
                   }
                 }
               });
@@ -85,12 +80,8 @@
                 event_label: "parsing-error",
                 non_interaction: true,
               });
-              document
-                .querySelector(".error-section")
-                .classList.add("o__visible");
-              document
-                .querySelector(".loading-text")
-                .classList.add("o__hidden");
+              document.querySelector(".error-section").classList.add("o__visible");
+              document.querySelector(".loading-text").classList.add("o__hidden");
               console.error(error);
             }
           } else {
@@ -99,9 +90,7 @@
               event_label: "rerouting-error",
               non_interaction: true,
             });
-            document
-              .querySelector(".error-section")
-              .classList.add("o__visible");
+            document.querySelector(".error-section").classList.add("o__visible");
             document.querySelector(".loading-text").classList.add("o__hidden");
           }
         } else {
@@ -123,26 +112,23 @@
         <div class="loading-text">Loading...</div>
         <div class="error-section">
           <div class="section-title">Oh no!</div>
-          Hmm, something went wrong. We couldn't figure out where to go from the
-          link you received. Please check that you copied the whole link and try
-          again.
+          Hmm, something went wrong. We couldn't figure out where to go from the link you received.
+          Please check that you copied the whole link and try again.
         </div>
         <div class="not-installed">
           <div class="section-title">Whoops, one second!</div>
 
-          It looks like you don't have Vemos installed. Before joining your
-          friends, you'll need to install it from the Chrome store.
-          <a
-            href="https://chrome.google.com/webstore/detail/pbonnafeomejlkdmjlealabfanohjogh"
+          It looks like you don't have Vemos installed. Before joining your friends, you'll need to
+          install it from the Chrome store.
+          <a href="https://chrome.google.com/webstore/detail/pbonnafeomejlkdmjlealabfanohjogh"
             >You can get it here.</a
           >
           Once installed, try the link again.
         </div>
         <div class="permission-section">
           <div class="section-title">Pardon the interruption.</div>
-          Before we jump over to <b id="site-name"></b> Vemos needs permissions
-          to run on that site first. Click the button bellow to grant
-          permissions.
+          Before we jump over to <b id="site-name"></b> Vemos needs permissions to run on that site
+          first. Click the button bellow to grant permissions.
           <div id="grant-permissions" role="button">
             Grant permissions
           </div>
@@ -176,8 +162,7 @@
             var s = d.createElement("script");
             s.type = "text/javascript";
             s.async = true;
-            s.src =
-              "https://widget.intercom.io/widget/3dccd12b8cfcf5daf1f4546e6165e47fa95e3472";
+            s.src = "https://widget.intercom.io/widget/3dccd12b8cfcf5daf1f4546e6165e47fa95e3472";
             var x = d.getElementsByTagName("script")[0];
             x.parentNode.insertBefore(s, x);
           };
