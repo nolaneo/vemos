@@ -53,7 +53,7 @@
                     Array.from(queryParams.keys())
                       .filter((k) => k !== "destination")
                       .forEach((key) => {
-                        url.searchParams.append(queryParams.get(key));
+                        url.searchParams.append(key, queryParams.get(key));
                       });
 
                     if (!url.toString("vemos-id")) {
@@ -119,11 +119,10 @@
           <div class="section-title">Whoops, one second!</div>
 
           It looks like you don't have Vemos installed. Before joining your friends, you'll need to
-          install it from the Chrome store.
           <a href="https://chrome.google.com/webstore/detail/pbonnafeomejlkdmjlealabfanohjogh"
-            >You can get it here.</a
+            >install it from the Chrome store.</a
           >
-          Once installed, try the link again.
+          Once installed, try this link again.
         </div>
         <div class="permission-section">
           <div class="section-title">Pardon the interruption.</div>
