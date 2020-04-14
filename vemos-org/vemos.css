@@ -48,7 +48,6 @@ body * {
   font-family: sans-serif;
 }
 
-.permission-section,
 .not-installed {
   padding: 10px;
   margin-top: 30px;
@@ -59,6 +58,26 @@ body * {
   display: none;
   font-family: sans-serif;
   line-height: 1.5;
+}
+
+.permission-section {
+  padding: 10px;
+  margin-top: 30px;
+  background-color: #fafafa;
+  border-radius: 3px;
+  border: 1px solid #aaa;
+  color: #555;
+  display: none;
+  font-family: sans-serif;
+  line-height: 1.5;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  text-align: center;
+  font-size: 30px;
+  margin-bottom: 20px;
 }
 
 .error-section.o__visible,
@@ -73,16 +92,17 @@ body * {
   font-size: 14px;
   text-align: center;
   border-radius: 3px;
-  border: 2px solid #8a6d3b;
+  border: 2px solid var(--darkpurple);
   box-sizing: border-box;
-  margin-top: 10px;
+  margin-top: 30px;
   cursor: pointer;
+  transition: all 100ms;
 }
 
 #grant-permissions:hover {
   color: white;
-  background-color: yellowgreen;
-  border-color: darkolivegreen;
+  background-color: var(--darkpurple);
+  border-color: 2px solid var(--white);
 }
 
 .desktop .full-window {

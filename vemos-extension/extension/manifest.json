@@ -18,7 +18,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.vemos.org/connect", "http://localhost/*"],
+      "matches": ["*://*.vemos.org/connect"],
       "js": ["permission_check.js"],
       "run_at": "document_start"
     },
@@ -44,7 +44,7 @@
     "48": "icons/48.png",
     "128": "icons/128.png"
   },
-  "permissions": ["tabs", "declarativeContent", "*://*.vemos.org/*", "http://localhost/*"],
+  "permissions": ["tabs", "declarativeContent", "*://*.vemos.org/*"],
   "optional_permissions": [
     "http://*/*",
     "https://*/*"
