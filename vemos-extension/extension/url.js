@@ -1,9 +1,9 @@
-if (window.VEMOS_URL_SET)  {
-  console.log('VEMOS URL ALREADY INITIALIZED');
-} else {
+if (window.VEMOS_URL_SET) {
+  console.log("VEMOS URL ALREADY INITIALIZED");
+} else if (window.location.host !== "vemos.org") {
   let queryParamString = window.location.search;
   let queryParams = new URLSearchParams(queryParamString);
-  
+
   if (queryParams.get("vemos-id")) {
     console.log("Setting vemos peer id");
     window.VEMOS_PEER_ID = queryParams.get("vemos-id");
@@ -19,4 +19,3 @@ if (window.VEMOS_URL_SET)  {
   }
   window.VEMOS_URL_SET = true;
 }
-
