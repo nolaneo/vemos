@@ -1,6 +1,6 @@
 {
   "name": "Vemos",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Virtual movie nights made easy",
   "manifest_version": 2,
   "background": {
@@ -44,7 +44,7 @@
     "48": "icons/48.png",
     "128": "icons/128.png"
   },
-  "permissions": ["activeTab", "declarativeContent", "*://*.vemos.org/*", "http://localhost/*"],
+  "permissions": ["tabs", "declarativeContent", "*://*.vemos.org/*", "http://localhost/*"],
   "optional_permissions": [
     "http://*/*",
     "https://*/*"
