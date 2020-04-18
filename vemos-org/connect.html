@@ -21,6 +21,68 @@
     </script>
 
     <script>
+      function showError(error) {
+        gtag("event", "action", {
+          event_label: "parsing-error",
+          non_interaction: true,
+        });
+        document.querySelector(".error-section").classList.add("o__visible");
+        document.querySelector(".loading-text").classList.add("o__hidden");
+        console.error(error);
+      }
+
+      function showDestinationNotPresentError() {
+        console.error("Destination not present");
+        gtag("event", "action", {
+          event_label: "rerouting-error",
+          non_interaction: true,
+        });
+        document.querySelector(".error-section").classList.add("o__visible");
+        document.querySelector(".loading-text").classList.add("o__hidden");
+      }
+
+      function showExtensionNotPresentNotice() {
+        console.error("Extension not present");
+        gtag("event", "action", {
+          event_label: "not-installed-error",
+          non_interaction: true,
+        });
+        document.querySelector(".not-installed").classList.add("o__visible");
+        document.querySelector(".loading-text").classList.add("o__hidden");
+      }
+
+      function requestPermissions(url, permissionURL) {
+        document.querySelector(".permission-section").classList.add("o__visible");
+        document.querySelector(".loading-text").classList.add("o__hidden");
+        document.querySelector("#site-name").innerHTML = url.host;
+        document.querySelector("#grant-permissions").addEventListener("click", () => {
+          window.postMessage({ permissionURL, request: true }, "*");
+        });
+      }
+
+      function redirectToDestination(url) {
+        console.log("Redirecting to ", url.toString());
+        gtag("event", "action", {
+          event_label: "rerouting-successfully",
+          non_interaction: true,
+        });
+
+        if (!url.toString("vemos-id")) {
+          console.error("The final URL did not contain a Vemos ID", url.toString());
+          document.querySelector(".error-section").classList.add("o__visible");
+          document.querySelector(".loading-text").classList.add("o__hidden");
+        } else {
+          window.location.href = url.toString();
+        }
+      }
+
+      function parseExtensionVersion(extensionVersionString) {
+        let [major, minor, patch] = extensionVersionString.split(".");
+        let extensionVersionNumber = Number(major) * 1000 + Number(minor) * 100 + Number(patch);
+        console.log("Extension version number", extensionVersionNumber);
+        return extensionVersionNumber;
+      }
+
       window.addEventListener("DOMContentLoaded", (event) => {
         console.log("Loading Vemos Version");
         let queryParamString = window.location.search;
@@ -30,6 +92,8 @@
         console.log("destinationUrl", destinationUrl);
         let extensionVersion = window.document.documentElement.getAttribute("vemos-version");
         if (extensionVersion) {
+          let extensionVersionNumber = parseExtensionVersion(extensionVersion);
+
           let queryParamString = window.location.search;
           let queryParams = new URLSearchParams(queryParamString);
           if (queryParams.get("destination")) {
@@ -42,11 +106,6 @@
               window.addEventListener("message", (event) => {
                 if (event.data.permissionResult) {
                   if (event.data.permissionResult == "available") {
-                    console.log("Redirecting to ", url.toString());
-                    gtag("event", "action", {
-                      event_label: "rerouting-successfully",
-                      non_interaction: true,
-                    });
                     // Some messengers seem to decode the Vemos themselves to do link tracking.
                     // This messes up our own decode logic: it is possible to lose the Vemos ID.
                     // This code attemps to readd any missing keys.
@@ -56,51 +115,32 @@
                         url.searchParams.append(key, queryParams.get(key));
                       });
 
-                    if (!url.toString("vemos-id")) {
-                      console.error("The final URL did not contain a Vemos ID", url.toString());
-                      document.querySelector(".error-section").classList.add("o__visible");
-                      document.querySelector(".loading-text").classList.add("o__hidden");
+                    if (extensionVersionNumber > 5) {
+                      window.addEventListener("message", (event) => {
+                        if (event.data.peerSet) {
+                          url.searchParams.delete("vemos-id");
+                          redirectToDestination(url);
+                        }
+                      });
+                      window.postMessage({ setPeerId: url.searchParams.get("vemos-id") });
                     } else {
-                      window.location.href = url.toString();
+                      redirectToDestination(url);
                     }
                   } else {
-                    document.querySelector(".permission-section").classList.add("o__visible");
-                    document.querySelector(".loading-text").classList.add("o__hidden");
-                    document.querySelector("#site-name").innerHTML = url.host;
-                    document.querySelector("#grant-permissions").addEventListener("click", () => {
-                      window.postMessage({ permissionURL, request: true }, "*");
-                    });
+                    requestPermissions(url, permissionURL);
                   }
                 }
               });
 
-              window.postMessage({ permissionURL, request: false }, "*");
+              window.postMessage({ permissionURL, request: false });
             } catch (error) {
-              gtag("event", "action", {
-                event_label: "parsing-error",
-                non_interaction: true,
-              });
-              document.querySelector(".error-section").classList.add("o__visible");
-              document.querySelector(".loading-text").classList.add("o__hidden");
-              console.error(error);
+              showError(error);
             }
           } else {
-            console.error("Destination not present");
-            gtag("event", "action", {
-              event_label: "rerouting-error",
-              non_interaction: true,
-            });
-            document.querySelector(".error-section").classList.add("o__visible");
-            document.querySelector(".loading-text").classList.add("o__hidden");
+            showDestinationNotPresentError();
           }
         } else {
-          console.error("Extension not present");
-          gtag("event", "action", {
-            event_label: "not-installed-error",
-            non_interaction: true,
-          });
-          document.querySelector(".not-installed").classList.add("o__visible");
-          document.querySelector(".loading-text").classList.add("o__hidden");
+          showExtensionNotPresentNotice();
         }
       });
     </script>

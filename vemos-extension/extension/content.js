@@ -1,5 +1,13 @@
 /* global require */
 
+function parseExtensionVersion(extensionVersionString) {
+  let [major, minor, patch] = extensionVersionString.split(".");
+  let extensionVersionNumber =
+    Number(major) * 1000 + Number(minor) * 100 + Number(patch);
+  console.log("Extension version number", extensionVersionNumber);
+  return extensionVersionNumber;
+}
+
 if (window.VEMOS_CONTENT_SET) {
   console.log("VEMOS CONTENT ALREADY INITIALIZED");
 } else {
@@ -11,10 +19,11 @@ if (window.VEMOS_CONTENT_SET) {
       return window.browser || window.chrome;
     }
 
-    injectVemos() {
+    injectVemos(peerId = null) {
+      console.log("injectVemos", peerId);
       if (document.body && document.contentType !== "application/pdf") {
         this.injectExtensionFrame();
-        this.injectEmberApp();
+        this.injectEmberApp(peerId);
 
         let script = document.createElement("script");
         script.type = "text/javascript";
@@ -47,12 +56,12 @@ if (window.VEMOS_CONTENT_SET) {
       iframe.contentDocument;
     }
 
-    injectEmberApp() {
+    injectEmberApp(peerId) {
       const iframe = window.document.getElementById(IFRAME_ID);
-      this.injectFrameTemplate(iframe);
+      this.injectFrameTemplate(iframe, peerId);
     }
 
-    injectFrameTemplate(iframe) {
+    injectFrameTemplate(iframe, peerId) {
       iframe.contentDocument.open();
       iframe.contentDocument.write(`
         <html id="vemos-html">
@@ -79,11 +88,11 @@ if (window.VEMOS_CONTENT_SET) {
       iframe.contentWindow.document.head.appendChild(script);
       iframe.contentWindow.document.head.appendChild(styles);
 
-      if (window.VEMOS_PEER_ID) {
+      if (peerId) {
         let meta = document.createElement("meta");
         meta.id = "vemos-peer-id";
         meta.name = "VEMOS_PEER_ID";
-        meta.content = window.VEMOS_PEER_ID;
+        meta.content = peerId;
         iframe.contentWindow.document.head.appendChild(meta);
       }
 
@@ -93,7 +102,23 @@ if (window.VEMOS_CONTENT_SET) {
 
   window.VEMOS_CONTENT_SET = true;
 
-  if (window.VEMOS_PEER_ID) {
+  let browser = window.browser || window.chrome;
+
+  let versionNumber = parseExtensionVersion(
+    browser.runtime.getManifest().version
+  );
+
+  if (versionNumber > 5) {
+    browser.runtime.sendMessage({ getPeerId: true }, (peerId) => {
+      console.log("Peer Id Set? ", Boolean(peerId));
+      if (peerId) {
+        setTimeout(() => {
+          let contentScript = new ContentScript();
+          contentScript.injectVemos(peerId);
+        }, 1000);
+      }
+    });
+  } else if (window.VEMOS_PEER_ID) {
     setTimeout(() => {
       console.log("A Peer ID was present, booting Vemos");
       let url = new URL(window.location.href);
@@ -107,8 +132,6 @@ if (window.VEMOS_CONTENT_SET) {
       contentScript.injectVemos();
     }, 250);
   }
-
-  let browser = window.browser || window.chrome;
 
   if (browser.runtime) {
     console.log("Adding Vemos message listener");
