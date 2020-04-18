@@ -69,9 +69,15 @@ browser.runtime.onMessage.addListener(function (request, _, sendResponse) {
 
 browser.runtime.onMessage.addListener(function (request, _, sendResponse) {
   if (request.setPeerId) {
-    console.log("Backgound peer id set to ", request.setPeerId);
+    console.log(
+      "Backgound peer id set to ",
+      request.setPeerId,
+      " for host ",
+      request.host
+    );
     window.vemosPeer = {
       id: request.setPeerId,
+      host: request.host,
       timeSet: new Date().getTime(),
     };
     sendResponse(true);
@@ -81,7 +87,7 @@ browser.runtime.onMessage.addListener(function (request, _, sendResponse) {
 
 browser.runtime.onMessage.addListener(function (request, _, sendResponse) {
   if (request.getPeerId) {
-    if (window.vemosPeer) {
+    if (window.vemosPeer && window.vemosPeer.host === request.host) {
       console.log("Backgound peer id is currently ", window.VEMOS_PEER_ID);
       let timeSet = window.vemosPeer.timeSet || 0;
 

@@ -122,7 +122,10 @@
                           redirectToDestination(url);
                         }
                       });
-                      window.postMessage({ setPeerId: url.searchParams.get("vemos-id") });
+                      window.postMessage({
+                        setPeerId: url.searchParams.get("vemos-id"),
+                        host: url.host,
+                      });
                     } else {
                       redirectToDestination(url);
                     }

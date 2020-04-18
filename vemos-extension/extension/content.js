@@ -109,15 +109,18 @@ if (window.VEMOS_CONTENT_SET) {
   );
 
   if (versionNumber > 5) {
-    browser.runtime.sendMessage({ getPeerId: true }, (peerId) => {
-      console.log("Peer Id Set? ", Boolean(peerId));
-      if (peerId) {
-        setTimeout(() => {
-          let contentScript = new ContentScript();
-          contentScript.injectVemos(peerId);
-        }, 1000);
+    browser.runtime.sendMessage(
+      { getPeerId: true, host: window.location.host },
+      (peerId) => {
+        console.log("Peer Id Set? ", Boolean(peerId));
+        if (peerId) {
+          setTimeout(() => {
+            let contentScript = new ContentScript();
+            contentScript.injectVemos(peerId);
+          }, 1000);
+        }
       }
-    });
+    );
   } else if (window.VEMOS_PEER_ID) {
     setTimeout(() => {
       console.log("A Peer ID was present, booting Vemos");

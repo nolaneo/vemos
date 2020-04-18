@@ -27,9 +27,12 @@ window.addEventListener("message", (event) => {
   let peerId = event.data.setPeerId;
   if (peerId) {
     console.log("Set Peer to ", peerId);
-    browser.runtime.sendMessage({ setPeerId: peerId }, (response) => {
-      console.log("Peer set", response);
-      window.postMessage({ peerSet: response }, "*");
-    });
+    browser.runtime.sendMessage(
+      { setPeerId: peerId, host: event.data.host },
+      (response) => {
+        console.log("Peer set", response);
+        window.postMessage({ peerSet: response }, "*");
+      }
+    );
   }
 });
