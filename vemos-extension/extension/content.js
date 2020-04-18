@@ -96,6 +96,12 @@ if (window.VEMOS_CONTENT_SET) {
         iframe.contentWindow.document.head.appendChild(meta);
       }
 
+      let meta = document.createElement("meta");
+      meta.id = "vemos-version-number";
+      meta.name = "VEMOS_VERSION";
+      meta.content = browser.runtime.getManifest().version;
+      iframe.contentWindow.document.head.appendChild(meta);
+
       iframe.contentWindow.VEMOS_NETFLIX_PLAYER = window.VEMOS_NETFLIX_PLAYER;
     }
   }
