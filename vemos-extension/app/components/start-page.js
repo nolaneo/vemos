@@ -21,12 +21,12 @@ export default class StartPageComponent extends Component {
 
   async attemptImmediateConnection() {
     await timeout(2000);
-    let sepecifiedPeer = document.querySelector('#vemos-peer-id').getAttribute('content');
+    let sepecifiedPeer = document
+      .querySelector("#vemos-peer-id")
+      ?.getAttribute("content");
     if (sepecifiedPeer) {
       console.log("Connecting to peer specified in query param");
-      this.peerService.connectToPeer(
-        sepecifiedPeer
-      );
+      this.peerService.connectToPeer(sepecifiedPeer);
     }
   }
 
@@ -42,7 +42,10 @@ export default class StartPageComponent extends Component {
   async generateLink() {
     let url = new URL(this.parentDomService.window.location.href);
     url.searchParams.append("vemos-id", this.peerService.peerId);
-    navigator.clipboard.writeText("https://vemos.org/connect?destination=" + encodeURIComponent(url.toString()));
+    navigator.clipboard.writeText(
+      "https://vemos.org/connect?destination=" +
+        encodeURIComponent(url.toString())
+    );
     this.linkText = "Copied!";
     await timeout(2000);
     this.linkText = "Copy invite link";
