@@ -27,6 +27,7 @@
     <script>
       window.addEventListener("message", (event) => {
         if (event.data.vemos_event) {
+          console.log("Metric received", event.data.vemos_event);
           Intercom('trackEvent', event.data.vemos_event, event.data.metadata);
           gtag("event", "action", {
             event_label: event.data.vemos_event,

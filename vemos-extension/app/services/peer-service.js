@@ -1,4 +1,4 @@
-import Service from "@ember/service";
+import Service, { inject as service } from "@ember/service";
 import Peer from "peerjs";
 import { tracked } from "@glimmer/tracking";
 import { v4 as uuidv4 } from "uuid";
