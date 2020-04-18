@@ -6,6 +6,7 @@ import { timeout } from "ember-concurrency";
 export default class ManualConnectionComponent extends Component {
   @service peerService;
   @service parentDomService;
+  @service metricsService;
 
   @tracked showModal = false;
   @tracked linkText = null;
@@ -13,6 +14,7 @@ export default class ManualConnectionComponent extends Component {
 
   @action toggleModal() {
     this.args.disableHeadphoneWarning();
+    this.metricsService.recordMetric("toggled-manual-peer-connection");
     this.showModal = !this.showModal;
   }
 
@@ -35,6 +37,7 @@ export default class ManualConnectionComponent extends Component {
 
   @action connectToPeer() {
     this.peerService.connectToPeer(this.peerCode);
+    this.metricsService.recordMetric("manual-peer-connection");
     this.toggleModal();
   }
 }
