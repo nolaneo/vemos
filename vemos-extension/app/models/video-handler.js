@@ -1,6 +1,7 @@
 import { RTCMessage } from "../services/peer-service";
 import { isNone } from "@ember/utils";
 import { timeout } from "ember-concurrency";
+import { throttle } from "@ember/runloop";
 
 export default class VideoHandler {
   ignoredEvents = new Set();
@@ -97,30 +98,45 @@ export default class VideoHandler {
       this.videoDOMObserver.disconnect();
     }
 
-    await timeout(3000);
     this.videoElement = this.getElementReference();
 
+    this.videoDOMObserver = new MutationObserver(
+      this.checkForVideoElement.bind(this)
+    );
+
     if (isNone(this.videoElement)) {
+      this.videoDOMObserver.observe(
+        this.parentDomService.window.document.body,
+        {
+          childList: true,
+          subtree: true,
+        }
+      );
+
       return console.error("No video found");
     }
 
-    this.videoElement.pause();
-    await timeout(100);
+    await this.videoElement.pause();
 
     this.videoElement.addEventListener("seeked", this.onSeek.bind(this));
     this.videoElement.addEventListener("play", this.onPlay.bind(this));
     this.videoElement.addEventListener("pause", this.onPause.bind(this));
 
-    this.videoDOMObserver = new MutationObserver(this.checkForVideoElement.bind(this));
-    this.videoDOMObserver.observe(this.parentDomService.window.document.body, {childList: true, subtree: true });
+    this.videoDOMObserver.observe(this.parentDomService.window.document.body, {
+      childList: true,
+      subtree: true,
+    });
 
     console.log("Video listeners added.");
   }
-  
+
   checkForVideoElement() {
-    if (!this.parentDomService.window.document.body.contains(this.videoElement)) {
-      console.log('Video element lost, attempting to reninitialize');
-      this.addListeners();
+    if (
+      isNone(this.videoElement) ||
+      !this.parentDomService.window.document.body.contains(this.videoElement)
+    ) {
+      console.log("Video element lost, attempting to reninitialize");
+      throttle(this, this.addListeners, 500);
     }
   }
 

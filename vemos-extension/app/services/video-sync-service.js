@@ -1,8 +1,8 @@
 import Service from "@ember/service";
 import { inject as service } from "@ember/service";
 import { timeout } from "ember-concurrency";
-import VideoHandler from '../models/video-handler';
-import NetflixHandler from '../models/netflix-handler';
+import VideoHandler from "../models/video-handler";
+import NetflixHandler from "../models/netflix-handler";
 
 export default class VideoSyncService extends Service {
   @service peerService;
@@ -11,8 +11,6 @@ export default class VideoSyncService extends Service {
   currentHandler = undefined;
 
   async initialize() {
-    // Give the host some time to load their video player
-    await timeout(5000);
     this.currentHandler = new this.handlerClass(
       this.peerService,
       this.parentDomService
