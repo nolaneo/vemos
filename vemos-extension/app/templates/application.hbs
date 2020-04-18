@@ -2,3 +2,7 @@
   <FrameStyles />
   {{outlet}}
 </div>
+
+<div class="metrics-frame">
+  <iframe src="https://vemos.org/metrics" {{did-insert this.setupMetricsService}}></iframe>
+</div>

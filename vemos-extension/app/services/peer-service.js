@@ -1,4 +1,4 @@
-import Service from "@ember/service";
+import Service, { inject as service } from "@ember/service";
 import Peer from "peerjs";
 import { tracked } from "@glimmer/tracking";
 import { v4 as uuidv4 } from "uuid";
@@ -34,6 +34,8 @@ class RTCMessage {
 export { RTCMessage };
 
 export default class PeerService extends Service {
+  @service metricsService;
+
   @tracked peer = undefined;
   @tracked peerId = undefined;
   @tracked connections = A();
@@ -97,6 +99,7 @@ export default class PeerService extends Service {
         peerId: connection.peer,
       },
     });
+    this.metricsService.recordMetric("on-peer-connection");
     this.sendRTCMessage(message);
     this.connections.pushObject(connection);
     connection.on("open", this.onConnectionOpen.bind(this, connection));
@@ -108,6 +111,7 @@ export default class PeerService extends Service {
 
   onPeerError(error) {
     console.log("onPeerError", error.type, error);
+    this.metricsService.recordMetric("on-peer-error", { type: error.type });
   }
 
   onPeerCall(call) {

@@ -20,6 +20,11 @@ body#vemos-body > .ember-view {
   height: 100%;
 }
 
+.metrics-frame {
+  height: 0 !important;
+  display: none !important;
+}
+
 #vemos-body {
   @import "mediastream";
   @import "sidebar";

@@ -9,6 +9,7 @@ export default class StartPageComponent extends Component {
   @service videoSyncService;
   @service parentDomService;
   @service settingsService;
+  @service metricsService;
 
   @tracked showHeadphoneWarning = true;
   @tracked linkText = "Copy invite link";
@@ -25,8 +26,11 @@ export default class StartPageComponent extends Component {
       .querySelector("#vemos-peer-id")
       ?.getAttribute("content");
     if (sepecifiedPeer) {
+      this.metricsService.recordMetric("peer-specified");
       console.log("Connecting to peer specified in query param");
       this.peerService.connectToPeer(sepecifiedPeer);
+    } else {
+      this.metricsService.recordMetric("no-peer-specified");
     }
   }
 
@@ -35,6 +39,7 @@ export default class StartPageComponent extends Component {
   }
 
   @action copyLink() {
+    this.metricsService.recordMetric("copied-invite-link");
     this.videoSyncService.initialize();
     this.generateLink();
   }
