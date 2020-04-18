@@ -107,7 +107,7 @@ export default class PeerService extends Service {
   }
 
   onPeerError(error) {
-    console.log("onPeerError", error);
+    console.log("onPeerError", error.type, error);
   }
 
   onPeerCall(call) {
@@ -117,8 +117,8 @@ export default class PeerService extends Service {
     }
     call.on("stream", this.onStream.bind(this, call));
     call.on("addtrack", () => {
-      console.log('ADD TRACK');
-    })
+      console.log("ADD TRACK");
+    });
   }
 
   onStream(call, mediaStream) {
