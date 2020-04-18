@@ -1,0 +1,12 @@
+.manual-connection-link {
+  opacity: 0.6;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.manual-connection-link:hover {
+  opacity: 1;
+  text-decoration: underline;
+}

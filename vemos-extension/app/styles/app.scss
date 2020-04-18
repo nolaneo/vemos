@@ -23,6 +23,7 @@ body#vemos-body > .ember-view {
 #vemos-body {
   @import "mediastream";
   @import "sidebar";
+  @import "manual-connection";
 
   .layout__box {
     flex: 0 0 auto;

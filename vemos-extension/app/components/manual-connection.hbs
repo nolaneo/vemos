@@ -1,0 +1,34 @@
+<div class="manual-connection-link" role="button" {{on "click" this.toggleModal}}>
+  Manually connect to a friend
+</div>
+
+{{#if this.showModal}}
+  <ParentDomFrame>
+    <div class="vemos-splash-frame layout__box o__has-rows o__flexes-to-1">
+      <div class="vemos-close" role="button" {{on "click" this.toggleModal}}>
+        <Svg::Close/>
+      </div>
+      <span class="vemos-logo">
+        <Svg::Logo/>
+      </span>
+      <div class="layout__box o__flexes-to-1 o__centers-all">
+        <div class="layout__box o__has-rows vemos-central">
+          <div class="vemos-title">Manually connect</div>
+          <p class="vemos-subtitle">Sometimes a Vemos invite link might not work when the site you want to watch on and Vemos bump into each other and get in a muddle.</p>
+          <p class="vemos-subtitle">If this happens, you can manually connect to people using their random Vemos code. Send your code to a friend, or enter their code below.</p>
+          <div class="vemos-code-container">
+            <p>Your Vemos code is (click to copy)</p>
+            <div class="vemos-code" rule="button" {{on "click" this.copyPeerId}}>
+              {{or this.linkText this.peerService.peerId}}
+            </div>
+          </div>
+
+          <p>Or enter a friend's code:</p>
+          <input class="vemos-peer-input" placeholder="Enter a friend's Vemos code..." {{on "input" this.setPeerCode}}>
+
+          <div class="vemos-got-it {{if (not this.peerCode) 'o__disabled'}}" {{on "click" this.connectToPeer}} role="button">Connect</div>
+        </div>    
+      </div>
+    </div>
+  </ParentDomFrame>
+{{/if}}
