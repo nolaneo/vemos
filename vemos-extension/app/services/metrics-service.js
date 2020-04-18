@@ -14,13 +14,16 @@ export default class MetricsService extends Service {
     if (this.vemosMetricsFrame) {
       try {
         console.log("Event: ", metricName);
-        this.vemosMetricsFrame.contentWindow.postMessage({
-          vemos_event: metricName,
-          metadata: {
-            ...data,
-            host: this.parentDomService.host,
+        this.vemosMetricsFrame.contentWindow.postMessage(
+          {
+            vemos_event: metricName,
+            metadata: {
+              ...data,
+              host: this.parentDomService.host,
+            },
           },
-        });
+          "https://vemos.org"
+        );
       } catch (error) {
         console.log("Skipping metrics for ", metricName);
       }
