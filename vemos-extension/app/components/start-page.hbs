@@ -14,6 +14,7 @@
         {{this.linkText}}
       </div>
     </div>
+    <ManualConnection @disableHeadphoneWarning={{this.disableHeadphoneWarning}}/>
    {{else}}
     <div class="layout__box o__flexes-to-1 o__centers-vertically">
       <div class="layout__box o__flexes-to-1">
@@ -27,6 +28,7 @@
         <div class="sidebar__copy sidebar__get-started-button" role="button" {{on "click" this.copyLink}}>
           {{this.linkText}}
         </div>
+        <ManualConnection @disableHeadphoneWarning={{this.disableHeadphoneWarning}}/>
       </div>
     </div>
    {{/if}}

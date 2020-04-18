@@ -82,5 +82,147 @@
     align-items: center;
     justify-content: center;
   }
+
+   @keyframes vemos-splash-fade {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  .vemos-splash-frame {
+    opacity: 0;
+    position: fixed;
+    z-index: 2147483640;
+    top: 0;
+    bottom: 0;
+    right: 10vw;
+    left: 0;
+    background: #663399aa;
+    backdrop-filter: blur(6px);
+    animation: 500ms ease-in-out forwards vemos-splash-fade;
+    padding: 50px;
+    color: white;
+  }
+
+  .vemos-logo svg {
+    width: 150px;
+  }
+
+  .vemos-splash-frame svg * {
+    fill: rgba(255,255,255,0.8);
+  }
+  
+  .vemos-headphones {
+    margin: -100px auto 10px auto;
+  }
+
+  .vemos-headphones svg {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+  }
+
+  .vemos-mute {
+    margin: 5px 5px -5px 5px;
+  }
+
+  .vemos-mute svg {
+    width: 14px;
+    height: 14px;
+    margin-bottom: -3px;
+  }
+
+  .vemos-title,
+  .vemos-subtitle {
+    font-size: 24px;
+    color: white;
+    font-family: sans-serif;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .vemos-subtitle {
+    font-size: 14px;
+    line-height: 20px;
+    opacity: 0.8;
+  }
+
+  .vemos-central {
+    width: 400px;
+  }
+
+  .vemos-got-it {
+    width: 100%;
+    border-radius: 3px;
+    border: 1px solid white;
+    cursor: pointer;
+    color: white;
+    transition: all 100ms ease-in-out;
+    font-size: 18px;
+    font-family: sans-serif;
+    padding: 15px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .vemos-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+  }
+  .vemos-close svg {
+    width: 24px;
+    height: 24px;
+  }
+
+    .vemos-close:hover svg * {
+      fill: white;
+    }
+
+    .vemos-got-it.o__disabled {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .vemos-got-it:hover {
+      color: rebeccapurple;
+      background: white;
+    }
+    .vemos-code-container {
+      margin: 10px 0;
+      padding: 10px 0;
+      border-top: 1px solid white;
+      border-bottom: 1px solid white;
+    }
+    .vemos-code {
+      border-radius: 5px;
+      background: #111;
+      color: white;
+      font-size: 16px;
+      font-family: monospace;
+      padding: 10px;
+      text-align: center;
+      border: 1px solid transparent;
+      pointer-events: all;
+      cursor: pointer;
+    }
+
+    .vemos-code:hover {
+      border-color: white;
+    }
+
+
+    .vemos-peer-input {
+      border-radius: 5px;
+      font-size: 16px;
+      font-family: monospace;
+      padding: 10px;
+      text-align: center;
+      border: 1px solid transparent;
+      margin-bottom: 10px;
+    }
   </style>
 </EmberWormhole>
