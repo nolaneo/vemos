@@ -10,13 +10,14 @@ export default class MetricsService extends Service {
     this.queuedMetrics.forEach((metric) => this.recordMetric(metric));
   }
 
-  recordMetric(metricName) {
+  recordMetric(metricName, data = {}) {
     if (this.vemosMetricsFrame) {
       try {
         console.log("Event: ", metricName);
         this.vemosMetricsFrame.contentWindow.postMessage({
           vemos_event: metricName,
           metadata: {
+            ...data,
             host: this.parentDomService.host,
           },
         });
