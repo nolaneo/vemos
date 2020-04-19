@@ -29,7 +29,7 @@
         if (event.data.vemos_event) {
           console.log("Metric received", event.data.vemos_event);
           Intercom('trackEvent', event.data.vemos_event, event.data.metadata);
-          Intercom('update', { version: event.data.vemos_version });
+          Intercom('update', { version: event.data.metadata?.vemos_version });
           gtag("event", "action", {
             event_label: event.data.vemos_event,
             non_interaction: true,
