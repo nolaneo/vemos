@@ -57,8 +57,8 @@
       });
     </script>
   </head>
-  <body class="flex flex-col">
-    <div class="flex flex-col splash p-8">
+  <body>
+    <div class="flex splash p-8">
       <img src="assets/images/splash-doodle-1.svg" class="splash-image bottom-left" />
       <img src="assets/images/splash-doodle-2.svg" class="splash-image bottom-right" />
 
@@ -68,31 +68,31 @@
             <img class="logo" src="assets/images/logo.svg" />
           </div>
 
-          <div class="flex flex-grow items-center my-5">
+          <div class="flex flex-grow my-5">
             <h1 class="title text-4xl md:text-6xl">Virtual movie nights<br />made <b>easy</b></h1>
           </div>
 
           <div class="flex min-w-full flex-row flex-wrap content-around splash-logos">
             <img
-              class="splash-service-logo flex flex-1 m-2"
+              class="splash-service-logo flex flex-col flex-1 m-2"
               src="assets/images/services/youtube.svg"
               alt="YouTube"
             />
 
             <img
-              class="splash-service-logo flex flex-1 m-2"
+              class="splash-service-logo flex flex-col flex-1 m-2"
               src="assets/images/services/disneyplus.svg"
               alt="Disney+"
             />
 
             <img
-              class="splash-service-logo flex flex-1 m-2"
+              class="splash-service-logo flex flex-col flex-1 m-2"
               src="assets/images/services/netflix.svg"
               alt="Netflix"
             />
 
             <img
-              class="splash-service-logo flex flex-1 m-2"
+              class="splash-service-logo flex flex-col flex-1 m-2"
               src="assets/images/services/hulu.svg"
               alt="Hulu"
             />
@@ -104,14 +104,14 @@
             />
           </div>
 
-          <div class="flex flex-col flex-grow items-center my-5">
+          <div class="flex flex-grow my-5">
             <h3 class="subtitle text-xl md:text-2xl">
               Now you and your friends can watch movies together,<br /><b>in sync</b>, with full
               <b>video chat</b> right on your favourite sites. <b>For free.</b>
             </h3>
           </div>
 
-          <div class="flex flex-col flex-grow items-center">
+          <div class="flex flex-grow items-center">
             <a
               class="flex flex-1 items-center justify-center box-border min-w-full md:min-w-0 p-4 splash-button"
               href="https://chrome.google.com/webstore/detail/pbonnafeomejlkdmjlealabfanohjogh"
@@ -125,9 +125,9 @@
     </div>
 
     <div
-      class="flex flex-col flex-grow mx-auto container items-center min-w-full md:min-w-0 main-video my-10 mb-20"
+      class="flex flex-col flex-grow mx-auto container min-w-full md:min-w-0 main-video my-10 mb-20"
     >
-      <div class="flex flex-col flex-grow items-center my-5">
+      <div class="flex flex-col flex-grow my-5 p-4">
         <h1 class="main-title text-2xl md:text-4xl">
           Start watching with your friends in a flash.
         </h1>
@@ -147,10 +147,10 @@
     </div>
 
     <!-- Video Chat Description Section -->
-    <div class="flex flex-col items-center p-4 md:p-8 my-10 description-section">
-      <div class="flex flex-col container mx-auto">
-        <div class="flex flex-grow flex-col md:flex-row items-center">
-          <div class="flex flex-1 flex-col box-border p-4">
+    <div class="flex flex-col p-4 md:p-8 my-10 items-center description-section">
+      <div class="flex flex-col container">
+        <div class="flex flex-col md:flex-row">
+          <div class="flex flex-col box-border p-4 md:w-1/2">
             <h2 class="description-header">Full video chat built in.</h2>
             <h4 class="description-subheading my-5">
               Feel like you're watching together in the same room.
@@ -162,18 +162,18 @@
             </p>
           </div>
 
-          <div class="flex flex-col flex-1 justify-center p-4">
-            <img src="assets/images/videochat.jpg" class="flex flex-1" />
+          <div class="flex flex-col p-4 md:w-1/2">
+            <img src="assets/images/videochat.jpg" class="min-w-full" />
           </div>
         </div>
       </div>
     </div>
 
     <!-- Synchronisation Section -->
-    <div class="flex flex-col items-center p-4 md:p-8 my-10 description-section">
-      <div class="flex flex-col container mx-auto">
-        <div class="flex flex-grow flex-col md:flex-row items-center md:flex-row-reverse">
-          <div class="flex flex-1 flex-col box-border p-4">
+    <div class="flex flex-col p-4 md:p-8 my-10 items-center description-section">
+      <div class="flex flex-col container">
+        <div class="flex flex-grow flex-col md:flex-row md:flex-row-reverse">
+          <div class="flex flex-col box-border p-4 md:w-1/2">
             <h2 class="description-header">Stay in sync.</h2>
             <h4 class="description-subheading my-5">
               Never count down to pressing the play button again.
@@ -186,9 +186,7 @@
             </p>
           </div>
 
-          <div
-            class="flex flex-col flex-1 flex-grow m-8 box-border min-w-full md:min-w-0 relative sync-video-container"
-          >
+          <div class="flex flex-col m-8 box-border md:w-1/2 relative sync-video-container">
             <video
               id="sync-1"
               class="sync-video-1 absolute"
@@ -214,10 +212,10 @@
     </div>
 
     <!-- Open Source Section -->
-    <div class="flex flex-col items-center p-4 md:p-8 my-10 description-section">
-      <div class="flex flex-col container mx-auto">
-        <div class="flex flex-grow flex-col md:flex-row items-center">
-          <div class="flex flex-1 flex-col box-border p-4">
+    <div class="flex flex-col p-4 md:p-8 my-10 items-center description-section">
+      <div class="flex flex-col container">
+        <div class="flex flex-grow flex-col md:flex-row">
+          <div class="flex flex-col box-border p-4 md:w-1/2">
             <h2 class="description-header">Open source.</h2>
             <h4 class="description-subheading my-5">
               Help out if you can!
@@ -234,23 +232,23 @@
             </p>
           </div>
 
-          <div class="flex flex-col flex-1 p-4 justify-center">
-            <img src="assets/images/tech.svg" class="tech-image" />
+          <div class="flex flex-col p-4 items-center md:w-1/2">
+            <img src="assets/images/tech.svg" class="tech-image object-center" />
           </div>
         </div>
       </div>
     </div>
 
     <!-- Get it now Section -->
-    <div class="flex flex-col items-center p-4 md:p-8 my-10 description-section">
-      <div class="flex flex-col container mx-auto">
-        <div class="flex flex-grow flex-col md:flex-row items-center md:flex-row-reverse">
-          <div class="flex flex-1 flex-col box-border p-4">
+    <div class="flex flex-col p-4 md:p-8 my-10 items-center description-section">
+      <div class="flex flex-col container">
+        <div class="flex flex-grow flex-col md:flex-row md:flex-row-reverse">
+          <div class="flex flex-col box-border p-4  md:w-1/2" >
             <h2 class="description-header">Completely free.</h2>
             <h4 class="description-subheading my-5">
               No accounts, no signup, no bullshit. Get the extension and grab the popcorn!
             </h4>
-
+    
             <p class="description-text">
               I built Vemos back in 2018 when my girlfriend went travelling so that we could feel
               together despite being apart.<br /><br />Since then, with Coronavirus causing people
@@ -258,7 +256,7 @@
               time to reboot Vemos and make it useful for everyone stuck inside.<br /><br />
               I want people to enjoy it for free: we've enough going on right now!
             </p>
-
+    
             <a
               class="flex items-center justify-center box-border main-button my-5 min-w-full md:min-w-0"
               href="https://chrome.google.com/webstore/detail/pbonnafeomejlkdmjlealabfanohjogh"
@@ -266,20 +264,19 @@
               <span>Get it free on the Chrome store</span>
             </a>
           </div>
-
-          <div class="flex flex-1 justify-center p-4">
+    
+          <div class="flex flex-col items-center justify-center p-4 md:w-1/2">
             <img src="assets/images/main-doodle-1.svg" class="main-doodle" />
           </div>
         </div>
       </div>
-    </div>
 
     <!-- FAQ -->
-    <div class="flex flex-col container mx-auto justify-center mb-20">
+    <div class="flex flex-col container mx-auto justify-center mb-20 mt-20">
       <h1 class="main-title text-4xl md:text-6xl mb-5">
         FAQ
       </h1>
-      <div class="flex flex-row flex-wrap content-around items-center justify-center">
+      <div class="flex flex-row flex-wrap content-around justify-center">
         <div class="faq-section p-8">
           <h1 class="main-title text-xl md:text-3xl mb-5">
             "Do all my friends need subscriptions too?"
@@ -320,7 +317,7 @@
       <h1 class="main-title text-4xl md:text-6xl mb-5">
         How to get started
       </h1>
-      <div class="flex flex-row flex-wrap content-around items-center justify-center">
+      <div class="flex flex-row flex-wrap content-around justify-center">
         <div class="faq-section p-8">
           <h1 class="main-title text-xl md:text-2xl mb-5">
             <b>1:</b> Install the extension from the
