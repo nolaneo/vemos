@@ -57,12 +57,12 @@
       });
     </script>
   </head>
-  <body>
-    <div class="flex splash p-8">
+  <body class="flex flex-col">
+    <div class="flex flex-col splash p-8">
       <img src="assets/images/splash-doodle-1.svg" class="splash-image bottom-left" />
       <img src="assets/images/splash-doodle-2.svg" class="splash-image bottom-right" />
 
-      <div class="flex container mx-auto">
+      <div class="flex flex-col container mx-auto">
         <div class="flex flex-grow flex-col items-center">
           <div>
             <img class="logo" src="assets/images/logo.svg" />
@@ -104,14 +104,14 @@
             />
           </div>
 
-          <div class="flex flex-grow items-center my-5">
+          <div class="flex flex-col flex-grow items-center my-5">
             <h3 class="subtitle text-xl md:text-2xl">
               Now you and your friends can watch movies together,<br /><b>in sync</b>, with full
               <b>video chat</b> right on your favourite sites. <b>For free.</b>
             </h3>
           </div>
 
-          <div class="flex flex-grow items-center">
+          <div class="flex flex-col flex-grow items-center">
             <a
               class="flex flex-1 items-center justify-center box-border min-w-full md:min-w-0 p-4 splash-button"
               href="https://chrome.google.com/webstore/detail/pbonnafeomejlkdmjlealabfanohjogh"
@@ -147,8 +147,8 @@
     </div>
 
     <!-- Video Chat Description Section -->
-    <div class="flex flex-col items-center p-4 md:p-8 my-10">
-      <div class="flex container mx-auto">
+    <div class="flex flex-col items-center p-4 md:p-8 my-10 description-section">
+      <div class="flex flex-col container mx-auto">
         <div class="flex flex-grow flex-col md:flex-row items-center">
           <div class="flex flex-1 flex-col box-border p-4">
             <h2 class="description-header">Full video chat built in.</h2>
@@ -162,16 +162,16 @@
             </p>
           </div>
 
-          <div class="flex flex-1 p-4">
-            <img src="assets/images/videochat.jpg" class="object-center" />
+          <div class="flex flex-col flex-1 justify-center p-4">
+            <img src="assets/images/videochat.jpg" class="flex flex-1" />
           </div>
         </div>
       </div>
     </div>
 
     <!-- Synchronisation Section -->
-    <div class="flex flex-col items-center p-4 md:p-8 my-10">
-      <div class="flex container mx-auto">
+    <div class="flex flex-col items-center p-4 md:p-8 my-10 description-section">
+      <div class="flex flex-col container mx-auto">
         <div class="flex flex-grow flex-col md:flex-row items-center md:flex-row-reverse">
           <div class="flex flex-1 flex-col box-border p-4">
             <h2 class="description-header">Stay in sync.</h2>
@@ -187,7 +187,7 @@
           </div>
 
           <div
-            class="flex flex-1 flex-grow m-8 box-border min-w-full md:min-w-0 relative sync-video-container"
+            class="flex flex-col flex-1 flex-grow m-8 box-border min-w-full md:min-w-0 relative sync-video-container"
           >
             <video
               id="sync-1"
@@ -214,8 +214,8 @@
     </div>
 
     <!-- Open Source Section -->
-    <div class="flex flex-col items-center p-4 md:p-8 my-10">
-      <div class="flex container mx-auto">
+    <div class="flex flex-col items-center p-4 md:p-8 my-10 description-section">
+      <div class="flex flex-col container mx-auto">
         <div class="flex flex-grow flex-col md:flex-row items-center">
           <div class="flex flex-1 flex-col box-border p-4">
             <h2 class="description-header">Open source.</h2>
@@ -234,7 +234,7 @@
             </p>
           </div>
 
-          <div class="flex flex-1 p-4 justify-center">
+          <div class="flex flex-col flex-1 p-4 justify-center">
             <img src="assets/images/tech.svg" class="tech-image" />
           </div>
         </div>
@@ -242,8 +242,8 @@
     </div>
 
     <!-- Get it now Section -->
-    <div class="flex flex-col items-center p-4 md:p-8 my-10">
-      <div class="flex container mx-auto">
+    <div class="flex flex-col items-center p-4 md:p-8 my-10 description-section">
+      <div class="flex flex-col container mx-auto">
         <div class="flex flex-grow flex-col md:flex-row items-center md:flex-row-reverse">
           <div class="flex flex-1 flex-col box-border p-4">
             <h2 class="description-header">Completely free.</h2>
