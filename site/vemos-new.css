@@ -7,6 +7,23 @@ body {
   --purple: rebeccapurple;
   --purple-light: rgb(176, 121, 230);
   --purple-lightest: rgb(255, 224, 255);
+  --patreon-orange: #f86753;
+}
+
+.patreon-button {
+  height: 40px;
+  border-radius: 20px;
+  background-color: var(--patreon-orange);
+  color: white;
+  font-family: sans-serif;
+  font-size: 20px;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.patreon-button img {
+  height: 40x;
 }
 
 .splash {
@@ -51,7 +68,6 @@ body {
 .subtitle {
   color: var(--purple-lightest);
   text-align: center;
-  font-weight: lighter;
 }
 
 .splash-button {
