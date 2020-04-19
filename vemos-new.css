@@ -174,3 +174,7 @@ body {
   width: 100%;
   max-width: 400px;
 }
+
+.description-section {
+  min-height: fit-content;
+}
