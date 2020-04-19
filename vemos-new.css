@@ -130,10 +130,6 @@ body {
   z-index: 2;
 }
 
-.sync-video-container {
-  min-height: 30vw;
-}
-
 .main-button {
   height: 80px;
   border-radius: 8px;
