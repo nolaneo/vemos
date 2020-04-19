@@ -1,0 +1,176 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
+    "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+* {
+  --purple: rebeccapurple;
+  --purple-light: rgb(176, 121, 230);
+  --purple-lightest: rgb(255, 224, 255);
+}
+
+.splash {
+  background-color: var(--purple);
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.logo {
+  height: 60px;
+}
+
+.splash-service-logo {
+  height: 1em;
+}
+
+/* Medium (md) */
+@media (min-width: 768px) {
+  .splash-service-logo {
+    height: 2em;
+  }
+}
+
+.main-title,
+.title {
+  font-family: "Playfair Display", serif;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--purple-lightest);
+}
+
+.main-title {
+  color: var(--purple);
+}
+
+.title b {
+  text-decoration: underline;
+}
+
+.subtitle {
+  color: var(--purple-lightest);
+  text-align: center;
+  font-weight: lighter;
+}
+
+.splash-button {
+  max-width: 460px;
+  height: 80px;
+  border-radius: 8px;
+  background-color: var(--purple-lightest);
+  color: var(--purple);
+  border: 2px solid transparent;
+  transition: all 100ms ease;
+  z-index: 2;
+  text-align: center;
+}
+
+.splash-button:hover {
+  background-color: var(--purple-light);
+  border-color: var(--purple-lightest);
+  color: var(--purple-lightest);
+}
+
+.splash-image {
+  position: absolute;
+  mix-blend-mode: luminosity;
+  opacity: 0.75;
+}
+
+.splash-image.bottom-left {
+  width: 30vw;
+  bottom: -6vw;
+  left: -3vw;
+}
+
+.splash-image.bottom-right {
+  width: 35vw;
+  bottom: -6vw;
+  right: -3vw;
+}
+
+.description-header {
+  font-family: "Playfair Display", serif;
+  font-weight: 500;
+  font-size: 48px;
+  line-height: 1.2;
+  color: var(--purple);
+}
+
+.description-subheading {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
+    "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 24px;
+  color: #333;
+}
+
+.description-text {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
+    "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  color: #333;
+}
+
+.description-text a {
+  color: var(--purple);
+  text-decoration: underline;
+}
+
+.sync-video-1 {
+  top: 1em;
+  left: 1em;
+  width: 70%;
+}
+
+.sync-video-2 {
+  bottom: 1em;
+  right: 1em;
+  width: 70%;
+  z-index: 2;
+}
+
+.sync-video-container {
+  min-height: 30vw;
+}
+
+.main-button {
+  height: 80px;
+  border-radius: 8px;
+  background-color: var(--purple);
+  color: white;
+  font-size: 20px;
+  border: 2px solid transparent;
+  transition: all 100ms ease;
+  z-index: 2;
+  text-align: center;
+}
+
+.main-button:hover {
+  background-color: white;
+  border-color: var(--purple);
+  color: var(--purple);
+}
+
+.main-doodle {
+  width: 80%;
+}
+
+.main-video {
+  width: 100%;
+  max-width: 800px;
+}
+
+.faq-section {
+  max-width: 400px;
+}
+
+.faq-text {
+  text-align: justify;
+  line-height: 1.8;
+}
+
+.tech-image {
+  width: 100%;
+  max-width: 400px;
+}
