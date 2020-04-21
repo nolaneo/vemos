@@ -83,6 +83,7 @@ if (window.VEMOS_CONTENT_SET) {
       styles.type = "text/css";
       styles.rel = "stylesheet";
       styles.charset = "utf-8";
+      styles.id = "vemos-styles";
       styles.href = this.browser.runtime.getURL("assets/app.css");
 
       iframe.contentWindow.document.head.appendChild(script);

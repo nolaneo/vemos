@@ -1,5 +1,7 @@
 <EmberWormhole @destinationElement={{this.parentDomService.container}}>
-  <div class="vemos-frame">
-    {{yield}}
-  </div>
+  <iframe class="vemos-iframe" frameBorder="0" {{did-insert this.setIframe}} />
+</EmberWormhole>
+
+<EmberWormhole @destinationElement={{this.iframeDocument}} @renderInPlace={{not this.iframeDocument}}>
+  {{yield}}
 </EmberWormhole>
