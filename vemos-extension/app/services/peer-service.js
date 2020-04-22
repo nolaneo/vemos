@@ -105,6 +105,14 @@ export default class PeerService extends Service {
     });
     this.metricsService.recordMetric("on-peer-connection");
     this.sendRTCMessage(message);
+    let existingConnection = this.connections.find(
+      (c) => c.peer === connection.peer
+    );
+    if (existingConnection) {
+      this.connections.removeObject(existingConnection);
+      this.reconnectionAttempts[connection.peer] = A();
+      this.metricsService.recordMetric("peer-reconnect");
+    }
     this.connections.pushObject(connection);
     connection.on("open", this.onConnectionOpen.bind(this, connection));
   }

@@ -40,7 +40,6 @@ export default class StartPageComponent extends Component {
 
   @action copyLink() {
     this.metricsService.recordMetric("copied-invite-link");
-    this.videoSyncService.initialize();
     this.generateLink();
   }
 
