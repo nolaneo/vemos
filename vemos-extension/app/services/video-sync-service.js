@@ -3,6 +3,7 @@ import { inject as service } from "@ember/service";
 import { timeout } from "ember-concurrency";
 import VideoHandler from "../models/video-handler";
 import NetflixHandler from "../models/netflix-handler";
+import TwitchHandler from "../models/twitch-handler";
 
 export default class VideoSyncService extends Service {
   @service peerService;
@@ -41,6 +42,10 @@ export default class VideoSyncService extends Service {
   get handlerClass() {
     if (this.parentDomService.window.location.href.includes("netflix.com")) {
       return NetflixHandler;
+    } else if (
+      this.parentDomService.window.location.href.includes("twitch.tv")
+    ) {
+      return TwitchHandler;
     } else {
       return VideoHandler;
     }
