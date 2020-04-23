@@ -17,19 +17,9 @@ export default class TwitchHandler extends VideoHandler {
     }
   }
 
-  onSeek(event) {
-    console.log(event);
-    super.onSeek();
-  }
-
-  onPlay(event) {
-    console.log(event);
-    super.onPlay();
-  }
-
   onPause() {
     let time = new Date().getTime();
-    if (time - this.lastPlayEvent > 1000) {
+    if (time - this.lastPlayEvent > 2000) {
       console.log(event);
       super.onPause(event);
     } else {
