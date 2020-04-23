@@ -121,7 +121,9 @@ export default class VideoHandler {
       return console.error("No video found");
     }
 
-    await this.videoElement.pause();
+    if (!this.noInitialPause) {
+      await this.videoElement.pause();
+    }
 
     this.videoElement.addEventListener("seeked", this.onSeek.bind(this));
     this.videoElement.addEventListener("play", this.onPlay.bind(this));
