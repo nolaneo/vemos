@@ -201,7 +201,7 @@ export default class PeerService extends Service {
     this.reconnectionAttempts[connection.peer] = 0;
     if (this.knownPeers.has(connection.peer)) {
       this.metricsService.recordMetric("reconnected-with-peer");
-    } else {
+    } else if (connection.peer !== this.peerId) {
       this.knownPeers.add(connection.peer);
     }
     connection.on("data", this.onConnectionData.bind(this, connection));
