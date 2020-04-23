@@ -1,7 +1,7 @@
 import Component from "@glimmer/component";
 import { inject as service } from "@ember/service";
 import { action } from "@ember/object";
-import { VemosStream } from '../services/video-call-service';
+import { VemosStream } from "../services/video-call-service";
 export default class VideoListComponent extends Component {
   @service peerService;
   @service parentDomService;
@@ -32,10 +32,15 @@ export default class VideoListComponent extends Component {
       "webcam-disabled",
       this.disableVideoTracks.bind(this)
     );
+
+    this.peerService.addEventHandler(
+      "self-reconnection",
+      this.videoCallService.restartVideoStream()
+    );
   }
 
   @action setupOwnStream() {
-    console.log('Video list - setupOwnStream');
+    console.log("Video list - setupOwnStream");
     if (this.peerService.peerId) {
       this.videoCallService.setupMediaStream();
     }
@@ -57,7 +62,10 @@ export default class VideoListComponent extends Component {
 
   callPeer(connection) {
     console.log("callPeer");
-    this.peerService.callPeer(connection.peer, this.videoCallService.ownMediaStream.mediaStream);
+    this.peerService.callPeer(
+      connection.peer,
+      this.videoCallService.ownMediaStream.mediaStream
+    );
   }
 
   removePeerStream(connection) {

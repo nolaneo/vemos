@@ -121,10 +121,11 @@ export default class PeerService extends Service {
   onPeerDisconnected() {
     console.log("onPeerDisconnected");
     this.logService.log(`You have disconnected, attempting to reconnect`);
+    this.attemptReconnectSelf();
   }
 
   attemptReconnectSelf() {
-    if (selfConnectionAttempts > 5) {
+    if (selfConnectionAttempts > 20) {
       this.logService.error(`Giving up on reconnection`);
       this.metricsService.recordMetric("give-up-on-self-reconnect");
       this.fullReconnect();
@@ -139,14 +140,21 @@ export default class PeerService extends Service {
         } else {
           this.metricsService.recordMetric("reconnected-with-server");
           this.selfConnectionAttempts = 0;
+          if (this.eventHandlers["self-reconnection"]) {
+            this.eventHandlers["self-reconnection"].forEach((handler) =>
+              handler(call)
+            );
+          }
         }
       },
-      1000
+      2000
     );
   }
 
   fullReconnect() {
+    this.peer.destroy();
     this.initialize();
+    this.logService.log("Attempting full reconnect");
     this.metricsService.recordMetric("full-reconnect");
     this.reconnectToPeerIds = Array.from(this.knownPeers);
   }
@@ -157,12 +165,12 @@ export default class PeerService extends Service {
     this.metricsService.recordMetric(`on-peer-error-${error.type}`);
     if (error.type === "peer-unavailable") {
       let peer = error.message.split(" ").lastObject;
-      later(this, () => this.attemptReconnectOther(peer), 5000);
+      later(this, () => this.attemptReconnectOther(peer), 2000);
     }
 
     if (error.type === "network") {
       this.logService.log(`Attemping reconnect: ${error.message}`);
-      later(this, () => this.fullReconnect(), 5000);
+      later(this, () => this.fullReconnect(), 2000);
     }
   }
 
@@ -172,9 +180,6 @@ export default class PeerService extends Service {
       this.eventHandlers["peer-call"].forEach((handler) => handler(call));
     }
     call.on("stream", this.onStream.bind(this, call));
-    call.on("addtrack", () => {
-      console.log("ADD TRACK");
-    });
   }
 
   onStream(call, mediaStream) {
@@ -242,7 +247,7 @@ export default class PeerService extends Service {
         handler(connection)
       );
     }
-    later(this, () => this.attemptReconnectOther(connection.peer), 5000);
+    later(this, () => this.attemptReconnectOther(connection.peer), 2000);
   }
 
   onConnectionError(connection) {
@@ -255,7 +260,7 @@ export default class PeerService extends Service {
 
   attemptReconnectOther(peer) {
     this.logService.log(`Attempting reconnection ${peer}`);
-    if (this.reconnectionAttempts[peer] > 5) {
+    if (this.reconnectionAttempts[peer] > 20) {
       console.log("Giving up on peer");
       this.knownPeers.delete(peer);
       this.metricsService.recordMetric("give-up-on-reconnect");

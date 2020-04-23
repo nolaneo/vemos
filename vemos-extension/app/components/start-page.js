@@ -13,6 +13,7 @@ export default class StartPageComponent extends Component {
 
   @tracked showHeadphoneWarning = true;
   @tracked linkText = "Copy invite link";
+  @tracked isJoining = false;
 
   constructor() {
     super(...arguments);
@@ -29,6 +30,9 @@ export default class StartPageComponent extends Component {
       this.metricsService.recordMetric("peer-specified");
       console.log("Connecting to peer specified in query param");
       this.peerService.connectToPeer(sepecifiedPeer);
+      this.isJoining = true;
+      await timeout(3000);
+      this.isJoining = false;
     } else {
       this.metricsService.recordMetric("no-peer-specified");
     }
