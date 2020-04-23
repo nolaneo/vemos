@@ -7,6 +7,7 @@ import NetflixHandler from "../models/netflix-handler";
 export default class VideoSyncService extends Service {
   @service peerService;
   @service parentDomService;
+  @service metricsService;
 
   currentHandler = undefined;
 
@@ -23,14 +24,17 @@ export default class VideoSyncService extends Service {
   }
 
   async play(message) {
+    this.metricsService.recordMetric("play-received");
     await this.currentHandler.play(message.data.time);
   }
 
   async pause() {
+    this.metricsService.recordMetric("pause-received");
     await this.currentHandler.pause();
   }
 
   async seek(message) {
+    this.metricsService.recordMetric("seek-received");
     await this.currentHandler.seek(message.data.time);
   }
 

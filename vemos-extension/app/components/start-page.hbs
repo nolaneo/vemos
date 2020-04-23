@@ -8,35 +8,39 @@
   <div class="layout__box {{if this.peerService.connections.length 'o__flexes-to-1'}} o__scrolls">
     <VideoList/>
   </div>
-   {{#if this.peerService.connections.length}}
-      <div class="layout__box">
-        <div class="sidebar__copy" role="button" {{on "click" this.copyLink}}>
-          {{this.linkText}}
+    {{#if (and (eq this.peerService.connections.length 0) this.isJoining)}}
+      <div class="layout__box o__has-rows o__centers-all o__flexes-to-1">
+        Joining...
+      </div>
+    {{else if this.peerService.connections.length}}
+        <div class="layout__box">
+          <div class="sidebar__copy" role="button" {{on "click" this.copyLink}}>
+            {{this.linkText}}
+          </div>
+        </div>
+        <ManualConnection @disableHeadphoneWarning={{this.disableHeadphoneWarning}}/>
+        {{#if this.metricsService.version}}
+          <p class="sidebar__version">Version {{this.metricsService.version}}</p>
+        {{/if}}
+    {{else}}
+      <div class="layout__box o__flexes-to-1 o__centers-vertically">
+        <div class="layout__box o__has-rows o__flexes-to-1">
+          <h3 class="sidebar__get-started">Let's get started!</h3>
+          <ol class="sidebar__get-started-list">
+            <li>Open the video you want to watch with your friends.</li>
+            <li>Copy the invite link below.</li>
+            <li>Send the link to your friends.</li>
+            <li>Grab some popcorn while you wait for them to join!</li>
+          </ol>
+          <div class="sidebar__copy sidebar__get-started-button" role="button" {{on "click" this.copyLink}}>
+            {{this.linkText}}
+          </div>
+          <ManualConnection @disableHeadphoneWarning={{this.disableHeadphoneWarning}}/>
         </div>
       </div>
-      <ManualConnection @disableHeadphoneWarning={{this.disableHeadphoneWarning}}/>
       {{#if this.metricsService.version}}
         <p class="sidebar__version">Version {{this.metricsService.version}}</p>
       {{/if}}
-   {{else}}
-    <div class="layout__box o__flexes-to-1 o__centers-vertically">
-      <div class="layout__box o__has-rows o__flexes-to-1">
-        <h3 class="sidebar__get-started">Let's get started!</h3>
-        <ol class="sidebar__get-started-list">
-          <li>Open the video you want to watch with your friends.</li>
-          <li>Copy the invite link below.</li>
-          <li>Send the link to your friends.</li>
-          <li>Grab some popcorn while you wait for them to join!</li>
-        </ol>
-        <div class="sidebar__copy sidebar__get-started-button" role="button" {{on "click" this.copyLink}}>
-          {{this.linkText}}
-        </div>
-        <ManualConnection @disableHeadphoneWarning={{this.disableHeadphoneWarning}}/>
-      </div>
-    </div>
-    {{#if this.metricsService.version}}
-      <p class="sidebar__version">Version {{this.metricsService.version}}</p>
-    {{/if}}
    {{/if}}
 </div>
 

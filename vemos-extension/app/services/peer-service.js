@@ -4,6 +4,7 @@ import { tracked } from "@glimmer/tracking";
 import { v4 as uuidv4 } from "uuid";
 import { A } from "@ember/array";
 import { isNone } from "@ember/utils";
+import { later } from "@ember/runloop";
 
 const HOST = "vemos.herokuapp.com";
 
@@ -35,6 +36,7 @@ export { RTCMessage };
 
 export default class PeerService extends Service {
   @service metricsService;
+  @service logService;
 
   @tracked peer = undefined;
   @tracked peerId = undefined;
@@ -42,10 +44,18 @@ export default class PeerService extends Service {
   @tracked currentMediaStream;
 
   eventHandlers = {};
+  reconnectionAttempts = {};
   knownEvents = A();
+  selfConnectionAttempts = 0;
+  knownPeers = new Set();
+  reconnectToPeerIds = A();
 
   initialize() {
-    console.log(`Initializing Peer Service`);
+    this.connections = A();
+    this.reconnectionAttempts = {};
+    this.selfConnectionAttempts = 0;
+    this.knownEvents = A();
+
     this.peer = new Peer({
       host: HOST,
     });
@@ -77,7 +87,7 @@ export default class PeerService extends Service {
   }
 
   sendRTCMessage(message) {
-    console.log(
+    this.logService.log(
       `Sending message [event ${message.event} | uuid ${message.uuid}]`
     );
     message.senderId = this.peerId;
@@ -87,31 +97,81 @@ export default class PeerService extends Service {
   }
 
   onPeerOpen(id) {
-    console.log("onPeerOpen", id);
+    this.logService.log(
+      `Connection to signaling server established. Our ID is ${id}`
+    );
     this.peerId = id;
+
+    if (this.reconnectToPeerIds) {
+      this.reconnectToPeerIds.forEach((peer) => this.connectToPeer(peer));
+    }
   }
 
   onPeerConnection(connection) {
-    console.log("onPeerConnection", connection);
-    let message = new RTCMessage({
-      event: "new-peer-joined",
-      data: {
-        peerId: connection.peer,
-      },
-    });
-    this.metricsService.recordMetric("on-peer-connection");
-    this.sendRTCMessage(message);
+    let existingConnection = this.connections.find(
+      (c) => c.peer === connection.peer
+    );
+    if (existingConnection) {
+      this.connections.removeObject(existingConnection);
+    }
     this.connections.pushObject(connection);
     connection.on("open", this.onConnectionOpen.bind(this, connection));
   }
 
   onPeerDisconnected() {
     console.log("onPeerDisconnected");
+    this.logService.log(`You have disconnected, attempting to reconnect`);
+    this.attemptReconnectSelf();
+  }
+
+  attemptReconnectSelf() {
+    if (selfConnectionAttempts > 20) {
+      this.logService.error(`Giving up on reconnection`);
+      this.metricsService.recordMetric("give-up-on-self-reconnect");
+      this.fullReconnect();
+    }
+    this.peer.reconnect();
+    selfConnectionAttempts++;
+    later(
+      this,
+      () => {
+        if (this.peer.disconnected) {
+          this.attemptReconnectSelf();
+        } else {
+          this.metricsService.recordMetric("reconnected-with-server");
+          this.selfConnectionAttempts = 0;
+          if (this.eventHandlers["self-reconnection"]) {
+            this.eventHandlers["self-reconnection"].forEach((handler) =>
+              handler(call)
+            );
+          }
+        }
+      },
+      2000
+    );
+  }
+
+  fullReconnect() {
+    this.peer.destroy();
+    this.initialize();
+    this.logService.log("Attempting full reconnect");
+    this.metricsService.recordMetric("full-reconnect");
+    this.reconnectToPeerIds = Array.from(this.knownPeers);
   }
 
   onPeerError(error) {
     console.log("onPeerError", error.type, error);
-    this.metricsService.recordMetric("on-peer-error", { type: error.type });
+    this.logService.error(`An error occurred: ${error.message}`);
+    this.metricsService.recordMetric(`on-peer-error-${error.type}`);
+    if (error.type === "peer-unavailable") {
+      let peer = error.message.split(" ").lastObject;
+      later(this, () => this.attemptReconnectOther(peer), 2000);
+    }
+
+    if (error.type === "network") {
+      this.logService.log(`Attemping reconnect: ${error.message}`);
+      later(this, () => this.fullReconnect(), 2000);
+    }
   }
 
   onPeerCall(call) {
@@ -120,9 +180,6 @@ export default class PeerService extends Service {
       this.eventHandlers["peer-call"].forEach((handler) => handler(call));
     }
     call.on("stream", this.onStream.bind(this, call));
-    call.on("addtrack", () => {
-      console.log("ADD TRACK");
-    });
   }
 
   onStream(call, mediaStream) {
@@ -137,9 +194,24 @@ export default class PeerService extends Service {
   }
 
   onConnectionOpen(connection) {
-    console.log("onConnectionOpen");
+    this.logService.log(`Connection established with ${connection.peer}`);
+    let message = new RTCMessage({
+      event: "new-peer-joined",
+      data: {
+        peerId: connection.peer,
+      },
+    });
+    this.sendRTCMessage(message);
+    this.metricsService.recordMetric("peer-connection-open");
+    this.reconnectionAttempts[connection.peer] = 0;
+    if (this.knownPeers.has(connection.peer)) {
+      this.metricsService.recordMetric("reconnected-with-peer");
+    } else if (connection.peer !== this.peerId) {
+      this.knownPeers.add(connection.peer);
+    }
     connection.on("data", this.onConnectionData.bind(this, connection));
     connection.on("close", this.onConnectionClose.bind(this, connection));
+    connection.on("error", this.onConnectionError.bind(this, connection));
 
     if (this.eventHandlers["connection-opened"]) {
       this.eventHandlers["connection-opened"].forEach((handler) =>
@@ -149,16 +221,15 @@ export default class PeerService extends Service {
   }
 
   onConnectionData(connection, message) {
-    console.log("onConnectionData", connection, message);
     if (this.knownEvents.includes(message.uuid)) {
       console.log(`Ignoring known event`, event.uuid);
       return;
     }
     this.knownEvents.pushObject(message.uuid);
     if (this.eventHandlers[message.event]) {
-      console.log(
-        `Received message [event ${message.event} | uuid ${message.uuid}]`
-      );
+      this.logService.log(`Received message [event ${message.event}`);
+
+      console.log(` | uuid ${message.uuid}]`);
       this.eventHandlers[message.event].forEach((handler) => handler(message));
     } else {
       console.log(`No event handlers for ${message.event}`);
@@ -168,11 +239,36 @@ export default class PeerService extends Service {
   onConnectionClose(connection) {
     this.connections.removeObject(connection);
     console.log("onConnectionClose");
-
+    this.logService.log(
+      `A peer has closed their connection ${connection.peer}`
+    );
     if (this.eventHandlers["connection-closed"]) {
       this.eventHandlers["connection-closed"].forEach((handler) =>
         handler(connection)
       );
+    }
+    later(this, () => this.attemptReconnectOther(connection.peer), 2000);
+  }
+
+  onConnectionError(connection) {
+    console.log("onConnectionError");
+    this.logService.error(
+      `Connection with peer has been lost. ${connection.peer}`
+    );
+    this.attemptReconnectOther(connection.peer);
+  }
+
+  attemptReconnectOther(peer) {
+    this.logService.log(`Attempting reconnection ${peer}`);
+    if (this.reconnectionAttempts[peer] > 20) {
+      console.log("Giving up on peer");
+      this.knownPeers.delete(peer);
+      this.metricsService.recordMetric("give-up-on-reconnect");
+    } else {
+      this.connectToPeer(peer);
+      this.reconnectionAttempts[peer] = this.reconnectionAttempts[peer] =
+        this.reconnectionAttempts[peer] | 0;
+      this.reconnectionAttempts[peer] += 1;
     }
   }
 
