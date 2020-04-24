@@ -1,0 +1,30 @@
+<style>
+    .drag-handle-wrapper {
+        position: fixed;
+        top: 48vh;
+        z-index: 999;
+        width: 30px;
+        height: 3vh;     
+    }
+    .drag-handle {
+        position: relative;
+        left: 4px;
+        cursor: ew-resize;
+        z-index: 999;
+        border: 1px solid #888;
+        background-color: rgba(200, 200, 200, 0.3);
+        color: #000;
+        width: 6px;
+        height: 3vh;
+        text-align: center;
+        line-height: 26px;
+        font-size: 20px;
+        user-select: none;
+    }
+</style>
+<div class="drag-handle-wrapper"
+        role="button">
+    <div class="drag-handle">
+        |
+    </div>
+</div>
