@@ -4,7 +4,7 @@
     {{did-insert this.setupMediaStream}}
     {{did-update this.setupMediaStream @vemosStream.isHidden}}
     {{did-update this.setupMediaStream @vemosStream}}
-
+    {{did-insert this.onStreamInserted}}
   >
   </video>
   {{#if @vemosStream.isHidden}}

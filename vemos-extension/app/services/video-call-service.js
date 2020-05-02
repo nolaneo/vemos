@@ -179,6 +179,7 @@ export default class VideoCallServiceService extends Service {
   }
 
   async restartVideoStream() {
+    console.log("Restart video stream");
     await this.setupMediaStream();
     this.ownMediaStream.isHidden = false;
     this.peerService.connections.forEach((connection) => {

@@ -106,6 +106,12 @@ export default class PeerService extends Service {
     );
     this.peerId = id;
 
+    if (this.eventHandlers["did-establish-connection"]) {
+      this.eventHandlers["did-establish-connection"].forEach((handler) =>
+        handler()
+      );
+    }
+
     if (this.reconnectToPeerIds) {
       this.reconnectToPeerIds.forEach((peer) => this.connectToPeer(peer));
     }

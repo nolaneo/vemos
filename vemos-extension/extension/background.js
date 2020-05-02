@@ -92,7 +92,7 @@ browser.runtime.onMessage.addListener(function (request, _, sendResponse) {
       let timeSet = window.vemosPeer.timeSet || 0;
 
       let oneMinuteInMS = 60 * 1000;
-      if (Math.abs(new Date().getTime() - timeSet) > oneMinuteInMS) {
+      if (Math.abs(new Date().getTime() - timeSet) > oneMinuteInMS / 2) {
         console.log("Vemos peer id has expired");
         sendResponse(undefined);
       } else {

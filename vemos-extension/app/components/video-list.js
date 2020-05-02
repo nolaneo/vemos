@@ -10,8 +10,6 @@ export default class VideoListComponent extends Component {
   constructor() {
     super(...arguments);
 
-    this.setupOwnStream();
-
     this.peerService.addEventHandler(
       "peer-call",
       this.answerPeerCall.bind(this)
@@ -33,17 +31,9 @@ export default class VideoListComponent extends Component {
       this.disableVideoTracks.bind(this)
     );
 
-    this.peerService.addEventHandler(
-      "self-reconnection",
-      this.videoCallService.restartVideoStream()
-    );
-  }
-
-  @action setupOwnStream() {
-    console.log("Video list - setupOwnStream");
-    if (this.peerService.peerId) {
-      this.videoCallService.setupMediaStream();
-    }
+    this.peerService.addEventHandler("self-reconnection", () => {
+      this.videoCallService.restartVideoStream();
+    });
   }
 
   answerPeerCall(call) {
@@ -52,6 +42,9 @@ export default class VideoListComponent extends Component {
   }
 
   connectPeerStream(call, mediaStream) {
+    if (call.peer === this.peerService.peerId) {
+      console.error("Refusing self connect for own stream");
+    }
     console.log("connectPeerStream", mediaStream);
     let stream = new VemosStream({
       peerId: call.peer,

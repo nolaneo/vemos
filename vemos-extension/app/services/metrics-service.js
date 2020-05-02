@@ -28,7 +28,7 @@ export default class MetricsService extends Service {
               host: this.parentDomService.host,
             },
           },
-          "https://vemos.org"
+          "*"
         );
       } catch (error) {
         console.log("Skipping metrics for ", metricName);

@@ -2,27 +2,40 @@ import Component from "@glimmer/component";
 import { action } from "@ember/object";
 import { tracked } from "@glimmer/tracking";
 import { inject as service } from "@ember/service";
-import { debounce } from "@ember/runloop";
+import { scheduleOnce } from "@ember/runloop";
 
 export default class MediastreamVideoComponent extends Component {
   @service parentDomService;
 
+  video = undefined;
+
   @action setupMediaStream(video) {
-    debounce(this, this.debouncedSetupStream, video, 100);
+    this.video = video;
+    scheduleOnce("afterRender", this, this.setStreamSource);
   }
 
-  debouncedSetupStream(video) {
-    console.log("setupMediaStream");
+  @action onStreamInserted() {
+    if (this.args.onStreamInserted) {
+      this.args.onStreamInserted();
+    }
+  }
+
+  async setStreamSource() {
+    console.log(
+      "setupMediaStream video component. Is hidden:",
+      this.args.vemosStream.isHidden
+    );
     if (
       this.args.vemosStream.displayableStream &&
       !this.args.vemosStream.isHidden
     ) {
-      video.srcObject = this.args.vemosStream.displayableStream;
+      this.video.srcObject = this.args.vemosStream.displayableStream;
+      await this.video.play();
     } else {
       console.log(
         `Media stream was not provided from peer ${this.args.vemosStream.peerId}`
       );
-      video.srcObject = undefined;
+      this.video.srcObject = undefined;
     }
   }
 

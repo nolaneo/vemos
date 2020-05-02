@@ -51,6 +51,7 @@ if (window.VEMOS_CONTENT_SET) {
       let iframe = document.createElement("iframe");
       iframe.id = IFRAME_ID;
       iframe.frameBorder = 0;
+      iframe.allow = "autoplay";
       vemosExtension.appendChild(iframe);
       document.body.insertAdjacentElement("afterEnd", vemosExtension);
       iframe.contentDocument;
