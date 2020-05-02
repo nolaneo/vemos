@@ -28,7 +28,7 @@
       {{/if}}
     {{/if}}
   </div>
-{{!-- 
+
   {{#if @vemosStream.isOwnStream}}
     <div class="mediastream-controls o__video-controls {{if @vemosStream.isHidden 'o__muted'}}" role="button" {{on "click" this.toggleVideo}}>
       {{#if @vemosStream.isHidden}}
@@ -37,7 +37,7 @@
         <Svg::DisableVideo title="Disable video"/>
       {{/if}}
     </div>
-  {{/if}} --}}
+  {{/if}}
 
   <MediastreamAudioIndicator @mediaStream={{@vemosStream.audioStream}} />
 </div>

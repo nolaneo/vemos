@@ -78,8 +78,12 @@ export default class PeerService extends Service {
   }
 
   connectToPeer(peerId) {
-    let connection = this.peer.connect(peerId);
-    this.onPeerConnection(connection);
+    if (peerId === this.peerId) {
+      console.error("Refusing to self connect");
+    } else {
+      let connection = this.peer.connect(peerId);
+      this.onPeerConnection(connection);
+    }
   }
 
   callPeer(peerId, mediaStream) {
