@@ -7,6 +7,11 @@ import { RTCMessage } from "./peer-service";
 
 class VemosStream {
   videoCallService = undefined;
+
+  get metricsService() {
+    return this.videoCallService.metricsService;
+  }
+
   @tracked isOwnStream;
   @tracked peerId;
   @tracked mediaStream;
@@ -60,6 +65,7 @@ class VemosStream {
   }
 
   toggleAudio(providedState) {
+    this.metricsService.recordMetric("toggle-audio");
     let currentState = this.audioStream
       .getAudioTracks()
       .some((track) => track.enabled);
@@ -75,6 +81,7 @@ class VemosStream {
     if (!this.isOwnStream) {
       return console.error("Cannot disable another peers video stream");
     }
+    this.metricsService.recordMetric("toggle-video");
     let isEnabled =
       providedState ?? isPresent(this.displayableStream.getVideoTracks());
     if (isEnabled) {
@@ -108,6 +115,7 @@ export { VemosStream };
 export default class VideoCallServiceService extends Service {
   @service peerService;
   @service parentDomService;
+  @service metricsService;
 
   @tracked activeStreams = A();
 
