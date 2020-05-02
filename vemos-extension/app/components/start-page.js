@@ -42,6 +42,7 @@ export default class StartPageComponent extends Component {
 
   @action attemptConnection() {
     this.readyToJoin = true;
+    this.metricsService.recordMetric("ready-to-join-call");
     this.attemptImmediateConnection();
   }
 
