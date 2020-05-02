@@ -25,23 +25,25 @@ if (window.VEMOS_CONTENT_SET) {
         this.injectExtensionFrame();
         this.injectEmberApp(peerId);
 
-        let script = document.createElement("script");
-        script.type = "text/javascript";
-        script.id = "vemos-netflix-reference";
-        script.innerHTML = `
-          console.log('Vemos - Adding Netflix API Listener');
-          window.addEventListener("message", (event) => {
-            if (event.data.vemosSeekTime) {
-              console.log("VEMOS Neflix API seek", event.data.vemosSeekTime);
-              let videoPlayer = netflix.appContext.state.playerApp.getAPI().videoPlayer;
-              let player = videoPlayer.getVideoPlayerBySessionId(
-                videoPlayer.getAllPlayerSessionIds()[0]
-              );
-              player.seek(Math.round(Number(event.data.vemosSeekTime)) * 1000);
-            }
-          });
-        `;
-        document.head.appendChild(script);
+        if (window.location.host.includes("netflix")) {
+          let script = document.createElement("script");
+          script.type = "text/javascript";
+          script.id = "vemos-netflix-reference";
+          script.innerHTML = `
+            console.log('Vemos - Adding Netflix API Listener');
+            window.addEventListener("message", (event) => {
+              if (event.data.vemosSeekTime) {
+                console.log("VEMOS Neflix API seek", event.data.vemosSeekTime);
+                let videoPlayer = netflix.appContext.state.playerApp.getAPI().videoPlayer;
+                let player = videoPlayer.getVideoPlayerBySessionId(
+                  videoPlayer.getAllPlayerSessionIds()[0]
+                );
+                player.seek(Math.round(Number(event.data.vemosSeekTime)) * 1000);
+              }
+            });
+          `;
+          document.head.appendChild(script);
+        }
       }
     }
 
@@ -51,6 +53,7 @@ if (window.VEMOS_CONTENT_SET) {
       let iframe = document.createElement("iframe");
       iframe.id = IFRAME_ID;
       iframe.frameBorder = 0;
+      iframe.allow = "autoplay";
       vemosExtension.appendChild(iframe);
       document.body.insertAdjacentElement("afterEnd", vemosExtension);
       iframe.contentDocument;

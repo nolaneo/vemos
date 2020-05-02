@@ -1,6 +1,6 @@
 {
   "name": "Vemos",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Virtual movie nights made easy",
   "manifest_version": 2,
   "background": {

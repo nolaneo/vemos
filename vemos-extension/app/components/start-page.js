@@ -3,6 +3,7 @@ import { inject as service } from "@ember/service";
 import { action } from "@ember/object";
 import { tracked } from "@glimmer/tracking";
 import { timeout } from "ember-concurrency";
+import { isNone } from "@ember/utils";
 
 export default class StartPageComponent extends Component {
   @service peerService;
@@ -10,26 +11,46 @@ export default class StartPageComponent extends Component {
   @service parentDomService;
   @service settingsService;
   @service metricsService;
+  @service videoCallService;
 
   @tracked showHeadphoneWarning = true;
   @tracked linkText = "Copy invite link";
   @tracked isJoining = false;
 
+  @tracked peerFromInviteLink;
+  @tracked readyToJoin = false;
+
   constructor() {
     super(...arguments);
+    this.peerFromInviteLink = document
+      .querySelector("#vemos-peer-id")
+      ?.getAttribute("content");
+
+    if (isNone(this.peerFromInviteLink)) {
+      this.readyToJoin = true;
+    }
+
     this.videoSyncService.initialize();
+    if (this.peerService.peerId) {
+      this.videoCallService.setupMediaStream();
+    } else {
+      this.peerService.addEventHandler("did-establish-connection", () =>
+        this.videoCallService.setupMediaStream()
+      );
+    }
+  }
+
+  @action attemptConnection() {
+    this.readyToJoin = true;
+    this.metricsService.recordMetric("ready-to-join-call");
     this.attemptImmediateConnection();
   }
 
   async attemptImmediateConnection() {
-    await timeout(2000);
-    let sepecifiedPeer = document
-      .querySelector("#vemos-peer-id")
-      ?.getAttribute("content");
-    if (sepecifiedPeer) {
+    if (this.peerFromInviteLink) {
       this.metricsService.recordMetric("peer-specified");
       console.log("Connecting to peer specified in query param");
-      this.peerService.connectToPeer(sepecifiedPeer);
+      this.peerService.connectToPeer(this.peerFromInviteLink);
       this.isJoining = true;
       await timeout(3000);
       this.isJoining = false;
