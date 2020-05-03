@@ -41,6 +41,14 @@
       transition: width 200ms ease;
     }
 
+    .vemos-tooltip {
+      position: fixed;
+      z-index: 2147483640;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 200ms ease;
+    }
+
     {{#if this.settingsService.isMinimized}}
       .vemos-iframe {
         width: 100vw;
