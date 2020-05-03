@@ -1,0 +1,38 @@
+.controls__button {
+  border: 1px solid #ccc;
+  border-right: none;
+  text-transform: uppercase;
+  transition: all 300ms ease;
+  color: white;
+  position: relative;
+}
+
+.controls__button:focus {
+  outline: none;
+  z-index: 2;
+  box-shadow: 0 0 0 3px rgba(21, 156, 228, 0.4);
+}
+
+.controls__button.o__off {
+  background-color: darkred;
+  color: white;
+}
+
+.controls__button.o__off:hover {
+  background-color: limegreen;
+  color: white;
+}
+
+.controls__button svg {
+  height: 18px;
+  width: 18px;
+}
+
+.controls__button:last-of-type {
+  border-right: 1px solid #ccc;
+}
+
+.controls__button:hover {
+  color: rebeccapurple;
+  background-color: white;
+}

@@ -135,13 +135,13 @@ export default class PeerService extends Service {
   }
 
   attemptReconnectSelf() {
-    if (selfConnectionAttempts > 20) {
+    if (this.selfConnectionAttempts > 10) {
       this.logService.error(`Giving up on reconnection`);
       this.metricsService.recordMetric("give-up-on-self-reconnect");
       this.fullReconnect();
     }
     this.peer.reconnect();
-    selfConnectionAttempts++;
+    this.selfConnectionAttempts++;
     later(
       this,
       () => {
