@@ -1,5 +1,5 @@
-<div class="mediastream-container layout__box">
-  <video autoplay
+<div class="mediastream-container flex flex-col" {{on "click" this.play}}>
+  <video autoplay muted
     class="mediastream-video {{if @flipped 'o__flipped'}}"
     {{did-insert this.setupMediaStream}}
     {{did-update this.setupMediaStream @vemosStream.isHidden}}
@@ -14,30 +14,8 @@
   {{/if}}
 
   <div class="mediastream-controls o__audio-controls {{if @vemosStream.isMuted 'o__muted'}}" role="button" {{on "click" this.toggleAudio}}>
-    {{#if @vemosStream.isMuted}}
-      {{#if @vemosStream.isOwnStream}}
-        <Svg::UnmuteMicrophone title="Unmute"/>
-      {{else}}
-        <Svg::Unmute title="Unmute"/>
-      {{/if}}
-    {{else}}
-      {{#if @vemosStream.isOwnStream}}
-        <Svg::MuteMicrophone title="Unmute"/>
-      {{else}}
-        <Svg::Mute title="Unmute"/>
-      {{/if}}
-    {{/if}}
-  </div>
 
-  {{#if @vemosStream.isOwnStream}}
-    <div class="mediastream-controls o__video-controls {{if @vemosStream.isHidden 'o__muted'}}" role="button" {{on "click" this.toggleVideo}}>
-      {{#if @vemosStream.isHidden}}
-        <Svg::EnableVideo title="Enable video"/>
-      {{else}}
-        <Svg::DisableVideo title="Disable video"/>
-      {{/if}}
-    </div>
-  {{/if}}
+  </div>
 
   <MediastreamAudioIndicator @mediaStream={{@vemosStream.audioStream}} />
 </div>

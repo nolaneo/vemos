@@ -3,4 +3,10 @@
     <Svg::Logo/>
   </div>
   <Controls />
+  {{#if this.videoCallService.ownMediaStream}}
+    <MediastreamVideo
+      @vemosStream={{this.videoCallService.ownMediaStream}}
+      @flipped={{true}}
+    />
+  {{/if}}
 </div>

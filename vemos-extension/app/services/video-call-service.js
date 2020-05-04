@@ -53,6 +53,16 @@ class VemosStream {
     }
   }
 
+  stop() {
+    try {
+      this.mediaStream.getTracks().forEach((track) => track.stop());
+      this.displayableStream.getTracks().forEach((track) => track.stop());
+      this.audioStream.getTracks().forEach((track) => track.stop());
+    } catch (error) {
+      console.error("Error cleaning up media streams", error);
+    }
+  }
+
   setHiddenState() {
     let tracks = this.displayableStream.getVideoTracks();
     if (isPresent(tracks)) {
@@ -147,6 +157,7 @@ export default class VideoCallServiceService extends Service {
       let index = this.activeStreams.indexOf(existingStream);
       this.activeStreams.removeObject(existingStream);
       this.activeStreams.insertAt(index, stream);
+      existingStream.stop();
     } else {
       console.log(`Adding new stream for peer ${stream.peerId}`);
       this.activeStreams.pushObject(stream);
@@ -161,6 +172,7 @@ export default class VideoCallServiceService extends Service {
     if (existingStream) {
       console.log(`Removing stream for peer ${peerId}`);
       this.activeStreams.removeObject(existingStream);
+      existingStream.stop();
     } else {
       console.error(
         `Attempted to remove stream for ${peerId}, but no stream was found`

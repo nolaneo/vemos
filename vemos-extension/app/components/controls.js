@@ -5,6 +5,7 @@ import { action } from "@ember/object";
 export default class ControlsComponent extends Component {
   @service parentDomService;
   @service videoSyncService;
+  @service videoCallService;
 
   get playerState() {
     return this.videoSyncService.currentHandler.playerState;
@@ -24,5 +25,9 @@ export default class ControlsComponent extends Component {
 
   @action unmuteVolume() {
     this.videoSyncService.currentHandler.performUnmute();
+  }
+
+  @action toggleCamera() {
+    this.videoCallService.ownMediaStream.toggleVideo();
   }
 }
