@@ -28,12 +28,12 @@ body#vemos-body > .ember-view {
 
 .main-container {
   height: 100%;
-  background-color: black;
+  background-color: rebeccapurple;
   transition: background-color 500ms ease;
 }
 
-.main-container:hover {
-  background-color: rebeccapurple;
+.main-container.o__playing {
+  background-color: black;
 }
 
 .metrics-frame {

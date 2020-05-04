@@ -24,8 +24,10 @@ export default class VideoHandler {
   }
 
   setPlayerState() {
+    let isPaused = Boolean(this.videoElement && this.videoElement.paused);
     this.playerState = {
-      isPaused: Boolean(this.videoElement && this.videoElement.paused),
+      isPaused,
+      isPlaying: !isPaused,
       isMuted: Boolean(this.videoElement && this.videoElement.muted),
     };
   }

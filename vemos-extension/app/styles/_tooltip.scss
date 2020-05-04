@@ -2,6 +2,7 @@
   opacity: 0;
   position: fixed;
   pointer-events: none;
+  min-width: fit-content;
 }
 
 .tooltip__content {
@@ -11,4 +12,6 @@
   font-family: sans-serif;
   padding: 4px;
   text-align: center;
+  word-wrap: none;
+  min-width: fit-content;
 }

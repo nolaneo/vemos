@@ -25,9 +25,15 @@ export default class TooltipComponent extends Component {
         rect.height
       );
 
+      // Center the tooltip if there's room, otherwise 4px from the right of the window.
+      let left = Math.min(
+        absoluteRect.left - tooltipRect.width / 2 + rect.width / 2,
+        parentRect.right - 4 - tooltipRect.width
+      );
+
       return htmlSafe(`
         top: ${absoluteRect.y - (tooltipRect.height + 10)}px;
-        left: ${absoluteRect.left - tooltipRect.width / 2 + rect.width / 2}px;
+        left: ${left}px;
         width: ${tooltipRect.width}px;
         height: ${tooltipRect.height}px;
         opacity: ${this.isVisible ? 1 : 0};

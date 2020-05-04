@@ -30,4 +30,8 @@ export default class ControlsComponent extends Component {
   @action toggleCamera() {
     this.videoCallService.ownMediaStream.toggleVideo();
   }
+
+  @action toggleMic() {
+    this.videoCallService.ownMediaStream.toggleAudio();
+  }
 }
