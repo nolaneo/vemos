@@ -2,8 +2,15 @@ import { RTCMessage } from "../services/peer-service";
 import { isNone, isPresent } from "@ember/utils";
 import { timeout } from "ember-concurrency";
 import { throttle } from "@ember/runloop";
+import { tracked } from "@glimmer/tracking";
 
 export default class VideoHandler {
+  @tracked playerState = {
+    isPaused: false,
+    isMuted: false,
+  };
+
+  lastKnownVolume = 0.5;
   ignoredEvents = new Set();
   handlerName = "Default";
   peerService = undefined;
@@ -14,6 +21,13 @@ export default class VideoHandler {
   constructor(peerService, parentDomService) {
     this.peerService = peerService;
     this.parentDomService = parentDomService;
+  }
+
+  setPlayerState() {
+    this.playerState = {
+      isPaused: Boolean(this.videoElement && this.videoElement.paused),
+      isMuted: Boolean(this.videoElement && this.videoElement.muted),
+    };
   }
 
   /*
@@ -85,6 +99,16 @@ export default class VideoHandler {
     return await this.videoElement.pause();
   }
 
+  async performMute() {
+    this.lastKnownVolume = this.videoElement.volume;
+    this.videoElement.muted = true;
+  }
+
+  async performUnmute() {
+    this.videoElement.muted = false;
+    this.videoElement.volume = this.lastKnownVolume;
+  }
+
   async withDisabledEventPropagation(events, block) {
     events.forEach((event) => this.ignoredEvents.add(event));
     await block.call();
@@ -128,6 +152,16 @@ export default class VideoHandler {
     this.videoElement.addEventListener("seeked", this.onSeek.bind(this));
     this.videoElement.addEventListener("play", this.onPlay.bind(this));
     this.videoElement.addEventListener("pause", this.onPause.bind(this));
+    this.videoElement.addEventListener(
+      "volumechange",
+      this.setPlayerState.bind(this)
+    );
+    this.videoElement.addEventListener(
+      "stalled",
+      this.setPlayerState.bind(this)
+    );
+
+    this.setPlayerState();
 
     this.videoDOMObserver.observe(this.parentDomService.window.document.body, {
       childList: true,
@@ -165,6 +199,7 @@ export default class VideoHandler {
   }
 
   onPlay() {
+    this.setPlayerState();
     console.log("onPlay");
     if (this.ignoredEvents.has("play")) {
       console.log("Play event ignored");
@@ -182,6 +217,7 @@ export default class VideoHandler {
   }
 
   onPause() {
+    this.setPlayerState();
     console.log("onPause");
     if (this.ignoredEvents.has("pause")) {
       console.log("Pause event ignored");

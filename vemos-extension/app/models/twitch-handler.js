@@ -18,6 +18,7 @@ export default class TwitchHandler extends VideoHandler {
   }
 
   onPause() {
+    this.setPlayerState();
     let time = new Date().getTime();
     if (time - this.lastPlayEvent > 2000) {
       console.log(event);

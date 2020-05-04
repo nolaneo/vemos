@@ -14,7 +14,6 @@ export default class TooltipComponent extends Component {
 
   get style() {
     if (this.container && this.tooltip) {
-      console.log("vemos tooltip styles");
       let rect = this.container.getBoundingClientRect();
       let parentRect = this.parentDomService.container.getBoundingClientRect();
       let tooltipRect = this.tooltip.getBoundingClientRect();

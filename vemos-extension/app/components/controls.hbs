@@ -1,12 +1,26 @@
 <div class="inline-flex justify-center py-4 controls__button-list">
-  <button class="controls__button px-2 py-1 rounded-l">
-    {{inline-svg "icons/play" class="fill-current"}}
-    <Tooltip @content="Play video" />
-  </button>
-  <button class="controls__button px-2 py-1">
-    {{inline-svg "icons/volume" class="fill-current"}}
-    <Tooltip @content="Mute video" />
-  </button>
+  {{#if this.playerState.isPaused}}
+    <button class="controls__button px-2 py-1 rounded-l" {{on "click" this.play}}>
+      {{inline-svg "icons/play" class="fill-current"}}
+      <Tooltip @content="Play video" />
+    </button>
+  {{else}}
+    <button class="controls__button px-2 py-1 rounded-l" {{on "click" this.pause}}>
+      {{inline-svg "icons/pause" class="fill-current"}}
+      <Tooltip @content="Pause video" />
+    </button>
+  {{/if}}
+  {{#if this.playerState.isMuted}}
+    <button class="controls__button px-2 py-1 o__off" {{on "click" this.unmuteVolume}}>
+      {{inline-svg "icons/volume_off" class="fill-current"}}
+      <Tooltip @content="Unmute video" />
+    </button>
+  {{else}}
+    <button class="controls__button px-2 py-1 " {{on "click" this.muteVolume}}>
+      {{inline-svg "icons/volume" class="fill-current"}}
+      <Tooltip @content="Mute video" />
+    </button>
+  {{/if}}
   <button class="controls__button px-2 py-1 o__off">
     {{inline-svg "icons/cam_off" class="fill-current"}}
     <Tooltip @content="Enable webcam" />
