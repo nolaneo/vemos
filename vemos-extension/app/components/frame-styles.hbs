@@ -2,7 +2,7 @@
   <style>
     body {
       transform: translate(0, 0);
-      width: 90vw;
+      width: min(90vw, calc(100vw - 144px));
       height: 100vh;
       transition: width 200ms ease;
     }
@@ -13,6 +13,7 @@
       top: 0;
       bottom: 0;
       width: 10vw;
+      min-width: 144px;
       background-color: black;
       transition: right 200ms ease;
     }

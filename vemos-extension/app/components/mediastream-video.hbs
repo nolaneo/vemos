@@ -1,21 +1,24 @@
-<div class="mediastream-container flex flex-col" {{on "click" this.play}}>
-  <video autoplay muted
-    class="mediastream-video {{if @flipped 'o__flipped'}}"
-    {{did-insert this.setupMediaStream}}
-    {{did-update this.setupMediaStream @vemosStream.isHidden}}
-    {{did-update this.setupMediaStream @vemosStream}}
-    {{did-insert this.onStreamInserted}}
-  >
-  </video>
-  {{#if @vemosStream.isHidden}}
-    <div class="mediastream-default-person">
-      <Svg::DefaultPerson />
+<div class="mediastream-container flex flex-col">
+  {{#if @vemosStream}}
+    <video autoplay muted
+      class="mediastream-video {{if @flipped 'o__flipped'}}"
+      {{did-insert this.setupMediaStream}}
+      {{did-update this.setupMediaStream @vemosStream.isHidden}}
+      {{did-update this.setupMediaStream @vemosStream}}
+      {{did-insert this.onStreamInserted}}
+      {{on "click" this.play}}
+    >
+    </video>
+    {{#if @vemosStream.isHidden}}
+      <div class="mediastream-default-person">
+        <Svg::DefaultPerson />
+      </div>
+    {{/if}}
+
+    <div class="mediastream-controls o__audio-controls {{if @vemosStream.isMuted 'o__muted'}}" role="button" {{on "click" this.toggleAudio}}>
+
     </div>
+
+    <MediastreamAudioIndicator @mediaStream={{@vemosStream.audioStream}} />
   {{/if}}
-
-  <div class="mediastream-controls o__audio-controls {{if @vemosStream.isMuted 'o__muted'}}" role="button" {{on "click" this.toggleAudio}}>
-
-  </div>
-
-  <MediastreamAudioIndicator @mediaStream={{@vemosStream.audioStream}} />
 </div>

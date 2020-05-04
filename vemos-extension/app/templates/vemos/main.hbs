@@ -1,12 +1,17 @@
-<div class="sidebar w-full flex flex-col">
+<div class="sidebar w-full flex flex-col flex-1">
   <div class="sidebar__logo flex flex-col justify-center">
     <Svg::Logo/>
   </div>
   <Controls />
-  {{#if this.videoCallService.ownMediaStream}}
-    <MediastreamVideo
-      @vemosStream={{this.videoCallService.ownMediaStream}}
-      @flipped={{true}}
-    />
+  <MediastreamVideo
+    @vemosStream={{this.videoCallService.ownMediaStream}}
+    @flipped={{true}}
+  />
+  <div class="flex flex-col flex-1">
+    {{outlet}}
+  </div>
+  <PatreonButton />
+  {{#if this.metricsService.version}}
+    <p class="sidebar__version">Version {{this.metricsService.version}}</p>
   {{/if}}
 </div>

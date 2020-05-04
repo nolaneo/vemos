@@ -16,4 +16,14 @@ export default class VemosMainRoute extends Route {
       );
     }
   }
+
+  beforeModel() {
+    let inviteId = document
+      .querySelector("#vemos-peer-id")
+      ?.getAttribute("content");
+    if (inviteId) {
+    } else {
+      this.transitionTo("vemos.main.invite");
+    }
+  }
 }

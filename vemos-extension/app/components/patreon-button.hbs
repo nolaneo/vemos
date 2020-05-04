@@ -1,0 +1,10 @@
+<a
+  class="patreon__button py-2 my-2 {{if this.playerState.isPlaying 'o__subtle'}}"
+  {{on "click" this.onClick}}
+  target="_blank"
+  href="https://patreon.com/vemos"
+>
+  {{inline-svg 'social/patreon'}}
+  <span>Support us on Patreon</span>
+  <Tooltip @content="Enjoy Vemos? Support its ongoing development on Patreon or tell your friends about it!" />
+</a>
