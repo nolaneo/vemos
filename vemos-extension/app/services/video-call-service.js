@@ -7,10 +7,7 @@ import { RTCMessage } from "./peer-service";
 
 class VemosStream {
   videoCallService = undefined;
-
-  get metricsService() {
-    return this.videoCallService.metricsService;
-  }
+  metricsService = undefined;
 
   @tracked isOwnStream;
   @tracked peerId;
@@ -29,6 +26,7 @@ class VemosStream {
       audioStream,
       isOwnStream,
       videoCallService,
+      metricsService,
     } = inputs;
     this.peerId = peerId;
     this.mediaStream = mediaStream;
@@ -36,6 +34,7 @@ class VemosStream {
     this.audioStream = audioStream ?? mediaStream;
     this.isOwnStream = isOwnStream ?? false;
     this.videoCallService = videoCallService;
+    this.metricsService = metricsService;
 
     this.isMuted = !this.audioStream
       .getAudioTracks()
@@ -54,6 +53,7 @@ class VemosStream {
   }
 
   stop() {
+    console.log("Stop Stream");
     try {
       this.mediaStream.getTracks().forEach((track) => track.stop());
       this.displayableStream.getTracks().forEach((track) => track.stop());
@@ -75,7 +75,6 @@ class VemosStream {
   }
 
   toggleAudio(providedState) {
-    this.metricsService.recordMetric("toggle-audio");
     let currentState = this.audioStream
       .getAudioTracks()
       .some((track) => track.enabled);
@@ -141,6 +140,64 @@ export default class VideoCallServiceService extends Service {
     );
   }
 
+  initialize() {
+    this.peerService.addEventHandler(
+      "peer-call",
+      this.answerPeerCall.bind(this)
+    );
+    this.peerService.addEventHandler(
+      "on-stream",
+      this.connectPeerStream.bind(this)
+    );
+    this.peerService.addEventHandler(
+      "connection-opened",
+      this.callPeer.bind(this)
+    );
+    this.peerService.addEventHandler(
+      "connection-closed",
+      this.removePeerStream.bind(this)
+    );
+    this.peerService.addEventHandler(
+      "webcam-disabled",
+      this.disableVideoTracks.bind(this)
+    );
+
+    this.peerService.addEventHandler("self-reconnection", () => {
+      this.restartVideoStream();
+    });
+  }
+
+  answerPeerCall(call) {
+    call.answer(this.ownMediaStream.mediaStream);
+  }
+
+  connectPeerStream(call, mediaStream) {
+    if (call.peer === this.peerService.peerId) {
+      console.error("Refusing self connect for own stream");
+    }
+    console.log("connectPeerStream", mediaStream);
+    let stream = new VemosStream({
+      peerId: call.peer,
+      mediaStream,
+      metricsService: this.metricsService,
+    });
+    this.addStream(stream);
+  }
+
+  callPeer(connection) {
+    console.log("callPeer");
+    this.peerService.callPeer(connection.peer, this.ownMediaStream.mediaStream);
+  }
+
+  removePeerStream(connection) {
+    console.log("removePeerStream", connection);
+    this.removeStream(connection.peer);
+  }
+
+  disableVideoTracks(message) {
+    this.disableTracksForPeer(message.senderId);
+  }
+
   addStream(stream) {
     if (isNone(stream)) {
       throw new Error("No stream provided to addStream");
@@ -152,12 +209,14 @@ export default class VideoCallServiceService extends Service {
     );
 
     if (existingStream) {
-      console.log(`Replacing existing stream for peer ${stream.peerId}`);
-      stream.toggleAudio(!existingStream.isMuted);
-      let index = this.activeStreams.indexOf(existingStream);
-      this.activeStreams.removeObject(existingStream);
-      this.activeStreams.insertAt(index, stream);
-      existingStream.stop();
+      if (existingStream.displayableStream.id !== stream.displayableStream.id) {
+        console.log(`Replacing existing stream for peer ${stream.peerId}`);
+        stream.toggleAudio(!existingStream.isMuted);
+        let index = this.activeStreams.indexOf(existingStream);
+        this.activeStreams.removeObject(existingStream);
+        this.activeStreams.insertAt(index, stream);
+        existingStream.stop();
+      }
     } else {
       console.log(`Adding new stream for peer ${stream.peerId}`);
       this.activeStreams.pushObject(stream);
@@ -193,6 +252,7 @@ export default class VideoCallServiceService extends Service {
       displayableStream: ownMediaStreamNoAudio,
       isOwnStream: true,
       videoCallService: this,
+      metricsService: this.metricsService,
     });
     this.removeStream(this.peerService.peerId);
     this.addStream(ownVemosStream);

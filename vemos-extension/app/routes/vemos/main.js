@@ -7,6 +7,7 @@ export default class VemosMainRoute extends Route {
   @service peerService;
 
   activate() {
+    this.videoCallService.initialize();
     this.videoSyncService.initialize();
     if (this.peerService.peerId) {
       this.videoCallService.setupMediaStream();
@@ -22,6 +23,7 @@ export default class VemosMainRoute extends Route {
       .querySelector("#vemos-peer-id")
       ?.getAttribute("content");
     if (inviteId) {
+      this.transitionTo("vemos.main.join");
     } else {
       this.transitionTo("vemos.main.invite");
     }

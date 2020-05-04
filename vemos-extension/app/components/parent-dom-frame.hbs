@@ -2,6 +2,8 @@
   <iframe frameBorder="0" {{did-insert this.setIframe}} ...attributes/>
 </EmberWormhole>
 
-<EmberWormhole @destinationElement={{this.iframeDocument}} @renderInPlace={{not this.iframeDocument}}>
-  {{yield}}
-</EmberWormhole>
+<div class="hidden">
+  <EmberWormhole @destinationElement={{this.iframeDocument}} @renderInPlace={{not this.iframeDocument}}>
+    {{yield}}
+  </EmberWormhole>
+</div>

@@ -77,6 +77,12 @@ export default class PeerService extends Service {
     this.eventHandlers[eventName].pushObject(handler);
   }
 
+  removeEventHandler(eventName, handler) {
+    if (this.eventHandlers[eventName]) {
+      this.eventHandlers[eventName].removeObject(handler);
+    }
+  }
+
   connectToPeer(peerId) {
     if (peerId === this.peerId) {
       console.error("Refusing to self connect");

@@ -2,7 +2,7 @@ import Component from "@glimmer/component";
 import { action } from "@ember/object";
 import { tracked } from "@glimmer/tracking";
 import { inject as service } from "@ember/service";
-import { scheduleOnce } from "@ember/runloop";
+import { scheduleOnce, debounce } from "@ember/runloop";
 
 export default class MediastreamVideoComponent extends Component {
   @service parentDomService;
@@ -19,7 +19,7 @@ export default class MediastreamVideoComponent extends Component {
 
   @action setupMediaStream(video) {
     this.video = video;
-    scheduleOnce("afterRender", this, this.setStreamSource);
+    this.setStreamSource();
   }
 
   @action onStreamInserted() {
@@ -38,7 +38,7 @@ export default class MediastreamVideoComponent extends Component {
       !this.args.vemosStream.isHidden
     ) {
       this.video.srcObject = this.args.vemosStream.displayableStream;
-      if (!this.args.vemosStream.isOwnStream) {
+      if (!this.args.vemosStream.isOwnStream && this.video.paused) {
         await this.video.play();
       }
     } else {

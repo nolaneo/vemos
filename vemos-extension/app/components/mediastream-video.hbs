@@ -1,6 +1,6 @@
 <div class="mediastream-container flex flex-col">
   {{#if @vemosStream}}
-    <video autoplay muted
+    <video autoplay
       class="mediastream-video {{if @flipped 'o__flipped'}}"
       {{did-insert this.setupMediaStream}}
       {{did-update this.setupMediaStream @vemosStream.isHidden}}
