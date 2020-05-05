@@ -4,7 +4,7 @@
   @flipped={{true}}
 />
 
-<div class="flex flex-col flex-1 mt-2">
+<div class="flex flex-col flex-1 mt-2 overflow-auto">
   {{#each this.videoCallService.peerMediaStreams as |peerStream|}}
     <MediastreamVideo @vemosStream={{peerStream}} />
   {{/each}}

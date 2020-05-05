@@ -16,3 +16,16 @@
   background-color: white;
   color: rebeccapurple;
 }
+
+.invite__manual {
+  color: white;
+  text-align: center;
+  font-size: 10px;
+  opacity: 0.7;
+  transition: opacity 200ms ease;
+}
+
+.invite__manual:hover {
+  text-decoration: underline;
+  opacity: 1;
+}

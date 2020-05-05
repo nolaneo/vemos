@@ -1,4 +1,5 @@
 import Service, { inject as service } from "@ember/service";
+import { tracked } from "@glimmer/tracking";
 
 const CONTAINER_ID = `vemos-container`;
 
@@ -6,6 +7,7 @@ export default class ParentDomService extends Service {
   container = undefined;
   window = undefined;
   body = undefined;
+  @tracked activeFrame = undefined;
 
   initialize() {
     console.log(`Initializing Parent DOM Service`);

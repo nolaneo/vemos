@@ -182,6 +182,10 @@ export default class PeerService extends Service {
     if (error.type === "peer-unavailable") {
       let peer = error.message.split(" ").lastObject;
       later(this, () => this.attemptReconnectOther(peer), 2000);
+
+      if (this.eventHandlers["peer-unavailable"]) {
+        this.eventHandlers["peer-unavailable"].forEach((handler) => handler());
+      }
     }
 
     if (error.type === "network") {

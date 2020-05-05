@@ -7,6 +7,9 @@
   </div>
   <PatreonButton />
   {{#if this.metricsService.version}}
-    <p class="sidebar__version">Version {{this.metricsService.version}}</p>
+    <a class="sidebar__version" target="_blank" href="https://github.com/nolaneo/vemos">
+      Version {{this.metricsService.version}}
+      <Tooltip @content="Vemos is open source. Check it out on Github!"/>
+    </a>
   {{/if}}
 </div>

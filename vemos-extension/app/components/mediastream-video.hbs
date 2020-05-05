@@ -15,9 +15,17 @@
       </div>
     {{/if}}
 
-    <div class="mediastream-controls o__audio-controls {{if @vemosStream.isMuted 'o__muted'}}" role="button" {{on "click" this.toggleAudio}}>
-
-    </div>
+    {{#unless @vemosStream.isOwnStream}}
+      <div class="mediastream-controls o__audio-controls {{if @vemosStream.isMuted 'o__muted'}}" role="button" {{on "click" this.toggleAudio}}>
+        {{#if @vemosStream.isMuted}}
+          {{inline-svg 'icons/volume_off'}}
+          <Tooltip @content={{"You have muted this person. Click to unmute"}} />
+        {{else}}
+          {{inline-svg 'icons/volume'}}
+          <Tooltip @content={{"Mute this person."}} />
+        {{/if}}
+      </div>
+    {{/unless}}
 
     <MediastreamAudioIndicator @mediaStream={{@vemosStream.audioStream}} />
   {{/if}}

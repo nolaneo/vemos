@@ -1,4 +1,4 @@
-{{#if this.showHeadphoneWarning}}
+{{#if (eq this.parentDomService.activeFrame 'headphone-warning')}}
   <ParentDomFrame class="vemos-iframe">
     <Notice::Headphones @onClose={{this.onClose}}/>
   </ParentDomFrame>
