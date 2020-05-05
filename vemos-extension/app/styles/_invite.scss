@@ -1,0 +1,31 @@
+.invite__button {
+  border-radius: 0.25rem;
+  border: 1px solid white;
+  transition: all 200ms ease;
+  cursor: pointer;
+  color: white;
+  text-align: center;
+}
+
+.invite__button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(21, 156, 228, 0.4);
+}
+
+.invite__button:hover {
+  background-color: white;
+  color: rebeccapurple;
+}
+
+.invite__manual {
+  color: white;
+  text-align: center;
+  font-size: 10px;
+  opacity: 0.7;
+  transition: opacity 200ms ease;
+}
+
+.invite__manual:hover {
+  text-decoration: underline;
+  opacity: 1;
+}

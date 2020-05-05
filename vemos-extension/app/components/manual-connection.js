@@ -8,14 +8,17 @@ export default class ManualConnectionComponent extends Component {
   @service parentDomService;
   @service metricsService;
 
-  @tracked showModal = false;
   @tracked linkText = null;
   @tracked peerCode = null;
 
-  @action toggleModal() {
-    this.args.disableHeadphoneWarning();
+  @action openModal() {
+    this.parentDomService.activeFrame = "manual-connection";
     this.metricsService.recordMetric("toggled-manual-peer-connection");
     this.showModal = !this.showModal;
+  }
+
+  @action closeModal() {
+    this.parentDomService.activeFrame = undefined;
   }
 
   @action copyPeerId() {
@@ -38,6 +41,6 @@ export default class ManualConnectionComponent extends Component {
   @action connectToPeer() {
     this.peerService.connectToPeer(this.peerCode);
     this.metricsService.recordMetric("manual-peer-connection");
-    this.toggleModal();
+    this.closeModal();
   }
 }

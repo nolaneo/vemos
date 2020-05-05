@@ -9,5 +9,10 @@ export default class Router extends EmberRouter {
 Router.map(function() {
   this.route('vemos', function() {
     this.route('start');
+    this.route('main', function() {
+      this.route('invite');
+      this.route('join');
+      this.route('connected');
+    });
   });
 });

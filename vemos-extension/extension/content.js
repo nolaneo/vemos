@@ -161,4 +161,13 @@ if (window.VEMOS_CONTENT_SET) {
       }
     });
   }
+
+  let url = new URL(window.location.href);
+  if (url.searchParams.get("VEMOS_DEBUG")) {
+    setTimeout(() => {
+      console.log("Booting Vemos Debug");
+      let contentScript = new ContentScript();
+      contentScript.injectVemos();
+    }, 250);
+  }
 }

@@ -1,0 +1,15 @@
+<div class="sidebar w-full flex flex-col flex-1">
+  <div class="sidebar__logo flex flex-col justify-center">
+    <Svg::Logo/>
+  </div>
+  <div class="flex flex-col flex-1">
+    {{outlet}}
+  </div>
+  <PatreonButton />
+  {{#if this.metricsService.version}}
+    <a class="sidebar__version" target="_blank" href="https://github.com/nolaneo/vemos">
+      Version {{this.metricsService.version}}
+      <Tooltip @content="Vemos is open source. Check it out on Github!"/>
+    </a>
+  {{/if}}
+</div>

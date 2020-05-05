@@ -8,6 +8,24 @@ module.exports = function (defaults) {
       exclude: ["app"],
     },
     storeConfigInMeta: false,
+    svg: {
+      paths: ["app/svgs"],
+    },
+    postcssOptions: {
+      compile: {
+        extension: "scss",
+        parser: require("postcss-scss"),
+        plugins: [
+          require("tailwindcss"),
+          {
+            module: require("@csstools/postcss-sass"),
+            options: {
+              includePaths: ["app/styles"],
+            },
+          },
+        ],
+      },
+    },
     emberCliConcat: {
       js: {
         concat: true,
@@ -18,7 +36,9 @@ module.exports = function (defaults) {
     },
   });
 
-  app.import('node_modules/content-scripts-register-polyfill/index.js', { outputFile: 'assets/content-scripts-register-polyfill.js' });
+  app.import("node_modules/content-scripts-register-polyfill/index.js", {
+    outputFile: "assets/content-scripts-register-polyfill.js",
+  });
 
   return app.toTree();
 };

@@ -77,6 +77,12 @@ export default class PeerService extends Service {
     this.eventHandlers[eventName].pushObject(handler);
   }
 
+  removeEventHandler(eventName, handler) {
+    if (this.eventHandlers[eventName]) {
+      this.eventHandlers[eventName].removeObject(handler);
+    }
+  }
+
   connectToPeer(peerId) {
     if (peerId === this.peerId) {
       console.error("Refusing to self connect");
@@ -135,13 +141,13 @@ export default class PeerService extends Service {
   }
 
   attemptReconnectSelf() {
-    if (selfConnectionAttempts > 20) {
+    if (this.selfConnectionAttempts > 10) {
       this.logService.error(`Giving up on reconnection`);
       this.metricsService.recordMetric("give-up-on-self-reconnect");
       this.fullReconnect();
     }
     this.peer.reconnect();
-    selfConnectionAttempts++;
+    this.selfConnectionAttempts++;
     later(
       this,
       () => {
@@ -176,6 +182,10 @@ export default class PeerService extends Service {
     if (error.type === "peer-unavailable") {
       let peer = error.message.split(" ").lastObject;
       later(this, () => this.attemptReconnectOther(peer), 2000);
+
+      if (this.eventHandlers["peer-unavailable"]) {
+        this.eventHandlers["peer-unavailable"].forEach((handler) => handler());
+      }
     }
 
     if (error.type === "network") {

@@ -1,16 +1,15 @@
 import Service from "@ember/service";
 import { inject as service } from "@ember/service";
-import { timeout } from "ember-concurrency";
 import VideoHandler from "../models/video-handler";
 import NetflixHandler from "../models/netflix-handler";
 import TwitchHandler from "../models/twitch-handler";
-
+import { tracked } from "@glimmer/tracking";
 export default class VideoSyncService extends Service {
   @service peerService;
   @service parentDomService;
   @service metricsService;
 
-  currentHandler = undefined;
+  @tracked currentHandler = undefined;
 
   async initialize() {
     this.currentHandler = new this.handlerClass(

@@ -1,11 +1,14 @@
 .mediastream-video {
-  width: 100%;
-  height: auto;
+  width: 100vw;
+  height: 76vw;
   margin-bottom: 5px;
 }
 
 .mediastream-container {
   position: relative;
+  width: 100vw;
+  height: 76vw;
+  background: black;
 }
 
 .mediastream-container:hover .mediastream-controls,
@@ -81,6 +84,6 @@
   svg {
     width: 30px;
     height: 30px;
-    fill: rgba(255,255,255, 0.5);
+    fill: rgba(255, 255, 255, 0.5);
   }
 }

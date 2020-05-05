@@ -1,0 +1,25 @@
+.join__button {
+  border-radius: 0.25rem;
+  border: 1px solid white;
+  transition: all 200ms ease;
+  cursor: pointer;
+  color: white;
+  text-align: center;
+  background-color: limegreen;
+}
+
+.join__button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(21, 156, 228, 0.4);
+}
+
+.join__button:hover {
+  background-color: white;
+  color: rebeccapurple;
+}
+
+.join__warning {
+  color: darkred;
+  background-color: #ffdce7;
+  border: 1px solid darkred;
+}

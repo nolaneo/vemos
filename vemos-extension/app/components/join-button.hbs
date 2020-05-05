@@ -1,0 +1,10 @@
+<button class="join__button p-2"  {{on "click" this.join}} ...attributes>
+  {{this.linkText}}
+</button>
+
+{{#if this.peerUnavailable}}
+  <p class="m-2 p-2 rounded text-center join__warning">
+    Hmm, we're having some trouble connecting to that call.<br>
+    Make sure your friends are still connected.
+  </p>
+{{/if}}

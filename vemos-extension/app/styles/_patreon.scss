@@ -1,0 +1,27 @@
+.patreon__button {
+  background-color: #f86753;
+  border: 1px solid #f86753;
+  font-size: 11px;
+  text-align: center;
+  transition: all 200ms ease;
+}
+
+.patreon__button.o__subtle {
+  background-color: transparent;
+  border-color: transparent;
+  opacity: 0.7;
+}
+
+.patreon__button.o__subtle svg {
+  filter: brightness(100);
+}
+
+.patreon__button:hover {
+  border-color: whitesmoke;
+}
+
+.patreon__button svg {
+  height: 14px;
+  width: 14px;
+  display: inline;
+}
