@@ -4,6 +4,9 @@ import VideoHandler from "../models/video-handler";
 import NetflixHandler from "../models/netflix-handler";
 import TwitchHandler from "../models/twitch-handler";
 import { tracked } from "@glimmer/tracking";
+import { task } from "ember-concurrency-decorators";
+import { timeout } from "ember-concurrency";
+
 export default class VideoSyncService extends Service {
   @service peerService;
   @service parentDomService;
@@ -18,24 +21,34 @@ export default class VideoSyncService extends Service {
     );
     this.currentHandler.addListeners();
 
-    this.peerService.addEventHandler("video-seek", this.seek.bind(this));
-    this.peerService.addEventHandler("video-play", this.play.bind(this));
-    this.peerService.addEventHandler("video-pause", this.pause.bind(this));
+    this.peerService.addEventHandler("video-seek", (message) =>
+      this.seek.perform(message)
+    );
+    this.peerService.addEventHandler("video-play", (message) =>
+      this.play.perform(message)
+    );
+    this.peerService.addEventHandler("video-pause", (message) =>
+      this.pause.perform(message)
+    );
   }
 
-  async play(message) {
+  @task({ drop: true })
+  *play(message) {
     this.metricsService.recordMetric("play-received");
-    await this.currentHandler.play(message.data.time);
+    yield this.currentHandler.play(message.data.time);
   }
 
-  async pause() {
+  @task({ drop: true })
+  *pause() {
     this.metricsService.recordMetric("pause-received");
-    await this.currentHandler.pause();
+    yield this.currentHandler.pause();
   }
 
-  async seek(message) {
+  @task({ drop: true })
+  *seek(message) {
     this.metricsService.recordMetric("seek-received");
-    await this.currentHandler.seek(message.data.time);
+    yield this.currentHandler.seek(message.data.time);
+    yield timeout(100);
   }
 
   get handlerClass() {

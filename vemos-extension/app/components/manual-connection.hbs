@@ -27,7 +27,9 @@
           <input class="vemos-peer-input" placeholder="Enter a friend's Vemos code..." {{on "input" this.setPeerCode}}>
 
           <div class="vemos-got-it {{if (not this.peerCode) 'o__disabled'}}" {{on "click" this.connectToPeer}} role="button">Connect</div>
-        </div>    
+        </div>
+
+        <a class="mt-2 hover:underline" href="https://test.webrtc.org/" target="_blank">If you continue to have difficulty connecting, please check the WebRTC test page.</a>
       </div>
     </div>
   </ParentDomFrame>

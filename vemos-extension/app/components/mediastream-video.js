@@ -6,6 +6,9 @@ import { scheduleOnce, debounce } from "@ember/runloop";
 
 export default class MediastreamVideoComponent extends Component {
   @service parentDomService;
+  @service metricsService;
+
+  @tracked showClickToPlayOverlay = false;
 
   video = undefined;
 
@@ -38,8 +41,17 @@ export default class MediastreamVideoComponent extends Component {
       !this.args.vemosStream.isHidden
     ) {
       this.video.srcObject = this.args.vemosStream.displayableStream;
-      if (!this.args.vemosStream.isOwnStream && this.video.paused) {
+      try {
         await this.video.play();
+      } catch (e) {
+        if (
+          e.message.includes("user didn't interact with the document first")
+        ) {
+          this.metricsService.recordMetric(
+            "mediastream-not-shown-automatically"
+          );
+          this.showClickToPlayOverlay = true;
+        }
       }
     } else {
       console.log(
@@ -47,6 +59,12 @@ export default class MediastreamVideoComponent extends Component {
       );
       this.video.srcObject = undefined;
     }
+  }
+
+  @action enableVideo() {
+    this.metricsService.recordMetric("click-to-enable-video");
+    this.video.play();
+    this.showClickToPlayOverlay = false;
   }
 
   @action toggleVideo() {

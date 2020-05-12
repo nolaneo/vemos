@@ -158,7 +158,7 @@ export default class PeerService extends Service {
           this.selfConnectionAttempts = 0;
           if (this.eventHandlers["self-reconnection"]) {
             this.eventHandlers["self-reconnection"].forEach((handler) =>
-              handler(call)
+              handler()
             );
           }
         }
