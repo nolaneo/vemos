@@ -282,8 +282,21 @@ export default class VideoCallServiceService extends Service {
       .getUserMedia(settings)
       .catch((error) => {
         console.error(error);
+        console.error("Could not generate a Video MediaStream.");
+        return this.getAudioOnlyStream();
+      });
+  }
+
+  async getAudioOnlyStream() {
+    let settings = {
+      audio: true,
+    };
+    return this.parentDomService.window.navigator.mediaDevices
+      .getUserMedia(settings)
+      .catch((error) => {
+        console.error(error);
         console.error(
-          "Could not generate a MediaStream. Returning blank stream"
+          "Could not generate a Audio MediaStream. Returning blank stream"
         );
         return new MediaStream();
       });
