@@ -36,13 +36,12 @@ export default class MediastreamVideoComponent extends Component {
       "setupMediaStream video component. Is hidden:",
       this.args.vemosStream.isHidden
     );
-    if (
-      this.args.vemosStream.displayableStream &&
-      !this.args.vemosStream.isHidden
-    ) {
+    if (this.args.vemosStream.displayableStream) {
       this.video.srcObject = this.args.vemosStream.displayableStream;
       try {
-        await this.video.play();
+        if (this.video.paused) {
+          await this.video.play();
+        }
       } catch (e) {
         if (
           e.message.includes("user didn't interact with the document first")
