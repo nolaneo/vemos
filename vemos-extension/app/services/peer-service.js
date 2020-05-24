@@ -242,7 +242,7 @@ export default class PeerService extends Service {
 
   onConnectionData(connection, message) {
     if (this.knownEvents.includes(message.uuid)) {
-      console.log(`Ignoring known event`, event.uuid);
+      console.log(`Ignoring known event`, message.event);
       return;
     }
     this.knownEvents.pushObject(message.uuid);
