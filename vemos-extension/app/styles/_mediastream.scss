@@ -12,7 +12,7 @@
 }
 
 .mediastream-container:hover .mediastream-controls,
-.mediastream-controls.o__muted {
+.mediastream-controls.o__muted, .mediastream-controls.o__hidden {
   opacity: 1;
 }
 
@@ -32,6 +32,12 @@
     fill: white;
     opacity: 0.8;
   }
+}
+
+.mediastream-controls.o__ownstream-controls {
+  background-color: rgba(12, 12, 12, 0.5);
+  bottom: 5px;
+  right: 5px;
 }
 
 .mediastream-controls.o__audio-controls {
