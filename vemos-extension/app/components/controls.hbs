@@ -11,12 +11,12 @@
     </button>
   {{/if}}
   {{#if this.playerState.isMuted}}
-    <button class="controls__button px-2 py-1 o__off" {{on "click" this.unmuteVolume}}>
+    <button class="controls__button px-2 py-1 o__off rounded-r" {{on "click" this.unmuteVolume}}>
       {{inline-svg "icons/volume_off" class="fill-current"}}
       <Tooltip @content="Unmute video" />
     </button>
   {{else}}
-    <button class="controls__button px-2 py-1 " {{on "click" this.muteVolume}}>
+    <button class="controls__button px-2 py-1 rounded-r" {{on "click" this.muteVolume}}>
       {{inline-svg "icons/volume" class="fill-current"}}
       <Tooltip @content="Mute video" />
     </button>
