@@ -74,6 +74,11 @@
   opacity: 0.9;
 }
 
+.mediastream__waveform-bar.o__muted {
+  background-color: #c70000;
+  border: 1px solid #c70000;
+}
+
 .mediastream__waveform-bar.o__small {
   max-height: 75%;
   height: calc(var(--height) / 2);
