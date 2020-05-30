@@ -31,6 +31,16 @@ export default class MediastreamVideoComponent extends Component {
     }
   }
 
+  @action toggleCamera(videoStream) {
+    this.metricsService.recordMetric("controls-toggle-camera");
+    videoStream.toggleVideo();
+  }
+
+  @action toggleMic(videoStream) {
+    this.metricsService.recordMetric("controls-toggle-mic");
+    videoStream.toggleAudio();
+  }
+
   async setStreamSource() {
     console.log(
       "setupMediaStream video component. Is hidden:",

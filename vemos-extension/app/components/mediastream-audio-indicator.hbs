@@ -4,14 +4,14 @@
   {{did-update this.setupAnalyser @mediaStream}}
 >
   <div class="flex flex-col justify-center">
-    <div class="mediastream__waveform-bar o__small"   style={{this.style}}></div>
+    <div class="mediastream__waveform-bar o__small {{if @isMuted 'o__muted'}}"   style={{this.style}}></div>
   </div>
 
   <div class="flex flex-col justify-center">
-    <div class="mediastream__waveform-bar o__large"   style={{this.style}}></div>
+    <div class="mediastream__waveform-bar o__large {{if @isMuted 'o__muted'}}"   style={{this.style}}></div>
   </div>
 
   <div class="flex flex-col justify-center">
-    <div class="mediastream__waveform-bar o__small"   style={{this.style}}></div>
+    <div class="mediastream__waveform-bar o__small {{if @isMuted 'o__muted'}}"   style={{this.style}}></div>
   </div>
 </div>

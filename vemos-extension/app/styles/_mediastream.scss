@@ -34,6 +34,12 @@
   }
 }
 
+.mediastream-controls.o__ownstream-controls {
+  opacity: 1;
+  bottom: 5px;
+  right: 5px;
+}
+
 .mediastream-controls.o__audio-controls {
   bottom: 5px;
   right: 5px;
@@ -66,6 +72,11 @@
   box-sizing: border-box;
   border: 1px solid rgb(149, 248, 149);
   opacity: 0.9;
+}
+
+.mediastream__waveform-bar.o__muted {
+  background-color: #c70000;
+  border: 1px solid #c70000;
 }
 
 .mediastream__waveform-bar.o__small {
