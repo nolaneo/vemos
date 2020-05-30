@@ -16,7 +16,30 @@
     {{/if}}
 
     {{#unless this.showClickToPlayOverlay}}
-      {{#unless @vemosStream.isOwnStream}}
+      {{#if @vemosStream.isOwnStream}}
+        {{#if @vemosStream.isHidden}}
+          <button class="controls__button px-2 py-1 o__off" {{on "click" (fn this.toggleCamera @vemosStream)}}>
+            {{inline-svg "icons/cam_off" class="fill-current"}}
+            <Tooltip @content="Enable your webcam" />
+          </button>
+        {{else}}
+          <button class="controls__button px-2 py-1" {{on "click" (fn this.toggleCamera @vemosStream)}}>
+            {{inline-svg "icons/cam" class="fill-current"}}
+            <Tooltip @content="Disable your webcam" />
+          </button>
+        {{/if}}
+        {{#if @vemosStream.isMuted}}
+          <button class="controls__button px-2 py-1 o__off rounded-r" {{on "click" (fn this.toggleMic @vemosStream)}}>
+            {{inline-svg "icons/mic_off" class="fill-current"}}
+            <Tooltip @content="Unmute your mic" />
+          </button>
+        {{else}}
+          <button class="controls__button px-2 py-1 rounded-r" {{on "click" (fn this.toggleMic @vemosStream)}}>
+            {{inline-svg "icons/mic" class="fill-current"}}
+            <Tooltip @content="Mute your mic" />
+          </button>
+        {{/if}}
+      {{else}}
         <div class="mediastream-controls o__audio-controls {{if @vemosStream.isMuted 'o__muted'}}" role="button" {{on "click" this.toggleAudio}}>
           {{#if @vemosStream.isMuted}}
             {{inline-svg 'icons/volume_off'}}
@@ -26,7 +49,7 @@
             <Tooltip @content={{"Mute this person."}} />
           {{/if}}
         </div>
-      {{/unless}}
+      {{/if}}
       <MediastreamAudioIndicator @mediaStream={{@vemosStream.audioStream}} />
     {{/unless}}
   {{/if}}
