@@ -18,7 +18,7 @@
     {{#unless this.showClickToPlayOverlay}}
       {{#if @vemosStream.isOwnStream}}
         {{#if @vemosStream.isHidden}}
-          <button class="mediastream-controls o__ownstream-controls o__hidden mr-10" {{on "click" (fn this.toggleCamera @vemosStream)}}>
+          <button class="mediastream-controls o__ownstream-controls mr-10" {{on "click" (fn this.toggleCamera @vemosStream)}}>
             {{inline-svg "icons/cam_off" class="fill-current"}}
             <Tooltip @content="Enable your webcam" />
           </button>
@@ -29,7 +29,7 @@
           </button>
         {{/if}}
         {{#if @vemosStream.isMuted}}
-          <button class="mediastream-controls o__ownstream-controls o__muted" {{on "click" (fn this.toggleMic @vemosStream)}}>
+          <button class="mediastream-controls o__ownstream-controls" {{on "click" (fn this.toggleMic @vemosStream)}}>
             {{inline-svg "icons/mic_off" class="fill-current"}}
             <Tooltip @content="Unmute your mic" />
           </button>
